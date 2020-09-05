@@ -276,17 +276,12 @@ extern UniValue getchaintips(const UniValue& params, bool fHelp);
 extern UniValue invalidateblock(const UniValue& params, bool fHelp);
 extern UniValue reconsiderblock(const UniValue& params, bool fHelp);
 
-extern UniValue obfuscation(const UniValue& params, bool fHelp); // in rpcfundamentalnode.cpp
-extern UniValue getpoolinfo(const UniValue& params, bool fHelp);
-extern UniValue fundamentalnode(const UniValue& params, bool fHelp);
 extern UniValue listfundamentalnodes(const UniValue& params, bool fHelp);
 extern UniValue getfundamentalnodecount(const UniValue& params, bool fHelp);
 extern UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp);
 extern UniValue decodefundamentalnodebroadcast(const UniValue& params, bool fHelp);
 extern UniValue relayfundamentalnodebroadcast(const UniValue& params, bool fHelp);
-extern UniValue fundamentalnodeconnect(const UniValue& params, bool fHelp);
 extern UniValue fundamentalnodecurrent(const UniValue& params, bool fHelp);
-extern UniValue fundamentalnodedebug(const UniValue& params, bool fHelp);
 extern UniValue startfundamentalnode(const UniValue& params, bool fHelp);
 extern UniValue createfundamentalnodekey(const UniValue& params, bool fHelp);
 extern UniValue getfundamentalnodeoutputs(const UniValue& params, bool fHelp);
@@ -316,10 +311,20 @@ extern UniValue verifymessage(const UniValue& params, bool fHelp);
 extern UniValue setmocktime(const UniValue& params, bool fHelp);
 extern UniValue getstakingstatus(const UniValue& params, bool fHelp);
 
-extern UniValue mnspork(const UniValue& params, bool fHelp);
-extern UniValue masternode(const UniValue& params, bool fHelp);
-extern UniValue masternodelist(const UniValue& params, bool fHelp);
+extern UniValue listmasternodes(const UniValue& params, bool fHelp);
+extern UniValue getmasternodecount(const UniValue& params, bool fHelp);
+extern UniValue createmasternodebroadcast(const UniValue& params, bool fHelp);
+extern UniValue decodemasternodebroadcast(const UniValue& params, bool fHelp);
+extern UniValue relaymasternodebroadcast(const UniValue& params, bool fHelp);
+extern UniValue masternodecurrent(const UniValue& params, bool fHelp);
+extern UniValue startmasternode(const UniValue& params, bool fHelp);
+extern UniValue createmasternodekey(const UniValue& params, bool fHelp);
+extern UniValue getmasternodeoutputs(const UniValue& params, bool fHelp);
+extern UniValue listmasternodeconf(const UniValue& params, bool fHelp);
 extern UniValue getmasternodestatus(const UniValue& params, bool fHelp);
+extern UniValue getmasternodewinners(const UniValue& params, bool fHelp);
+extern UniValue getmasternodescores(const UniValue& params, bool fHelp);
+extern UniValue mnsync(const UniValue& params, bool fHelp);
 
 bool StartRPC();
 void InterruptRPC();

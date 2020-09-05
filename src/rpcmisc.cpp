@@ -11,11 +11,11 @@
 #include "init.h"
 #include "main.h"
 #include "fundamentalnode-sync.h"
+#include "masternode-sync.h"
 #include "net.h"
 #include "netbase.h"
 #include "rpcserver.h"
 #include "spork.h"
-#include "mn-spork.h"
 #include "timedata.h"
 #include "util.h"
 #ifdef ENABLE_WALLET
@@ -202,6 +202,67 @@ UniValue fnsync(const UniValue& params, bool fHelp)
     return "failure";
 }
 
+UniValue mnsync(const UniValue& params, bool fHelp)
+{
+    std::string strMode;
+    if (params.size() == 1)
+        strMode = params[0].get_str();
+
+    if (fHelp || params.size() != 1 || (strMode != "status" && strMode != "reset")) {
+        throw std::runtime_error(
+                "mnsync \"status|reset\"\n"
+                "\nReturns the sync status or resets sync.\n"
+
+                "\nArguments:\n"
+                "1. \"mode\"    (string, required) either 'status' or 'reset'\n"
+
+                "\nResult ('status' mode):\n"
+                "{\n"
+                "  \"IsBlockchainSynced\": true|false,    (boolean) 'true' if blockchain is synced\n"
+                "  \"lastMasternodeList\": xxxx,        (numeric) Timestamp of last MN list message\n"
+                "  \"lastMasternodeWinner\": xxxx,      (numeric) Timestamp of last MN winner message\n"
+                "  \"lastFailure\": xxxx,           (numeric) Timestamp of last failed sync\n"
+                "  \"nCountFailures\": n,           (numeric) Number of failed syncs (total)\n"
+                "  \"sumMasternodeList\": n,        (numeric) Number of MN list messages (total)\n"
+                "  \"sumMasternodeWinner\": n,      (numeric) Number of MN winner messages (total)\n"
+                "  \"countMasternodeList\": n,      (numeric) Number of MN list messages (local)\n"
+                "  \"countMasternodeWinner\": n,    (numeric) Number of MN winner messages (local)\n"
+                "  \"RequestedMasternodeAssets\": n, (numeric) Status code of last sync phase\n"
+                "  \"RequestedMasternodeAttempt\": n, (numeric) Status code of last sync attempt\n"
+                "}\n"
+
+                "\nResult ('reset' mode):\n"
+                "\"status\"     (string) 'success'\n"
+
+                "\nExamples:\n" +
+                HelpExampleCli("mnsync", "\"status\"") + HelpExampleRpc("mnsync", "\"status\""));
+    }
+
+    if (strMode == "status") {
+        UniValue obj(UniValue::VOBJ);
+
+        obj.push_back(Pair("IsBlockchainSynced", masternodeSync.IsBlockchainSynced()));
+        obj.push_back(Pair("lastMasternodeList", masternodeSync.lastMasternodeList));
+        obj.push_back(Pair("lastMasternodeWinner", masternodeSync.lastMasternodeWinner));
+        obj.push_back(Pair("lastFailure", masternodeSync.lastFailure));
+        obj.push_back(Pair("nCountFailures", masternodeSync.nCountFailures));
+        obj.push_back(Pair("sumMasternodeList", masternodeSync.sumMasternodeList));
+        obj.push_back(Pair("sumMasternodeWinner", masternodeSync.sumMasternodeWinner));
+        obj.push_back(Pair("countMasternodeList", masternodeSync.countMasternodeList));
+        obj.push_back(Pair("countMasternodeWinner", masternodeSync.countMasternodeWinner));
+        obj.push_back(Pair("RequestedMasternodeAssets", masternodeSync.RequestedMasternodeAssets));
+        obj.push_back(Pair("RequestedMasternodeAttempt", masternodeSync.RequestedMasternodeAttempt));
+
+        return obj;
+    }
+
+    if (strMode == "reset") {
+        masternodeSync.Reset();
+        return "success";
+    }
+    return "failure";
+}
+
 #ifdef ENABLE_WALLET
 class DescribeAddressVisitor : public boost::static_visitor<UniValue>
 {
@@ -256,21 +317,19 @@ UniValue spork(const UniValue& params, bool fHelp)
 {
     if (params.size() == 1 && params[0].get_str() == "show") {
         UniValue ret(UniValue::VOBJ);
-        for (int nSporkID = SPORK_START; nSporkID <= SPORK_END; nSporkID++) {
-            if (sporkManager.GetSporkNameByID(nSporkID) != "Unknown")
-                ret.push_back(Pair(sporkManager.GetSporkNameByID(nSporkID), GetSporkValue(nSporkID)));
+        for (const auto& sporkDef : sporkDefs) {
+            ret.push_back(Pair(sporkDef.name, sporkManager.GetSporkValue(sporkDef.sporkId)));
         }
         return ret;
     } else if (params.size() == 1 && params[0].get_str() == "active") {
         UniValue ret(UniValue::VOBJ);
-        for (int nSporkID = SPORK_START; nSporkID <= SPORK_END; nSporkID++) {
-            if (sporkManager.GetSporkNameByID(nSporkID) != "Unknown")
-                ret.push_back(Pair(sporkManager.GetSporkNameByID(nSporkID), IsSporkActive(nSporkID)));
+        for (const auto& sporkDef : sporkDefs) {
+            ret.push_back(Pair(sporkDef.name, sporkManager.IsSporkActive(sporkDef.sporkId)));
         }
         return ret;
     } else if (params.size() == 2) {
-        int nSporkID = sporkManager.GetSporkIDByName(params[0].get_str());
-        if (nSporkID == -1) {
+        SporkId nSporkID = sporkManager.GetSporkIDByName(params[0].get_str());
+        if (nSporkID == SPORK_INVALID) {
             return "Invalid spork name";
         }
 
@@ -311,45 +370,6 @@ UniValue spork(const UniValue& params, bool fHelp)
 
         "\nExamples:\n" +
         HelpExampleCli("spork", "show") + HelpExampleRpc("spork", "show"));
-}
-
-UniValue mnspork(const UniValue& params, bool fHelp)
-{
-    if(params.size() == 1 && params[0].get_str() == "show"){
-        std::map<int, CMNSporkMessage>::iterator it = mapMNSporksActive.begin();
-
-        //Object ret;
-                UniValue ret(UniValue::VOBJ);
-        while(it != mapMNSporksActive.end()) {
-            ret.push_back(Pair(mn_sporkManager.GetMNSporkNameByID(it->second.nMNSporkID), it->second.nValue));
-            it++;
-        }
-        return ret;
-    } else if (params.size() == 2){
-        int nMNSporkID = mn_sporkManager.GetMNSporkIDByName(params[0].get_str());
-        if(nMNSporkID == -1){
-            return "Invalid spork name";
-        }
-
-        // SPORK VALUE
-        int64_t nValue = stoi(params[1].get_str());
-                //TODO: Add core method.
-
-        //broadcast new spork
-        if(mn_sporkManager.UpdateMNSpork(nMNSporkID, nValue)){
-            return "success";
-        } else {
-            return "failure";
-
-        }
-
-    }
-
-    throw runtime_error(
-        "mnspork <name> [<value>]\n"
-        "<name> is the corresponding spork name, or 'show' to show all current spork settings"
-        "<value> is a epoch datetime to enable or disable mnspork"
-        + HelpRequiringPassphrase());
 }
 
 UniValue validateaddress(const UniValue& params, bool fHelp)

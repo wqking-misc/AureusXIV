@@ -108,9 +108,8 @@ BITCOIN_CORE_H = \
   primitives/transaction.h \
   core_io.h \
   crypter.h \
-  obfuscation.h \
-  obfuscation-relay.h \
   db.h \
+  fs.h \
   hash.h \
   httprpc.h \
   httpserver.h \
@@ -128,9 +127,6 @@ BITCOIN_CORE_H = \
   masternode.h \
   masternode-sync.h \
   masternode-payments.h \
-  masternode-budget.h \
-  masternodeman.h \
-  masternode-pos.h \
   masternodeman.h \
   masternodeconfig.h \
   fundamentalnode.h \
@@ -140,6 +136,7 @@ BITCOIN_CORE_H = \
   fundamentalnodeman.h \
   fundamentalnodeconfig.h \
   merkleblock.h \
+  messagesigner.h \
   miner.h \
   mruset.h \
   netbase.h \
@@ -163,8 +160,8 @@ BITCOIN_CORE_H = \
   script/script_error.h \
   serialize.h \
   spork.h \
-  mn-spork.h \
   sporkdb.h \
+  sporkid.h \
   stakeinput.h \
   streams.h \
   sync.h \
@@ -221,6 +218,7 @@ libbitcoin_server_a_SOURCES = \
   rest.cpp \
   rpcblockchain.cpp \
   rpcfundamentalnode.cpp \
+  rpcmasternode.cpp \
   rpcfundamentalnode-budget.cpp \
   rpcmining.cpp \
   rpcmisc.cpp \
@@ -256,9 +254,6 @@ libbitcoin_wallet_a_SOURCES = \
   activefundamentalnode.cpp \
   activemasternode.cpp \
   bip38.cpp \
-  obfuscation.cpp \
-  bitpool.cpp \
-  obfuscation-relay.cpp \
   db.cpp \
   crypter.cpp \
   swifttx.cpp \
@@ -268,6 +263,13 @@ libbitcoin_wallet_a_SOURCES = \
   fundamentalnode-sync.cpp \
   fundamentalnodeconfig.cpp \
   fundamentalnodeman.cpp \
+  masternode.cpp \
+  masternode-payments.cpp \
+  masternode-sync.cpp \
+  masternodeconfig.cpp \
+  masternodeman.cpp \
+  messagesigner.cpp \
+  mintpool.cpp \
   rpcdump.cpp \
   rpcwallet.cpp \
   kernel.cpp \
@@ -316,7 +318,6 @@ crypto_libbitcoin_crypto_a_SOURCES = \
 # common: shared between vitaed, and vitae-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(BITCOIN_INCLUDES)
 libbitcoin_common_a_SOURCES = \
-  activemasternode.cpp \
   allocators.cpp \
   amount.cpp \
   base58.cpp \
@@ -326,10 +327,6 @@ libbitcoin_common_a_SOURCES = \
   compressor.cpp \
   primitives/block.cpp \
   primitives/transaction.cpp \
-  masternode.cpp \
-  masternode-pos.cpp \
-  masternodeman.cpp \
-  masternodeconfig.cpp \
   core_read.cpp \
   core_write.cpp \
   hash.cpp \
@@ -346,7 +343,6 @@ libbitcoin_common_a_SOURCES = \
   script/standard.cpp \
   script/script_error.cpp \
   spork.cpp \
-  mn-spork.cpp \
   sporkdb.cpp \
   $(BITCOIN_CORE_H)
 
@@ -361,6 +357,7 @@ libbitcoin_util_a_SOURCES = \
   compat/glibcxx_sanity.cpp \
   chainparamsbase.cpp \
   clientversion.cpp \
+  fs.cpp \
   random.cpp \
   rpcprotocol.cpp \
   sync.cpp \
