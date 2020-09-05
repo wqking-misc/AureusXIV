@@ -162,18 +162,6 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
             return NULL;
     }
 
-    bool bMasterNodePayment = false;
-
-    if ( Params().NetworkID() == CBaseChainParams::TESTNET ){
-        if (GetTimeMicros() > START_MASTERNODE_PAYMENTS_TESTNET ){
-            bMasterNodePayment = true;
-        }
-    }else{
-        if (GetTimeMicros() > START_MASTERNODE_PAYMENTS){
-            bMasterNodePayment = true;
-        }
-    }//
-
     // Largest block you're willing to create:
     unsigned int nBlockMaxSize = GetArg("-blockmaxsize", DEFAULT_BLOCK_MAX_SIZE);
     // Limit to betweeen 1K and MAX_BLOCK_SIZE-1K for sanity:
@@ -214,7 +202,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
             if (tx.IsCoinBase() || tx.IsCoinStake() || !IsFinalTx(tx, nHeight)){
                 continue;
             }
-            if(GetAdjustedTime() > GetSporkValue(SPORK_20_ZEROCOIN_MAINTENANCE_MODE) && tx.ContainsZerocoins()){
+            if(GetAdjustedTime() > sporkManager.GetSporkValue(SPORK_INVALID) && tx.ContainsZerocoins()){
                 continue;
             }
 
@@ -444,7 +432,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
 
         if (!fProofOfStake) {
             //Fundamentalnode and general budget payments
-            FillBlockPayee(txNew, nFees, fProofOfStake, false);
+            FillBlockPayeeFundamentalnode(txNew, nFees, fProofOfStake);
 
             //Make payee
             if (txNew.vout.size() > 1) {
