@@ -332,8 +332,8 @@ uint64_t CMasternodePayments::CalculateScore(uint256 blockHash, CTxIn& vin)
 
 
     {
-        n2 = HashQuark(BEGIN(n1), END(n1));
-        n3 = HashQuark(BEGIN(vin.prevout.hash), END(vin.prevout.hash));
+        n2 = Hash(BEGIN(n1), END(n1));
+        n3 = Hash(BEGIN(vin.prevout.hash), END(vin.prevout.hash));
         n4 = n3 > n2 ? (n3 - n2) : (n2 - n3);
         return n4.Get64();
     }

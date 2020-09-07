@@ -291,7 +291,7 @@ public:
 
 
         {
-            n2 = HashQuark(BEGIN(nBlockHeight), END(nBlockHeight));
+            n2 = Hash(BEGIN(nBlockHeight), END(nBlockHeight));
             n3 = vin.prevout.hash > n2 ? (vin.prevout.hash - n2) : (n2 - vin.prevout.hash);
             return n3;
         }
