@@ -88,6 +88,7 @@ BITCOIN_CORE_H = \
   allocators.h \
   amount.h \
   base58.h \
+  bignum.h \
   bip38.h \
   bloom.h \
   blocksignature.h \
@@ -233,7 +234,6 @@ libbitcoin_server_a_SOURCES = \
   txdb.cpp \
   txmempool.cpp \
   validationinterface.cpp \
-  zvitchain.cpp \
   $(BITCOIN_CORE_H)
 
 if ENABLE_ZMQ

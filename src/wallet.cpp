@@ -24,7 +24,6 @@
 #include "txdb.h"
 #include "util.h"
 #include "utilmoneystr.h"
-#include "zvitchain.h"
 
 #include "masternode.h"
 
@@ -2926,13 +2925,6 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 continue;
             }
             txNew.vin.emplace_back(in);
-
-            //Mark mints as spent
-            if (stakeInput->IsZPIV()) {
-                CZVitStake* z = (CZVitStake*)stakeInput.get();
-                if (!z->MarkSpent(this, txNew.GetHash()))
-                    return error("%s: failed to mark mint as used\n", __func__);
-            }
 
             fKernelFound = true;
             break;

@@ -130,8 +130,6 @@
          </property>
         </spacer>
        </item>
-        </layout>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tabWallet">

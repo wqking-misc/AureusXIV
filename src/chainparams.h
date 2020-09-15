@@ -164,7 +164,6 @@ protected:
     int nBlockFirstFraudulent;
     int nBlockLastGoodCheckpoint;
     int nBlockEnforceInvalidUTXO;
-    int nBlockZerocoinV2;
 };
 
 /**

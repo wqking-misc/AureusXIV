@@ -231,7 +231,7 @@ bool DisconnectBlocksAndReprocess(int blocks);
 // ***TODO***
 double ConvertBitsToDouble(unsigned int nBits);
 int64_t GetFundamentalnodePayment(int nHeight, int64_t blockValue, int nFundamentalnodeCount = 0);
-int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCount, bool isZVITAEStake);
+int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCount);
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock, bool fProofOfStake);
 
