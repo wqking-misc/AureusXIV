@@ -263,6 +263,7 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
 
 bool AcceptableFundamentalTxn(CTxMemPool& pool, CValidationState& state, const CTransaction& tx);
 
+int GetInputHeight(CTxIn& vin);
 int GetInputAge(CTxIn& vin);
 int GetInputAgeIX(uint256 nTXHash, CTxIn& vin);
 bool GetCoinAge(const CTransaction& tx, unsigned int nTxTime, uint64_t& nCoinAge);
