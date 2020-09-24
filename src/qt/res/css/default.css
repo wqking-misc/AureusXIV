@@ -170,15 +170,15 @@ color:#333;
 
 QLabel { /* Base Text Size & Color */
 font-size:12px;
-color:#333333;
+color:#f9ffdc;
 }
 
 .QRadioButton { /* Radio Button Labels */
-color:#333333;
+color:#f9ffdc;
 }
 
 .QCheckBox { /* Checkbox Labels */
-color:#333333;
+color:#f9ffdc;
 }
 
 .QCheckBox:hover {
@@ -190,8 +190,8 @@ min-height:25px;
 outline:0;
 padding:3px;
 border:0px;
-color:#333;
-background-color:#f2f2f2;
+color:#f9ffdc;
+background-color:#333;
 }
 
 .QValidatedLineEdit:!focus {
@@ -223,12 +223,12 @@ background-color:#f2f2f2;
 /***************************** Global Qt Objects ***********************************************************/
 
 QPushButton { /* Global Button Style */
-background-color: #387336;
-border: 1px outset #2f4431;
+background-color: #f9ffdc;
+border: 1px outset #f9ffdc;
 border-radius: 2px;
-color:#ffffff;
+color:#343743;
 font-size:12px;
-font-weight:bold;
+font-weight:normal;
 padding-left:25px;
 padding-right:25px;
 padding-top:1px;
@@ -906,55 +906,55 @@ border:1px solid #372f44;
 QLabel#labelOverviewHeaderLeft {
 font-weight:bold;
 font-size:20px;
-background-color:#ffffff;
+background-color:transparent;
 }
 
 QLabel#labelOverviewHeaderRight {
 qproperty-alignment: 'AlignVCenter | AlignRight';
-background-image: url(':/images/vitae_logo_horizontal');
+/* background-image: url(':/images/vitae_logo_horizontal'); */
 background-repeat: no-repeat;
 }
 
 QWidget .QFrame#frame_Header { /* Header with Page-Title and VITAE-image */
 min-width:400px;
-background-color:#ffffff;
+background-color:transparent;
 }
 
 QWidget .QFrame#frame_BG { /* Background */
 min-width:400px;
-background-color:#f8f6f6;
+background-color:transparent;
 }
 
 /**************************** OVERVIEW SCREEN *******************************************/
 
 QWidget .QFrame#frame_Space { /* Space between Header and Content */
 min-width:400px;
-background-color:#f8f6f6;
+background-color:transparent;
 }
 
 QWidget .QFrame#frame_Content { /* Actual Content */
 min-width:400px;
-background-color:#f8f6f6;
+background-color:transparent;
 }
 
 QWidget .QFrame#frame_Balances { /* Upper left side */
 min-width:400px;
-background-color:#ffffff;
+background-color:transparent;
 }
 
 QWidget .QFrame#frame_ZerocoinBalances { /* Lower left side */
 min-width:400px;
-background-color:#ffffff;
+background-color:transparent;
 }
 
 QWidget .QFrame#frame_CombinedBalances { /* Lower left side */
 min-width:400px;
-background-color:#ffffff;
+background-color:transparent;
 }
 
 QWidget .QFrame#frame_RecentTransactions { /* Right side */
 min-width:400px;
-background-color:#ffffff;
+background-color:transparent;
 }
 
 QWidget .QFrame#frame_Balances > .QLabel {
