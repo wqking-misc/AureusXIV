@@ -361,24 +361,24 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #ifdef ENABLE_WALLET
 
     QSettings settings;
-    if (settings.value("fShowFundamentalnodesTab").toBool()) {
-        fundamentalnodeAction = new QAction(tr("&Fundamentalnodes"), this);
-        fundamentalnodeAction->setStatusTip(tr("Browse fundamentalnodes"));
-        fundamentalnodeAction->setToolTip(fundamentalnodeAction->statusTip());
-        fundamentalnodeAction->setCheckable(true);
-#ifdef Q_OS_MAC
-        fundamentalnodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
-#else
-        fundamentalnodeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
-#endif
-        tabGroup->addAction(fundamentalnodeAction);
-        connect(fundamentalnodeAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-        connect(fundamentalnodeAction, SIGNAL(triggered()), this, SLOT(gotoFundamentalnodePage()));
-    }
+//     if (settings.value("fShowFundamentalnodesTab").toBool()) {
+//         fundamentalnodeAction = new QAction(tr("&Fundamentalnodes"), this);
+//         fundamentalnodeAction->setStatusTip(tr("Browse fundamentalnodes"));
+//         fundamentalnodeAction->setToolTip(fundamentalnodeAction->statusTip());
+//         fundamentalnodeAction->setCheckable(true);
+// #ifdef Q_OS_MAC
+//         fundamentalnodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
+// #else
+//         fundamentalnodeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+// #endif
+//         tabGroup->addAction(fundamentalnodeAction);
+//         connect(fundamentalnodeAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+//         connect(fundamentalnodeAction, SIGNAL(triggered()), this, SLOT(gotoFundamentalnodePage()));
+//     }
 
     if (settings.value("fShowMasternodesTab").toBool()) {
-        masternodeAction = new QAction(tr("&Masternodes"), this);
-        masternodeAction->setStatusTip(tr("Browse masternodes"));
+        masternodeAction = new QAction(tr("&Nodes"), this);
+        masternodeAction->setStatusTip(tr("Browse Masternodes & Fundamental Nodes"));
         masternodeAction->setToolTip(masternodeAction->statusTip());
         masternodeAction->setCheckable(true);
 #ifdef Q_OS_MAC
@@ -699,9 +699,9 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     privacyAction->setEnabled(enabled);
     historyAction->setEnabled(enabled);
     QSettings settings;
-    if (settings.value("fShowFundamentalnodesTab").toBool()) {
-        fundamentalnodeAction->setEnabled(enabled);
-    }
+    // if (settings.value("fShowFundamentalnodesTab").toBool()) {
+    //     fundamentalnodeAction->setEnabled(enabled);
+    // }
     if (settings.value("fShowMasternodesTab").toBool()) {
         masternodeAction->setEnabled(enabled);
     }
