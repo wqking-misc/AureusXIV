@@ -170,17 +170,17 @@ UniValue fnsync(const UniValue& params, bool fHelp)
             "  \"IsBlockchainSynced\": true|false,    (boolean) 'true' if blockchain is synced\n"
             "  \"lastFundamentalnodeList\": xxxx,        (numeric) Timestamp of last FN list message\n"
             "  \"lastFundamentalnodeWinner\": xxxx,      (numeric) Timestamp of last FN winner message\n"
-            "  \"lastBudgetItem\": xxxx,            (numeric) Timestamp of last FN budget message\n"
+            //"  \"lastBudgetItem\": xxxx,            (numeric) Timestamp of last FN budget message\n"
             "  \"lastFailure\": xxxx,           (numeric) Timestamp of last failed sync\n"
             "  \"nCountFailures\": n,           (numeric) Number of failed syncs (total)\n"
             "  \"sumFundamentalnodeList\": n,        (numeric) Number of FN list messages (total)\n"
             "  \"sumFundamentalnodeWinner\": n,      (numeric) Number of FN winner messages (total)\n"
-            "  \"sumBudgetItemProp\": n,        (numeric) Number of FN budget messages (total)\n"
-            "  \"sumBudgetItemFin\": n,         (numeric) Number of FN budget finalization messages (total)\n"
+            //"  \"sumBudgetItemProp\": n,        (numeric) Number of FN budget messages (total)\n"
+            //"  \"sumBudgetItemFin\": n,         (numeric) Number of FN budget finalization messages (total)\n"
             "  \"countFundamentalnodeList\": n,      (numeric) Number of FN list messages (local)\n"
             "  \"countFundamentalnodeWinner\": n,    (numeric) Number of FN winner messages (local)\n"
-            "  \"countBudgetItemProp\": n,      (numeric) Number of FN budget messages (local)\n"
-            "  \"countBudgetItemFin\": n,       (numeric) Number of FN budget finalization messages (local)\n"
+            //"  \"countBudgetItemProp\": n,      (numeric) Number of FN budget messages (local)\n"
+            //"  \"countBudgetItemFin\": n,       (numeric) Number of FN budget finalization messages (local)\n"
             "  \"RequestedFundamentalnodeAssets\": n, (numeric) Status code of last sync phase\n"
             "  \"RequestedFundamentalnodeAttempt\": n, (numeric) Status code of last sync attempt\n"
             "}\n"
@@ -198,17 +198,17 @@ UniValue fnsync(const UniValue& params, bool fHelp)
         obj.push_back(Pair("IsBlockchainSynced", fundamentalnodeSync.IsBlockchainSynced()));
         obj.push_back(Pair("lastFundamentalnodeList", fundamentalnodeSync.lastFundamentalnodeList));
         obj.push_back(Pair("lastFundamentalnodeWinner", fundamentalnodeSync.lastFundamentalnodeWinner));
-        obj.push_back(Pair("lastBudgetItem", fundamentalnodeSync.lastBudgetItem));
+        //obj.push_back(Pair("lastBudgetItem", fundamentalnodeSync.lastBudgetItem));
         obj.push_back(Pair("lastFailure", fundamentalnodeSync.lastFailure));
         obj.push_back(Pair("nCountFailures", fundamentalnodeSync.nCountFailures));
         obj.push_back(Pair("sumFundamentalnodeList", fundamentalnodeSync.sumFundamentalnodeList));
         obj.push_back(Pair("sumFundamentalnodeWinner", fundamentalnodeSync.sumFundamentalnodeWinner));
-        obj.push_back(Pair("sumBudgetItemProp", fundamentalnodeSync.sumBudgetItemProp));
-        obj.push_back(Pair("sumBudgetItemFin", fundamentalnodeSync.sumBudgetItemFin));
+        //obj.push_back(Pair("sumBudgetItemProp", fundamentalnodeSync.sumBudgetItemProp));
+        //obj.push_back(Pair("sumBudgetItemFin", fundamentalnodeSync.sumBudgetItemFin));
         obj.push_back(Pair("countFundamentalnodeList", fundamentalnodeSync.countFundamentalnodeList));
         obj.push_back(Pair("countFundamentalnodeWinner", fundamentalnodeSync.countFundamentalnodeWinner));
-        obj.push_back(Pair("countBudgetItemProp", fundamentalnodeSync.countBudgetItemProp));
-        obj.push_back(Pair("countBudgetItemFin", fundamentalnodeSync.countBudgetItemFin));
+        //obj.push_back(Pair("countBudgetItemProp", fundamentalnodeSync.countBudgetItemProp));
+        //obj.push_back(Pair("countBudgetItemFin", fundamentalnodeSync.countBudgetItemFin));
         obj.push_back(Pair("RequestedFundamentalnodeAssets", fundamentalnodeSync.RequestedFundamentalnodeAssets));
         obj.push_back(Pair("RequestedFundamentalnodeAttempt", fundamentalnodeSync.RequestedFundamentalnodeAttempt));
 

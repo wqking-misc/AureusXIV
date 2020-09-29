@@ -13,7 +13,7 @@
 #include "checkpoints.h"
 #include "coincontrol.h"
 #include "kernel.h"
-#include "fundamentalnode-budget.h"
+//#include "fundamentalnode-budget.h"
 #include "net.h"
 #include "primitives/transaction.h"
 #include "script/script.h"
@@ -2639,6 +2639,7 @@ bool CWallet::CreateCollateralTransaction(CMutableTransaction& txCollateral, std
     return true;
 }
 
+/*
 bool CWallet::GetBudgetSystemCollateralTX(CWalletTx& tx, uint256 hash, bool useIX)
 {
     // make our change address
@@ -2684,6 +2685,7 @@ bool CWallet::GetBudgetFinalizationCollateralTX(CWalletTx& tx, uint256 hash, boo
 
     return true;
 }
+*/
 
 bool CWallet::ConvertList(std::vector<CTxIn> vCoins, std::vector<CAmount>& vecAmounts)
 {

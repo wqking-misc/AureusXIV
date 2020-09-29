@@ -369,6 +369,7 @@ static const CRPCCommand vRPCCommands[] =
         {"vitae", "getfundamentalnodestatus", &getfundamentalnodestatus, true, true, false},
         {"vitae", "getfundamentalnodewinners", &getfundamentalnodewinners, true, true, false},
         {"vitae", "getfundamentalnodescores", &getfundamentalnodescores, true, true, false},
+        /*
         {"vitae", "fnbudget", &fnbudget, true, true, false},
         {"vitae", "preparebudget", &preparebudget, true, true, false},
         {"vitae", "submitbudget", &submitbudget, true, true, false},
@@ -380,6 +381,7 @@ static const CRPCCommand vRPCCommands[] =
         {"vitae", "fnbudgetrawvote", &fnbudgetrawvote, true, true, false},
         {"vitae", "fnfinalbudget", &fnfinalbudget, true, true, false},
         {"vitae", "checkbudgets", &checkbudgets, true, true, false},
+        */
         {"vitae", "fnsync", &fnsync, true, true, false},
         {"vitae", "spork", &spork, true, true, false},
         {"vitae", "getpoolinfo", &getpoolinfo, true, true, false},

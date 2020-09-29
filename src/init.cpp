@@ -23,7 +23,7 @@
 #include "invalid.h"
 #include "key.h"
 #include "main.h"
-#include "fundamentalnode-budget.h"
+//#include "fundamentalnode-budget.h"
 #include "fundamentalnode-payments.h"
 #include "fundamentalnodeconfig.h"
 #include "fundamentalnodeman.h"
@@ -216,7 +216,7 @@ void PrepareShutdown()
     StopNode();
     DumpFundamentalnodes();
     DumpMasternodes();
-    DumpBudgets();
+    //DumpBudgets();
     DumpFundamentalnodePayments();
     UnregisterNodeSignals(GetNodeSignals());
 
@@ -489,7 +489,7 @@ std::string HelpMessage(HelpMessageMode mode)
         strUsage += HelpMessageOpt("-stopafterblockimport", strprintf(_("Stop running after importing blocks from disk (default: %u)"), 0));
         strUsage += HelpMessageOpt("-sporkkey=<privkey>", _("Enable spork administration functionality with the appropriate private key."));
     }
-    string debugCategories = "addrman, alert, bench, coindb, db, lock, rand, rpc, selectcoins, tor, mempool, net, proxy, vitae, (obfuscation, swiftx, fundamentalnode, mnpayments, mnbudget, zero)"; // Don't translate these and qt below
+    string debugCategories = "addrman, alert, bench, coindb, db, lock, rand, rpc, selectcoins, tor, mempool, net, proxy, vitae, (obfuscation, swiftx, fundamentalnode, mnpayments, zero)"; // Don't translate these and qt below
     if (mode == HMM_BITCOIN_QT)
         debugCategories += ", qt";
     strUsage += HelpMessageOpt("-debug=<category>", strprintf(_("Output debugging information (default: %u, supplying <category> is optional)"), 0) + ". " +
@@ -519,7 +519,7 @@ std::string HelpMessage(HelpMessageMode mode)
     }
     strUsage += HelpMessageOpt("-shrinkdebugfile", _("Shrink debug.log file on client startup (default: 1 when no -debug)"));
     strUsage += HelpMessageOpt("-testnet", _("Use the test network"));
-    strUsage += HelpMessageOpt("-litemode=<n>", strprintf(_("Disable all VITAE specific functionality (Fundamentalnodes, Zerocoin, SwiftX, Budgeting) (0-1, default: %u)"), 0));
+    strUsage += HelpMessageOpt("-litemode=<n>", strprintf(_("Disable all VITAE specific functionality (Fundamentalnodes, Zerocoin, SwiftX) (0-1, default: %u)"), 0));
     strUsage += HelpMessageOpt("-fmnlitemode=<n>", strprintf(_("Disable all Darksend/Masternode related functionality (0-1, default: %u)"), 0));
 
 #ifdef ENABLE_WALLET
@@ -540,7 +540,7 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-fnconflock=<n>", strprintf(_("Lock fundamentalnodes from fundamentalnode configuration file (default: %u)"), 1));
     strUsage += HelpMessageOpt("-fundamentalnodeprivkey=<n>", _("Set the fundamentalnode private key"));
     strUsage += HelpMessageOpt("-fundamentalnodeaddr=<n>", strprintf(_("Set external address:port to get to this fundamentalnode (example: %s)"), "128.127.106.235:8765"));
-    strUsage += HelpMessageOpt("-budgetvotemode=<mode>", _("Change automatic finalized budget voting behavior. mode=auto: Vote for only exact finalized budget match to my generated budget. (string, default: auto)"));
+    //strUsage += HelpMessageOpt("-budgetvotemode=<mode>", _("Change automatic finalized budget voting behavior. mode=auto: Vote for only exact finalized budget match to my generated budget. (string, default: auto)"));
 
 	strUsage += HelpMessageGroup(_("Masternode options:"));
     strUsage += HelpMessageOpt("-masternode=<n>", strprintf(_("Enable the client to act as a masternode (0-1, default: %u)"), 0));
@@ -548,7 +548,7 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-mnconflock=<n>", strprintf(_("Lock masternodes from masternode configuration file (default: %u)"), 1));
     strUsage += HelpMessageOpt("-masternodeprivkey=<n>", _("Set the masternode private key"));
     strUsage += HelpMessageOpt("-masternodeaddr=<n>", strprintf(_("Set external address:port to get to this masternode (example: %s)"), "127.0.0.2:8765"));
-    strUsage += HelpMessageOpt("-budgetvotemode=<mode>", _("Change automatic finalized budget voting behavior. mode=auto: Vote for only exact finalized budget match to my generated budget. (string, default: auto)"));
+    //strUsage += HelpMessageOpt("-budgetvotemode=<mode>", _("Change automatic finalized budget voting behavior. mode=auto: Vote for only exact finalized budget match to my generated budget. (string, default: auto)"));
 
 
     strUsage += HelpMessageGroup(_("Zerocoin options:"));
@@ -1758,8 +1758,9 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
             LogPrintf("file format is unknown or invalid, please fix it manually\n");
     }
 */
-    uiInterface.InitMessage(_("Loading budget cache..."));
+    //uiInterface.InitMessage(_("Loading budget cache..."));
 
+    /*
     CBudgetDB budgetdb;
     CBudgetDB::ReadResult readResult2 = budgetdb.Read(budget);
 
@@ -1776,7 +1777,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     //flag our cached items so we send them to our peers
     budget.ResetSync();
     budget.ClearSeen();
-
+    */
 
     uiInterface.InitMessage(_("Loading fundamentalnode payment cache..."));
 
@@ -1941,7 +1942,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
 
     //get the mode of budget voting for this masternode
-    strBudgetMode = GetArg("-budgetvotemode", "auto");
+    //strBudgetMode = GetArg("-budgetvotemode", "auto");
 
     if (GetBoolArg("-fnconflock", true) && pwalletMain) {
         LOCK(pwalletMain->cs_wallet);
@@ -1990,7 +1991,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     LogPrintf("fLiteMode %d\n", fLiteMode);
     LogPrintf("nSwiftTXDepth %d\n", nSwiftTXDepth);
     LogPrintf("Anonymize VITAE Amount %d\n", nAnonymizeVitaeAmount);
-    LogPrintf("Budget Mode %s\n", strBudgetMode.c_str());
+    //LogPrintf("Budget Mode %s\n", strBudgetMode.c_str());
 
     /* Denominations
 

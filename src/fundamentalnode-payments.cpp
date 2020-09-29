@@ -5,7 +5,7 @@
 
 #include "fundamentalnode-payments.h"
 #include "addrman.h"
-#include "fundamentalnode-budget.h"
+//#include "fundamentalnode-budget.h"
 #include "fundamentalnode-sync.h"
 #include "fundamentalnodeman.h"
 #include "obfuscation.h"
@@ -162,7 +162,7 @@ void DumpFundamentalnodePayments()
     CFundamentalnodePaymentDB::ReadResult readResult = paymentdb.Read(tempPayments, true);
     // there was an error and it was not an error on file opening => do not proceed
     if (readResult == CFundamentalnodePaymentDB::FileError)
-        LogPrint("fundamentalnode","Missing budgets file - mnpayments.dat, will try to recreate\n");
+        LogPrint("fundamentalnode","Missing payments file - mnpayments.dat, will try to recreate\n");
     else if (readResult != CFundamentalnodePaymentDB::Ok) {
         LogPrint("fundamentalnode","Error reading mnpayments.dat: ");
         if (readResult == CFundamentalnodePaymentDB::IncorrectFormat)
@@ -175,7 +175,7 @@ void DumpFundamentalnodePayments()
     LogPrint("fundamentalnode","Writting info to mnpayments.dat...\n");
     paymentdb.Write(fundamentalnodePayments);
 
-    LogPrint("fundamentalnode","Budget dump finished  %dms\n", GetTimeMillis() - nStart);
+    LogPrint("fundamentalnode"," payments dump finished  %dms\n", GetTimeMillis() - nStart);
 }
 
 bool IsBlockValueValid(const CBlock& block, CAmount nExpectedValue, CAmount nMinted)
@@ -199,6 +199,8 @@ bool IsBlockValueValid(const CBlock& block, CAmount nExpectedValue, CAmount nMin
     //LogPrintf("XX69----------> IsBlockValueValid(): nMinted: %d, nExpectedValue: %d\n", FormatMoney(nMinted), FormatMoney(nExpectedValue));
 
     if (!fundamentalnodeSync.IsSynced()) { //there is no budget data to use to check anything
+        return true;
+        /*
         //super blocks will always be on these blocks, max 100 per budgeting
         if (nHeight % GetBudgetPaymentCycleBlocks() < 100) {
             return true;
@@ -207,8 +209,12 @@ bool IsBlockValueValid(const CBlock& block, CAmount nExpectedValue, CAmount nMin
                 return false;
             }
         }
+        */
     } else { // we're synced and have data so check the budget schedule
-
+        if (nMinted > nExpectedValue) {
+            return false;
+        }
+        /*
         //are these blocks even enabled
         if (!IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS)) {
             return nMinted <= nExpectedValue;
@@ -222,6 +228,7 @@ bool IsBlockValueValid(const CBlock& block, CAmount nExpectedValue, CAmount nMin
                 return false;
             }
         }
+        */
     }
 
     return true;
@@ -229,7 +236,7 @@ bool IsBlockValueValid(const CBlock& block, CAmount nExpectedValue, CAmount nMin
 
 bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
 {
-    TrxValidationStatus transactionStatus = TrxValidationStatus::InValid;
+    //TrxValidationStatus transactionStatus = TrxValidationStatus::InValid;
 
     if (!fundamentalnodeSync.IsSynced()) { //there is no budget data to use to check anything -- find the longest chain
         LogPrint("mnpayments", "Client not synced, skipping block payee checks\n");
@@ -310,6 +317,7 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
 
     const CTransaction& txNew = (nBlockHeight > Params().LAST_POW_BLOCK() ? block.vtx[1] : block.vtx[0]);
 
+    /*
     //check if it's a budget block
     if (IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS)) {
         if (budget.IsBudgetPaymentBlock(nBlockHeight)) {
@@ -327,6 +335,7 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
             }
         }
     }
+    */
 
     // If we end here the transaction was either TrxValidationStatus::InValid and Budget enforcement is disabled, or
     // a double budget payment (status = TrxValidationStatus::DoublePayment) was detected, or no/not enough masternode
@@ -351,20 +360,20 @@ void FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStak
     CBlockIndex* pindexPrev = chainActive.Tip();
     if (!pindexPrev) return;
 
-    if (IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS) && budget.IsBudgetPaymentBlock(pindexPrev->nHeight + 1)) {
-        budget.FillBlockPayee(txNew, nFees, fProofOfStake);
-    } else {
+    //if (IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS) && budget.IsBudgetPaymentBlock(pindexPrev->nHeight + 1)) {
+    //    budget.FillBlockPayee(txNew, nFees, fProofOfStake);
+    //} else {
         fundamentalnodePayments.FillBlockPayee(txNew, nFees, fProofOfStake, IsMasternode);
-    }
+    //}
 }
 
 std::string GetRequiredPaymentsString(int nBlockHeight)
 {
-    if (IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS) && budget.IsBudgetPaymentBlock(nBlockHeight)) {
-        return budget.GetRequiredPaymentsString(nBlockHeight);
-    } else {
+    //if (IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS) && budget.IsBudgetPaymentBlock(nBlockHeight)) {
+    //    return budget.GetRequiredPaymentsString(nBlockHeight);
+    //} else {
         return fundamentalnodePayments.GetRequiredPaymentsString(nBlockHeight);
-    }
+    //}
 }
 
 void CFundamentalnodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFees, bool fProofOfStake, bool IsMasternode)
@@ -912,9 +921,9 @@ bool CFundamentalnodePayments::ProcessBlock(int nBlockHeight)
 
     CFundamentalnodePaymentWinner newWinner(activeFundamentalnode.vin);
 
-    if (budget.IsBudgetPaymentBlock(nBlockHeight)) {
+    //if (budget.IsBudgetPaymentBlock(nBlockHeight)) {
         //is budget payment block -- handled by the budgeting software
-    } else {
+    //} else {
         LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() Start nHeight %d - vin %s. \n", nBlockHeight, activeFundamentalnode.vin.prevout.hash.ToString());
 
         // pay to the oldest MN that still had no payment but its input is old enough and it was active long enough
@@ -937,7 +946,7 @@ bool CFundamentalnodePayments::ProcessBlock(int nBlockHeight)
         } else {
             LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() Failed to find fundamentalnode to pay\n");
         }
-    }
+    //}
 
     std::string errorMessage;
     CPubKey pubKeyFundamentalnode;
