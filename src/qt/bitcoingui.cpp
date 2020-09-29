@@ -56,6 +56,7 @@
 #include <QTimer>
 #include <QToolBar>
 #include <QVBoxLayout>
+#include <QFontDatabase>
 
 #if QT_VERSION < 0x050000
 #include <QTextDocument>
@@ -114,6 +115,10 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
                                                                             prevBlocks(0),
                                                                             spinnerFrame(0)
 {
+    /* Load custom fonts */
+    QFontDatabase::addApplicationFont(":/fonts/Andale-Mono");
+
+
     /* Open CSS when configured */
     this->setStyleSheet(GUIUtil::loadStyleSheet());
 
@@ -296,6 +301,7 @@ BitcoinGUI::~BitcoinGUI()
 void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 {
     QActionGroup* tabGroup = new QActionGroup(this);
+    // tabGroup.setFont(QFont(font, 28 * Andale-Mono));
 
     QIcon overviewIcon;
     overviewIcon.addFile(":/icons/overview",QSize(40,40),QIcon::Normal,QIcon::On);
