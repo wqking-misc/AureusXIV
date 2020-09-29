@@ -38,11 +38,11 @@ border:0px solid #fff;
 }
 
 QMenuBar {
-background-color:#fff;
+background-color:transparent;
 }
 
 QMenuBar::item {
-background-color:#fff;
+background-color:transparent;
 color:#333;
 }
 
@@ -51,7 +51,7 @@ background-color:#f8f6f6;
 }
 
 QMenu {
-background-color:#f8f6f6;
+background-color:transparent;
 }
 
 QMenu::item {
@@ -64,27 +64,30 @@ color:#333;
 }
 
 QToolBar {
-background-color: qlineargradient(y1:0, y2: 1, stop: 0 #5dad71, stop: 0.75 #5dad71, stop: 0.99 #ffffff, stop: 1 #ffffff);
+/* background-color: qlineargradient(y1:0, y2: 1, stop: 0 #5dad71, stop: 0.75 #5dad71, stop: 0.99 #ffffff, stop: 1 #ffffff); */
+background:#2c2f38;
+background-image: url(':/images/walletFrame_bg');
 border:0px solid #333;
 padding:1;
 margin:0;
-width: 110px;
+width: 210px;
 }
 
 QToolBar > QToolButton {
 Alignment: left;
-background-color: green;
+background-color: transparent;
 selection-background-color:transparent;
-border:0.5px solid #888;
+border:0;
 border-left: 0px;
 border-right: 0px;
 border-top: 0px;
 min-height:2.5em;
 padding: 0em 0em;
-font-size: 11px;
-color:#aaa;
-width: 100px;
-height: 60px;
+font-size: 20px;
+color:#f9ffdc;
+width: 240px;
+height: 80px;
+text-align:left;
 }
 
 QToolBar > QToolButton:checked {
@@ -136,17 +139,17 @@ padding-right:5px;
 }
 
 QTabWidget {
-background-color:#f2f2f2;
+background-color:transparent;
 }
 
 QTabWidget::pane {
-background-color:#f2f2f2;
-border:1px solid #c2c2c2;
+background-color:transparent;
+border:0;
 }
 
 QTabBar {
-background-color:#f2f2f2;
-color:#333;
+background-color:transparent;
+color:#f9ffdc;
 }
 
 QTabBar::tab:hover:!selected {
@@ -160,7 +163,7 @@ outline:0; /* Remove Annoying Focus Rectangle */
 }
 
 QGroupBox {
-background-color:#fcfcfc;
+background-color:transparent;
 color:#333;
 }
 
@@ -1712,3 +1715,5 @@ color:#333;
 QCalendarWidget QAbstractItemView:disabled { /* Calendar widget days not in month */
 color:#818181;
 }
+
+

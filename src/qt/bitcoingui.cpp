@@ -297,10 +297,16 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 {
     QActionGroup* tabGroup = new QActionGroup(this);
 
-    overviewAction = new QAction(QIcon(":/icons/overview"), tr("&Overview"), this);
+    QIcon overviewIcon;
+    overviewIcon.addFile(":/icons/overview",QSize(40,40),QIcon::Normal,QIcon::On);
+    overviewIcon.addFile(":/icons/overview_off",QSize(40,40),QIcon::Normal,QIcon::Off);
+
+    overviewAction = new QAction(this);
     overviewAction->setStatusTip(tr("Show general overview of wallet"));
     overviewAction->setToolTip(overviewAction->statusTip());
     overviewAction->setCheckable(true);
+    overviewAction->setIcon(overviewIcon);
+
 #ifdef Q_OS_MAC
     overviewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
 #else
@@ -308,8 +314,8 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(overviewAction);
 
-    sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("&Send"), this);
-    sendCoinsAction->setStatusTip(tr("Send coins to a VITAE address"));
+    sendCoinsAction = new QAction(tr("&Send"), this);
+    sendCoinsAction->setStatusTip(tr("Send coins to a VITAE addresses"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
 #ifdef Q_OS_MAC
@@ -319,7 +325,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(sendCoinsAction);
 
-    receiveCoinsAction = new QAction(QIcon(":/icons/receiving_addresses"), tr("&Receive"), this);
+    receiveCoinsAction = new QAction(tr("&Receive"), this);
     receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and vitae: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
@@ -330,7 +336,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(receiveCoinsAction);
 
-    historyAction = new QAction(QIcon(":/icons/history"), tr("&Transactions"), this);
+    historyAction = new QAction(tr("&Transactions"), this);
     historyAction->setStatusTip(tr("Browse transaction history"));
     historyAction->setToolTip(historyAction->statusTip());
     historyAction->setCheckable(true);
@@ -341,7 +347,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(historyAction);
 
-    privacyAction = new QAction(QIcon(":/icons/privacy"), tr("&Privacy"), this);
+    privacyAction = new QAction(tr("&Privacy"), this);
     privacyAction->setStatusTip(tr("Privacy Actions for zVITAE"));
     privacyAction->setToolTip(privacyAction->statusTip());
     privacyAction->setCheckable(true);
@@ -356,7 +362,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 
     QSettings settings;
     if (settings.value("fShowFundamentalnodesTab").toBool()) {
-        fundamentalnodeAction = new QAction(QIcon(":/icons/fundamentalnodes"), tr("&Fundamentalnodes"), this);
+        fundamentalnodeAction = new QAction(tr("&Fundamentalnodes"), this);
         fundamentalnodeAction->setStatusTip(tr("Browse fundamentalnodes"));
         fundamentalnodeAction->setToolTip(fundamentalnodeAction->statusTip());
         fundamentalnodeAction->setCheckable(true);
@@ -371,7 +377,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     }
 
     if (settings.value("fShowMasternodesTab").toBool()) {
-        masternodeAction = new QAction(QIcon(":/icons/masternodes"), tr("&Masternodes"), this);
+        masternodeAction = new QAction(tr("&Masternodes"), this);
         masternodeAction->setStatusTip(tr("Browse masternodes"));
         masternodeAction->setToolTip(masternodeAction->statusTip());
         masternodeAction->setCheckable(true);
@@ -574,10 +580,10 @@ void BitcoinGUI::createToolBars()
         QToolBar* toolbar = new QToolBar(tr("Tabs toolbar"));
         toolbar->setObjectName("Main-Toolbar"); // Name for CSS addressing
         toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-//        // Add some empty space at the top of the toolbars
-//        QAction* spacer = new QAction(this);
-//        toolbar->addAction(spacer);
-//        toolbar->widgetForAction(spacer)->setObjectName("ToolbarSpacer");
+       // Add some empty space at the top of the toolbars
+       QAction* spacer = new QAction(this);
+       toolbar->addAction(spacer);
+       toolbar->widgetForAction(spacer)->setObjectName("ToolbarSpacer");
 
         toolbar->addAction(overviewAction);
         toolbar->addAction(sendCoinsAction);
@@ -594,7 +600,7 @@ void BitcoinGUI::createToolBars()
         }
         toolbar->setMovable(false); // remove unused icon in upper left corner
         toolbar->setOrientation(Qt::Vertical);
-        toolbar->setIconSize(QSize(40,40));
+        toolbar->setIconSize(QSize(180,70));
         overviewAction->setChecked(true);
 
         /** Create additional container for toolbar and walletFrame and make it the central widget.
