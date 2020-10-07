@@ -77,14 +77,14 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle* networkStyle) 
     pixPaint.drawText(pixmap.width() - copyrightPaddingLeft, copyrightPaddingTop + 36, copyrightTextVITAE);
 
     // draw additional text if special network
-    if (!titleAddText.isEmpty()) {
-        QFont boldFont = QFont(font, 10 * fontFactor);
-        boldFont.setWeight(QFont::Bold);
-        pixPaint.setFont(boldFont);
-        fm = pixPaint.fontMetrics();
-        int titleAddTextWidth = fm.width(titleAddText);
-        pixPaint.drawText(pixmap.width() - titleAddTextWidth - 10, pixmap.height() - 25, titleAddText);
-    }
+    // if (!titleAddText.isEmpty()) {
+    //     QFont boldFont = QFont(font, 10 * fontFactor);
+    //     boldFont.setWeight(QFont::Bold);
+    //     pixPaint.setFont(boldFont);
+    //     fm = pixPaint.fontMetrics();
+    //     int titleAddTextWidth = fm.width(titleAddText);
+    //     pixPaint.drawText(pixmap.width() - titleAddTextWidth - 10, pixmap.height() - 25, titleAddText);
+    // }
 
     pixPaint.end();
 
@@ -92,7 +92,8 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle* networkStyle) 
     setWindowTitle(titleText + " " + titleAddText);
 
     // Resize window and move to center of desktop, disallow resizing
-    QRect r(QPoint(), pixmap.size());
+    //QRect r(QPoint(), pixmap.size());
+    QRect r(QPoint(), QSize(pixmap.size().width()/2, pixmap.size().height()/2)); //retina
     resize(r.size());
     setFixedSize(r.size());
     move(QApplication::desktop()->screenGeometry().center() - r.center());

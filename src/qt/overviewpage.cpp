@@ -246,7 +246,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
 
     // Combined labels
     ui->labelBalancez->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, availableTotalBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelTotalz->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, sumTotalBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelTotalz->setText(BitcoinUnits::floorHtmlWithUnit(sumTotalBalance, false, BitcoinUnits::separatorAlways));
 
     // Percentage labels
     ui->labelVITPercent->setText(sPercentage);

@@ -86,40 +86,10 @@
             <number>0</number>
            </property>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_Header" stretch="1,0,1">
+            <layout class="QHBoxLayout" name="horizontalLayout_Header" stretch="0">
              <property name="spacing">
               <number>6</number>
              </property>
-             <item>
-              <widget class="QLabel" name="labelOverviewHeaderLeft">
-               <property name="minimumSize">
-                <size>
-                 <width>464</width>
-                 <height>60</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>60</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <family>Andale-Mono</family>
-                 <pointsize>20</pointsize>
-                 <weight>75</weight>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>OVERVIEW</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-               </property>
-              </widget>
-             </item>
              <item>
               <spacer name="horizontalSpacer_Header">
                <property name="orientation">
@@ -132,33 +102,6 @@
                 </size>
                </property>
               </spacer>
-             </item>
-             <item>
-              <widget class="QLabel" name="labelOverviewHeaderRight">
-               <property name="minimumSize">
-                <size>
-                 <width>464</width>
-                 <height>60</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>60</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>14</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-              </widget>
              </item>
             </layout>
            </item>
@@ -230,7 +173,7 @@
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_5">
                      <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0">
+                      <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,0,0">
                        <item>
                         <widget class="QLabel" name="label_5z">
                          <property name="minimumSize">
@@ -241,21 +184,27 @@
                          </property>
                          <property name="font">
                           <font>
-                           <pointsize>12</pointsize>
-                           <weight>75</weight>
-                           <bold>true</bold>
+                           <family>Andale Mono</family>
+                           <pointsize>20</pointsize>
+                           <weight>50</weight>
+                           <bold>false</bold>
                           </font>
                          </property>
                          <property name="toolTip">
                           <string>Combined Balance (including unconfirmed and immature coins)</string>
                          </property>
                          <property name="text">
-                          <string>Combined Balance</string>
+                          <string>Balance</string>
                          </property>
                         </widget>
                        </item>
                        <item>
                         <widget class="QLabel" name="labelWalletStatus">
+                         <property name="font">
+                          <font>
+                           <family>Andale Mono</family>
+                          </font>
+                         </property>
                          <property name="cursor">
                           <cursorShape>WhatsThisCursor</cursorShape>
                          </property>
@@ -314,6 +263,11 @@
                        </property>
                        <item row="1" column="0">
                         <widget class="QLabel" name="labelBalanceTextz">
+                         <property name="font">
+                          <font>
+                           <family>Andale Mono</family>
+                          </font>
+                         </property>
                          <property name="text">
                           <string>Available:</string>
                          </property>
@@ -323,8 +277,9 @@
                         <widget class="QLabel" name="labelBalancez">
                          <property name="font">
                           <font>
-                           <weight>75</weight>
-                           <bold>true</bold>
+                           <family>Andale Mono</family>
+                           <weight>50</weight>
+                           <bold>false</bold>
                           </font>
                          </property>
                          <property name="cursor">
@@ -334,7 +289,7 @@
                           <string>Your current spendable balance</string>
                          </property>
                          <property name="text">
-                          <string notr="true">0.000 000 00 VITAE</string>
+                          <string notr="true">0.000 000 00 AXIV</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -346,6 +301,11 @@
                        </item>
                        <item row="2" column="0">
                         <widget class="QLabel" name="labelTotalTextz">
+                         <property name="font">
+                          <font>
+                           <family>Andale Mono</family>
+                          </font>
+                         </property>
                          <property name="text">
                           <string>Total:</string>
                          </property>
@@ -355,8 +315,9 @@
                         <widget class="QLabel" name="labelTotalz">
                          <property name="font">
                           <font>
-                           <weight>75</weight>
-                           <bold>true</bold>
+                           <family>Andale Mono</family>
+                           <weight>50</weight>
+                           <bold>false</bold>
                           </font>
                          </property>
                          <property name="cursor">
@@ -366,7 +327,7 @@
                           <string>Total Balance, including all unavailable coins.</string>
                          </property>
                          <property name="text">
-                          <string notr="true">0.000 000 00 VITAE</string>
+                          <string notr="true">0.000 000 00 AXIV</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -409,6 +370,12 @@
                   </item>
                   <item>
                    <widget class="QFrame" name="frame_Balances">
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>0</height>
+                     </size>
+                    </property>
                     <property name="frameShape">
                      <enum>QFrame::StyledPanel</enum>
                     </property>
@@ -428,13 +395,14 @@
                          </property>
                          <property name="font">
                           <font>
+                           <family>Andale Mono</family>
                            <pointsize>12</pointsize>
-                           <weight>75</weight>
-                           <bold>true</bold>
+                           <weight>50</weight>
+                           <bold>false</bold>
                           </font>
                          </property>
                          <property name="text">
-                          <string>VITAE Balance</string>
+                          <string>AXIV Balance</string>
                          </property>
                         </widget>
                        </item>
@@ -506,6 +474,11 @@
                        </item>
                        <item row="1" column="0">
                         <widget class="QLabel" name="labelBalanceText">
+                         <property name="font">
+                          <font>
+                           <family>Andale Mono</family>
+                          </font>
+                         </property>
                          <property name="text">
                           <string>Available:</string>
                          </property>
@@ -563,6 +536,11 @@
                        </item>
                        <item row="2" column="0">
                         <widget class="QLabel" name="labelPendingText">
+                         <property name="font">
+                          <font>
+                           <family>Andale Mono</family>
+                          </font>
+                         </property>
                          <property name="text">
                           <string>Pending:</string>
                          </property>
@@ -620,6 +598,11 @@
                        </item>
                        <item row="3" column="0">
                         <widget class="QLabel" name="labelImmatureText">
+                         <property name="font">
+                          <font>
+                           <family>Andale Mono</family>
+                          </font>
+                         </property>
                          <property name="text">
                           <string>Immature:</string>
                          </property>
@@ -677,6 +660,11 @@
                        </item>
                        <item row="4" column="0">
                         <widget class="QLabel" name="labelLockedBalanceText">
+                         <property name="font">
+                          <font>
+                           <family>Andale Mono</family>
+                          </font>
+                         </property>
                          <property name="toolTip">
                           <string>Locked VITAE or Fundamentalnode collaterals. These are excluded from zVITAE minting.</string>
                          </property>
@@ -737,11 +725,16 @@
                        </item>
                        <item row="5" column="0">
                         <widget class="QLabel" name="labelTotalText">
-                         <property name="text">
-                          <string>Total:</string>
+                         <property name="font">
+                          <font>
+                           <family>Andale Mono</family>
+                          </font>
                          </property>
                          <property name="toolTip">
                           <string>Your current VITAE balance, unconfirmed and immature transactions included</string>
+                         </property>
+                         <property name="text">
+                          <string>Total:</string>
                          </property>
                         </widget>
                        </item>
@@ -749,8 +742,9 @@
                         <widget class="QLabel" name="labelTotal">
                          <property name="font">
                           <font>
-                           <weight>75</weight>
-                           <bold>true</bold>
+                           <family>Andale Mono</family>
+                           <weight>50</weight>
+                           <bold>false</bold>
                           </font>
                          </property>
                          <property name="cursor">
@@ -760,7 +754,7 @@
                           <string>Your current VITAE balance, unconfirmed and immature transactions included</string>
                          </property>
                          <property name="text">
-                          <string notr="true">0.000 000 00 VITAE</string>
+                          <string notr="true">0.000 000 00 AXIV</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -774,8 +768,9 @@
                         <widget class="QLabel" name="labelWatchTotal">
                          <property name="font">
                           <font>
-                           <weight>75</weight>
-                           <bold>true</bold>
+                           <family>Andale Mono</family>
+                           <weight>50</weight>
+                           <bold>false</bold>
                           </font>
                          </property>
                          <property name="cursor">
@@ -785,7 +780,7 @@
                           <string>Current total balance in watch-only addresses</string>
                          </property>
                          <property name="text">
-                          <string notr="true">0.000 000 00 VITAE</string>
+                          <string notr="true">0.000 000 00 AXIV</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -828,6 +823,12 @@
                   </item>
                   <item>
                    <widget class="QFrame" name="frame_ZerocoinBalances">
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>0</height>
+                     </size>
+                    </property>
                     <property name="frameShape">
                      <enum>QFrame::StyledPanel</enum>
                     </property>
@@ -836,7 +837,7 @@
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_7">
                      <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="0">
+                      <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="0,0,0">
                        <item>
                         <widget class="QLabel" name="label_5z_3">
                          <property name="minimumSize">
@@ -847,13 +848,14 @@
                          </property>
                          <property name="font">
                           <font>
+                           <family>Andale Mono</family>
                            <pointsize>12</pointsize>
-                           <weight>75</weight>
-                           <bold>true</bold>
+                           <weight>50</weight>
+                           <bold>false</bold>
                           </font>
                          </property>
                          <property name="text">
-                          <string>zVITAE Balance</string>
+                          <string>zAXIV Balance</string>
                          </property>
                         </widget>
                        </item>
@@ -998,6 +1000,11 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
                        </item>
                        <item row="4" column="0">
                         <widget class="QLabel" name="labelzBalanceText">
+                         <property name="font">
+                          <font>
+                           <family>Andale Mono</family>
+                          </font>
+                         </property>
                          <property name="toolTip">
                           <string>Your current zVITAE balance, unconfirmed and immature zVITAE included.</string>
                          </property>
@@ -1010,8 +1017,9 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
                         <widget class="QLabel" name="labelzBalance">
                          <property name="font">
                           <font>
-                           <weight>75</weight>
-                           <bold>true</bold>
+                           <family>Andale Mono</family>
+                           <weight>50</weight>
+                           <bold>false</bold>
                           </font>
                          </property>
                          <property name="cursor">
@@ -1021,7 +1029,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
                           <string>Your current zVITAE balance, unconfirmed and immature zVITAE included.</string>
                          </property>
                          <property name="text">
-                          <string notr="true">0.000 000 00 VITAE</string>
+                          <string notr="true">0.000 000 00 AXIV</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1096,9 +1104,10 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
                       </property>
                       <property name="font">
                        <font>
-                        <pointsize>12</pointsize>
-                        <weight>75</weight>
-                        <bold>true</bold>
+                        <family>Andale Mono</family>
+                        <pointsize>20</pointsize>
+                        <weight>50</weight>
+                        <bold>false</bold>
                        </font>
                       </property>
                       <property name="text">
@@ -1108,6 +1117,11 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
                     </item>
                     <item>
                      <widget class="QLabel" name="labelTransactionsStatus">
+                      <property name="font">
+                       <font>
+                        <family>Andale Mono</family>
+                       </font>
+                      </property>
                       <property name="cursor">
                        <cursorShape>WhatsThisCursor</cursorShape>
                       </property>

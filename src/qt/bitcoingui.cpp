@@ -55,8 +55,10 @@
 #include <QStyle>
 #include <QTimer>
 #include <QToolBar>
+#include <QToolButton>
 #include <QVBoxLayout>
 #include <QFontDatabase>
+#include <QPushButton>
 
 #if QT_VERSION < 0x050000
 #include <QTextDocument>
@@ -231,6 +233,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
     progressBarLabel->setObjectName("progressBarLabel");
     progressBar = new GUIUtil::ProgressBar();
     progressBar->setAlignment(Qt::AlignCenter);
+    progressBar->setFixedHeight(20);
     progressBar->setVisible(true);
 
     // Override style sheet for progress bar for styles that have a segmented progress bar,
@@ -238,7 +241,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
     // See https://qt-project.org/doc/qt-4.8/gallery.html
     QString curStyle = QApplication::style()->metaObject()->className();
     if (curStyle == "QWindowsStyle" || curStyle == "QWindowsXPStyle") {
-        progressBar->setStyleSheet("QProgressBar { background-color: #F8F8F8; border: 1px solid grey; border-radius: 7px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #00CCFF, stop: 1 #33CCFF); border-radius: 7px; margin: 0px; }");
+        //progressBar->setStyleSheet("QProgressBar { background-color: #F8F8F8; border: 1px solid grey; border-radius: 7px; padding: 1px; text-align: center; } QProgressBar::chunk { background: QLinearGradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #00CCFF, stop: 1 #33CCFF); border-radius: 7px; margin: 0px; }");
     }
 
     statusBar()->addWidget(progressBarLabel);
@@ -302,16 +305,13 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 {
     QActionGroup* tabGroup = new QActionGroup(this);
     // tabGroup.setFont(QFont(font, 28 * Andale-Mono));
-
-    QIcon overviewIcon;
-    overviewIcon.addFile(":/icons/overview",QSize(40,40),QIcon::Normal,QIcon::On);
-    overviewIcon.addFile(":/icons/overview_off",QSize(40,40),QIcon::Normal,QIcon::Off);
-
-    overviewAction = new QAction(this);
-    overviewAction->setStatusTip(tr("Show general overview of wallet"));
+    overviewAction = new QAction(QIcon(":/icons/send"), tr("&Overview"), this);
+    overviewAction->setStatusTip(tr("Send coins to a VITAE addresses"));
     overviewAction->setToolTip(overviewAction->statusTip());
     overviewAction->setCheckable(true);
-    overviewAction->setIcon(overviewIcon);
+    overviewAction->setFont(GUIUtil::primaryFont());
+    
+   
 
 #ifdef Q_OS_MAC
     overviewAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_1));
@@ -320,10 +320,14 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(overviewAction);
 
-    sendCoinsAction = new QAction(tr("&Send"), this);
+    sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("&Send"), this);
     sendCoinsAction->setStatusTip(tr("Send coins to a VITAE addresses"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
+    sendCoinsAction->setFont(GUIUtil::primaryFont());
+    //sendCoinsAction->setIconSize(QSize(1, 1));
+    // sendCoinsAction->setTextAlignment(Qt::AlignLeft);
+    //sendCoinsAction.setStyleSheet("qproperty-alignment: AlignBottom AlignRight;");
 #ifdef Q_OS_MAC
     sendCoinsAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_2));
 #else
@@ -331,10 +335,11 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(sendCoinsAction);
 
-    receiveCoinsAction = new QAction(tr("&Receive"), this);
+    receiveCoinsAction = new QAction(QIcon(":/icons/send"), tr("&Receive"), this);
     receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and vitae: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
+    receiveCoinsAction->setFont(GUIUtil::primaryFont());
 #ifdef Q_OS_MAC
     receiveCoinsAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_3));
 #else
@@ -342,10 +347,11 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(receiveCoinsAction);
 
-    historyAction = new QAction(tr("&Transactions"), this);
+    historyAction = new QAction(QIcon(":/icons/send"),tr("&Transactions"), this);
     historyAction->setStatusTip(tr("Browse transaction history"));
     historyAction->setToolTip(historyAction->statusTip());
     historyAction->setCheckable(true);
+    historyAction->setFont(GUIUtil::primaryFont());
 #ifdef Q_OS_MAC
     historyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_4));
 #else
@@ -353,10 +359,11 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(historyAction);
 
-    privacyAction = new QAction(tr("&Privacy"), this);
+    privacyAction = new QAction(QIcon(":/icons/send"), tr("&Privacy"), this);
     privacyAction->setStatusTip(tr("Privacy Actions for zVITAE"));
     privacyAction->setToolTip(privacyAction->statusTip());
     privacyAction->setCheckable(true);
+    privacyAction->setFont(GUIUtil::primaryFont());
 #ifdef Q_OS_MAC
     privacyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
 #else
@@ -367,26 +374,27 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #ifdef ENABLE_WALLET
 
     QSettings settings;
-//     if (settings.value("fShowFundamentalnodesTab").toBool()) {
-//         fundamentalnodeAction = new QAction(tr("&Fundamentalnodes"), this);
-//         fundamentalnodeAction->setStatusTip(tr("Browse fundamentalnodes"));
-//         fundamentalnodeAction->setToolTip(fundamentalnodeAction->statusTip());
-//         fundamentalnodeAction->setCheckable(true);
-// #ifdef Q_OS_MAC
-//         fundamentalnodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
-// #else
-//         fundamentalnodeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
-// #endif
-//         tabGroup->addAction(fundamentalnodeAction);
-//         connect(fundamentalnodeAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-//         connect(fundamentalnodeAction, SIGNAL(triggered()), this, SLOT(gotoFundamentalnodePage()));
-//     }
+    if (settings.value("fShowFundamentalnodesTab").toBool()) {
+        fundamentalnodeAction = new QAction(tr("&Fundamentalnodes"), this);
+        fundamentalnodeAction->setStatusTip(tr("Browse fundamentalnodes"));
+        fundamentalnodeAction->setToolTip(fundamentalnodeAction->statusTip());
+        fundamentalnodeAction->setCheckable(true);
+#ifdef Q_OS_MAC
+        fundamentalnodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
+#else
+        fundamentalnodeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+#endif
+        tabGroup->addAction(fundamentalnodeAction);
+        connect(fundamentalnodeAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+        connect(fundamentalnodeAction, SIGNAL(triggered()), this, SLOT(gotoFundamentalnodePage()));
+    }
 
     if (settings.value("fShowMasternodesTab").toBool()) {
-        masternodeAction = new QAction(tr("&Nodes"), this);
+        masternodeAction = new QAction(QIcon(":/icons/send"), tr("&Nodes"), this);
         masternodeAction->setStatusTip(tr("Browse Masternodes & Fundamental Nodes"));
         masternodeAction->setToolTip(masternodeAction->statusTip());
         masternodeAction->setCheckable(true);
+        masternodeAction->setFont(GUIUtil::primaryFont());
 #ifdef Q_OS_MAC
         masternodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
 #else
@@ -584,29 +592,78 @@ void BitcoinGUI::createToolBars()
 {
     if (walletFrame) {
         QToolBar* toolbar = new QToolBar(tr("Tabs toolbar"));
+        toolbar->setIconSize(QSize(14, 14));
         toolbar->setObjectName("Main-Toolbar"); // Name for CSS addressing
-        toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+        toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+
+
+//         //QPixmap pixmap(":/icons/overview");
+//         QPixmap pixmap(":/icons/overview");
+// syncLabel->setPixmap(pixmap);
+// //syncLabel->setMask(pixmap.mask());
+
+        QLabel* label = new QLabel();
+        label->setObjectName("main-logo");
+        //label->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+       // label->setGeometry(0,0,100,100);
+        label->setStyleSheet("margin-left:20px; margin-top:20px; margin-bottom:20px;");
+        // label->setMargin(10);
+        
+        label->setFixedWidth(239);
+        label->setFixedHeight(124);
+        label->setPixmap(QPixmap(":/icons/overview"));
+        label->setScaledContents( true );
+        connect(label, SIGNAL(clicked()), this, SLOT(gotoOverviewPage()));
+
+
+    
+        
+      
+        
+        //label->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored );
+       
+        
+
+        
+
+
+       // syncLabel->setPixmap((":/icons/overview").pixmap(274, 107));
+        //syncLabel->setAlignment(Qt::AlignLeft);
+
+    //     QLayout* lay = toolbar->layout();
+    // for(int i = 0; i < lay->count(); ++i)
+    //     lay->itemAt(i)->setAlignment(Qt::AlignLeft);
        // Add some empty space at the top of the toolbars
        QAction* spacer = new QAction(this);
        toolbar->addAction(spacer);
        toolbar->widgetForAction(spacer)->setObjectName("ToolbarSpacer");
+       toolbar->addWidget(label);
+       //toolbar->addWidget(syncLabel);
+    //    toolbar->setStyleSheet("text-align:left;");
+
+// QToolButton *button=new QToolButton(toolbar);
+// button->setFixedSize(50,50);
+// QWidgetAction *action=new QWidgetAction(this);
+// action->setDefaultWidget(button);
+// toolbar->addAction(action);
+
 
         toolbar->addAction(overviewAction);
         toolbar->addAction(sendCoinsAction);
         toolbar->addAction(receiveCoinsAction);
-        toolbar->addAction(privacyAction);
+        //toolbar->addAction(privacyAction);
         toolbar->addAction(historyAction);
-        toolbar->addAction(privacyAction);
+        //toolbar->addAction(privacyAction);
         QSettings settings;
-        if (settings.value("fShowFundamentalnodesTab").toBool()) {
-            toolbar->addAction(fundamentalnodeAction);
-        }
+        // if (settings.value("fShowFundamentalnodesTab").toBool()) {
+        //     toolbar->addAction(fundamentalnodeAction);
+        // }
         if (settings.value("fShowMasternodesTab").toBool()) {
             toolbar->addAction(masternodeAction);
         }
         toolbar->setMovable(false); // remove unused icon in upper left corner
         toolbar->setOrientation(Qt::Vertical);
-        toolbar->setIconSize(QSize(180,70));
+        
         overviewAction->setChecked(true);
 
         /** Create additional container for toolbar and walletFrame and make it the central widget.
@@ -705,9 +762,9 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     privacyAction->setEnabled(enabled);
     historyAction->setEnabled(enabled);
     QSettings settings;
-    // if (settings.value("fShowFundamentalnodesTab").toBool()) {
-    //     fundamentalnodeAction->setEnabled(enabled);
-    // }
+    if (settings.value("fShowFundamentalnodesTab").toBool()) {
+        fundamentalnodeAction->setEnabled(enabled);
+    }
     if (settings.value("fShowMasternodesTab").toBool()) {
         masternodeAction->setEnabled(enabled);
     }

@@ -40,6 +40,8 @@ QString dateTimeStr(qint64 nTime);
 
 // Render VITAE addresses in monospace font
 QFont bitcoinAddressFont();
+QFont primaryFont();
+QFont secondaryFont();
 
 // Set up widgets for address and amounts
 void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent);
