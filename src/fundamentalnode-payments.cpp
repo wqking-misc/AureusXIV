@@ -15,6 +15,7 @@
 #include "utilmoneystr.h"
 
 #include "masternode-pos.h"
+#include "masternode-payments.h"
 #include "masternode.h"
 #include "masternodeman.h"
 

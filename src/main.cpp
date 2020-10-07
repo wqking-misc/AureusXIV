@@ -38,6 +38,7 @@
 
 #include "masternode-pos.h"
 #include "masternode.h"
+#include "masternode-payments.h"
 #include "masternodeman.h"
 #include "activemasternode.h"
 

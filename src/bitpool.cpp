@@ -6,6 +6,7 @@
 #include "obfuscation.h"
 #include "masternodeman.h"
 #include "masternode.h"
+#include "masternode-payments.h"
 #include "activemasternode.h"
 
 /*

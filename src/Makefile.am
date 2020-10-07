@@ -139,7 +139,6 @@ BITCOIN_CORE_H = \
   masternode-budget.h \
   masternodeman.h \
   masternode-pos.h \
-  masternodeman.h \
   masternodeconfig.h \
   fundamentalnode.h \
   fundamentalnode-payments.h \
@@ -377,6 +376,7 @@ libbitcoin_common_a_SOURCES = \
   primitives/transaction.cpp \
   primitives/zerocoin.cpp \
   masternode.cpp \
+  masternode-payments.cpp \
   masternode-pos.cpp \
   masternodeman.cpp \
   masternodeconfig.cpp \
