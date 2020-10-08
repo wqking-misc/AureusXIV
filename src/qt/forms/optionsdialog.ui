@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>576</width>
-    <height>442</height>
+    <height>518</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,6 +19,11 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="tabWidget">
+     <property name="font">
+      <font>
+       <family>Andale Mono</family>
+      </font>
+     </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -29,6 +34,11 @@
       <layout class="QVBoxLayout" name="verticalLayout_Main">
        <item>
         <widget class="QCheckBox" name="bitcoinAtStartup">
+         <property name="font">
+          <font>
+           <family>Andale Mono</family>
+          </font>
+         </property>
          <property name="toolTip">
           <string>Automatically start VITAE after logging in to the system.</string>
          </property>
@@ -41,6 +51,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_2_Main">
          <item>
           <widget class="QLabel" name="databaseCacheLabel">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="text">
             <string>Size of &amp;database cache</string>
            </property>
@@ -53,10 +68,21 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="databaseCache"/>
+          <widget class="QSpinBox" name="databaseCache">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="databaseCacheUnitLabel">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="text">
             <string>MB</string>
            </property>
@@ -84,6 +110,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_3_Main">
          <item>
           <widget class="QLabel" name="threadsScriptVerifLabel">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="text">
             <string>Number of script &amp;verification threads</string>
            </property>
@@ -97,8 +128,16 @@
          </item>
          <item>
           <widget class="QSpinBox" name="threadsScriptVerif">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="toolTip">
             <string>(0 = auto, &lt;0 = leave that many cores free)</string>
+           </property>
+           <property name="frame">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -143,6 +182,11 @@
              <height>16777215</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="toolTip">
             <string>Wait with automatic conversion to Zerocoin until enough VITAE for this denomination is available</string>
            </property>
@@ -158,6 +202,11 @@
              <width>16777215</width>
              <height>27</height>
             </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
            </property>
            <property name="toolTip">
             <string>Wait with automatic conversion to Zerocoin until enough VITAE for this denomination is available</string>
@@ -183,6 +232,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_2_Wallet">
          <item>
           <widget class="QLabel" name="labelStakeSplitThresholdText">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="text">
             <string>Stake split threshold:</string>
            </property>
@@ -190,6 +244,11 @@
          </item>
          <item>
           <widget class="QSpinBox" name="spinBoxStakeSplitThreshold">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="minimum">
             <number>1</number>
            </property>
@@ -208,6 +267,11 @@
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
            <widget class="QCheckBox" name="coinControlFeatures">
+            <property name="font">
+             <font>
+              <family>Andale Mono</family>
+             </font>
+            </property>
             <property name="toolTip">
              <string>Whether to show coin control features or not.</string>
             </property>
@@ -218,6 +282,11 @@
           </item>
           <item>
            <widget class="QCheckBox" name="showFundamentalnodesTab">
+            <property name="font">
+             <font>
+              <family>Andale Mono</family>
+             </font>
+            </property>
             <property name="toolTip">
              <string>Show additional tab listing all your fundamentalnodes in first sub-tab&lt;br/&gt;and all fundamentalnodes on the network in second sub-tab.</string>
             </property>
@@ -228,6 +297,11 @@
           </item>
           <item>
            <widget class="QCheckBox" name="spendZeroConfChange">
+            <property name="font">
+             <font>
+              <family>Andale Mono</family>
+             </font>
+            </property>
             <property name="toolTip">
              <string>If you disable the spending of unconfirmed change, the change from a transaction&lt;br/&gt;cannot be used until that transaction has at least one confirmation.&lt;br/&gt;This also affects how your balance is computed.</string>
             </property>
@@ -261,6 +335,11 @@
       <layout class="QVBoxLayout" name="verticalLayout_Network">
        <item>
         <widget class="QCheckBox" name="mapPortUpnp">
+         <property name="font">
+          <font>
+           <family>Andale Mono</family>
+          </font>
+         </property>
          <property name="toolTip">
           <string>Automatically open the VITAE client port on the router. This only works when your router supports UPnP and it is enabled.</string>
          </property>
@@ -271,6 +350,11 @@
        </item>
        <item>
         <widget class="QCheckBox" name="allowIncoming">
+         <property name="font">
+          <font>
+           <family>Andale Mono</family>
+          </font>
+         </property>
          <property name="toolTip">
           <string>Accept connections from outside</string>
          </property>
@@ -281,6 +365,11 @@
        </item>
        <item>
         <widget class="QCheckBox" name="connectSocks">
+         <property name="font">
+          <font>
+           <family>Andale Mono</family>
+          </font>
+         </property>
          <property name="toolTip">
           <string>Connect to the VITAE network through a SOCKS5 proxy.</string>
          </property>
@@ -293,6 +382,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_1_Network">
          <item>
           <widget class="QLabel" name="proxyIpLabel">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="text">
             <string>Proxy &amp;IP:</string>
            </property>
@@ -318,6 +412,11 @@
              <height>16777215</height>
             </size>
            </property>
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="toolTip">
             <string>IP address of the proxy (e.g. IPv4: 127.0.0.1 / IPv6: ::1)</string>
            </property>
@@ -325,6 +424,11 @@
          </item>
          <item>
           <widget class="QLabel" name="proxyPortLabel">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="text">
             <string>&amp;Port:</string>
            </property>
@@ -349,6 +453,11 @@
              <width>55</width>
              <height>16777215</height>
             </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
            </property>
            <property name="toolTip">
             <string>Port of the proxy (e.g. 9050)</string>
@@ -392,6 +501,11 @@
       <layout class="QVBoxLayout" name="verticalLayout_Window">
        <item>
         <widget class="QCheckBox" name="minimizeToTray">
+         <property name="font">
+          <font>
+           <family>Andale Mono</family>
+          </font>
+         </property>
          <property name="toolTip">
           <string>Show only a tray icon after minimizing the window.</string>
          </property>
@@ -402,6 +516,11 @@
        </item>
        <item>
         <widget class="QCheckBox" name="minimizeOnClose">
+         <property name="font">
+          <font>
+           <family>Andale Mono</family>
+          </font>
+         </property>
          <property name="toolTip">
           <string>Minimize instead of exit the application when the window is closed. When this option is enabled, the application will be closed only after selecting Quit in the menu.</string>
          </property>
@@ -434,6 +553,11 @@
         <layout class="QHBoxLayout" name="horizontalLayout_1_Display">
          <item>
           <widget class="QLabel" name="langLabel">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="text">
             <string>User Interface &amp;language:</string>
            </property>
@@ -447,6 +571,11 @@
          </item>
          <item>
           <widget class="QValueComboBox" name="lang">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="toolTip">
             <string>The user interface language can be set here. This setting will take effect after restarting VITAE.</string>
            </property>
@@ -456,6 +585,11 @@
        </item>
        <item>
         <widget class="QLabel" name="label_3">
+         <property name="font">
+          <font>
+           <family>Andale Mono</family>
+          </font>
+         </property>
          <property name="toolTip">
           <string notr="true"/>
          </property>
@@ -487,13 +621,24 @@ https://www.transifex.com/vitae-project/vitae-project-translations</string>
         <layout class="QHBoxLayout" name="horizontalLayout_4_Display" stretch="0,0">
          <item>
           <widget class="QLabel" name="themeLabel">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="text">
             <string>User Interface Theme:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QValueComboBox" name="theme"/>
+          <widget class="QValueComboBox" name="theme">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -508,6 +653,11 @@ https://www.transifex.com/vitae-project/vitae-project-translations</string>
         <layout class="QHBoxLayout" name="horizontalLayout_2_Display">
          <item>
           <widget class="QLabel" name="unitLabel">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="text">
             <string>&amp;Unit to show amounts in:</string>
            </property>
@@ -521,6 +671,11 @@ https://www.transifex.com/vitae-project/vitae-project-translations</string>
          </item>
          <item>
           <widget class="QValueComboBox" name="unit">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="toolTip">
             <string>Choose the default subdivision unit to show in the interface and when sending coins.</string>
            </property>
@@ -532,18 +687,34 @@ https://www.transifex.com/vitae-project/vitae-project-translations</string>
         <layout class="QHBoxLayout" name="horizontalLayout_5_Display">
          <item>
           <widget class="QLabel" name="digitsLabel">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="text">
             <string>Decimal digits</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QValueComboBox" name="digits"/>
+          <widget class="QValueComboBox" name="digits">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
        <item>
         <widget class="QCheckBox" name="checkBoxHideZeroBalances">
+         <property name="font">
+          <font>
+           <family>Andale Mono</family>
+          </font>
+         </property>
          <property name="toolTip">
           <string>Hide empty balances</string>
          </property>
@@ -559,6 +730,11 @@ https://www.transifex.com/vitae-project/vitae-project-translations</string>
         <layout class="QHBoxLayout" name="horizontalLayout_3_Display">
          <item>
           <widget class="QLabel" name="thirdPartyTxUrlsLabel">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="toolTip">
             <string>Third party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items. %s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</string>
            </property>
@@ -572,6 +748,11 @@ https://www.transifex.com/vitae-project/vitae-project-translations</string>
          </item>
          <item>
           <widget class="QLineEdit" name="thirdPartyTxUrls">
+           <property name="font">
+            <font>
+             <family>Andale Mono</family>
+            </font>
+           </property>
            <property name="toolTip">
             <string>Third party URLs (e.g. a block explorer) that appear in the transactions tab as context menu items. %s in the URL is replaced by transaction hash. Multiple URLs are separated by vertical bar |.</string>
            </property>
@@ -603,6 +784,11 @@ https://www.transifex.com/vitae-project/vitae-project-translations</string>
        <layout class="QHBoxLayout" name="horizontalLayout_Bottom">
         <item>
          <widget class="QLabel" name="overriddenByCommandLineInfoLabel">
+          <property name="font">
+           <font>
+            <family>Andale Mono</family>
+           </font>
+          </property>
           <property name="text">
            <string>Active command-line options that override above options:</string>
           </property>
@@ -646,6 +832,11 @@ https://www.transifex.com/vitae-project/vitae-project-translations</string>
     <layout class="QHBoxLayout" name="horizontalLayout_Buttons">
      <item>
       <widget class="QPushButton" name="resetButton">
+       <property name="font">
+        <font>
+         <family>Andale Mono</family>
+        </font>
+       </property>
        <property name="toolTip">
         <string>Reset all client options to default.</string>
        </property>
@@ -678,12 +869,6 @@ https://www.transifex.com/vitae-project/vitae-project-translations</string>
          <height>0</height>
         </size>
        </property>
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
        <property name="text">
         <string/>
        </property>
@@ -710,6 +895,11 @@ https://www.transifex.com/vitae-project/vitae-project-translations</string>
      </item>
      <item>
       <widget class="QPushButton" name="okButton">
+       <property name="font">
+        <font>
+         <family>Andale Mono</family>
+        </font>
+       </property>
        <property name="text">
         <string>&amp;OK</string>
        </property>
@@ -723,6 +913,11 @@ https://www.transifex.com/vitae-project/vitae-project-translations</string>
      </item>
      <item>
       <widget class="QPushButton" name="cancelButton">
+       <property name="font">
+        <font>
+         <family>Andale Mono</family>
+        </font>
+       </property>
        <property name="text">
         <string>&amp;Cancel</string>
        </property>

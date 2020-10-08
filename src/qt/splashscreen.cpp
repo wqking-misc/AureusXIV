@@ -22,6 +22,8 @@
 #include <QCloseEvent>
 #include <QDesktopWidget>
 #include <QPainter>
+#include <QFontDatabase>
+#include <QFont>
 
 SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle* networkStyle) : QWidget(0, f), curAlignment(0)
 {
@@ -44,7 +46,8 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle* networkStyle) 
     QString copyrightTextVITAE = QChar(0xA9) + QString(" 2018-%1 ").arg(COPYRIGHT_YEAR) + QString(tr("The VITAE Core developers"));
     QString titleAddText = networkStyle->getTitleAddText();
 
-    QString font = QApplication::font().toString();
+    QFontDatabase::addApplicationFont(":/fonts/AndaleMono");
+    QString font = QApplication::font("Andale Mono").toString();
 
     // load the bitmap for writing some text over it
     pixmap = networkStyle->getSplashImage();
@@ -70,7 +73,11 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle* networkStyle) 
     pixPaint.drawText(titlePaddingLeft, titlePaddingTop + titleVersionVSpace, versionText);
 
     // draw copyright stuff
-    pixPaint.setFont(QFont(font, 12 * fontFactor));
+
+    QFont boldFont = QFont(font, 10 * fontFactor);
+    boldFont.setFamily("Andale Mono");
+    pixPaint.setFont(QFont(boldFont));
+
     pixPaint.drawText(pixmap.width() - copyrightPaddingLeft, copyrightPaddingTop, copyrightTextBtc);
     pixPaint.drawText(pixmap.width() - copyrightPaddingLeft, copyrightPaddingTop + 12, copyrightTextDash);
     pixPaint.drawText(pixmap.width() - copyrightPaddingLeft, copyrightPaddingTop + 24, copyrightTextPIVX);
@@ -119,7 +126,10 @@ static void InitMessage(SplashScreen* splash, const std::string& message)
 		
         Q_ARG(QString, QString::fromStdString(message)),
         Q_ARG(int, Qt::AlignBottom | Qt::AlignHCenter),
-        Q_ARG(QColor, QColor(100, 100, 100)));
+        Q_ARG(QColor, QColor(168,173,153)));        
+
+        //setTextColor(QColor("White"));
+    // append(string);
 }
 
 static void ShowProgress(SplashScreen* splash, const std::string& title, int nProgress)
@@ -169,6 +179,7 @@ void SplashScreen::paintEvent(QPaintEvent* event)
     painter.drawPixmap(0, 0, pixmap);
     QRect r = rect().adjusted(5, 5, -5, -5);
     painter.setPen(curColor);
+    painter.setFont(QFont("Andale Mono"));
     painter.drawText(r, curAlignment, curMessage);
 }
 

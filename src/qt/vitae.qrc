@@ -64,7 +64,8 @@
     <qresource prefix="/images">
         <file alias="about">res/images/about.png</file>
         <file alias="vitae_logo_horizontal">res/images/vitae_logo_horizontal.png</file>
-        <file alias="downArrow">res/images/downArrow_dark.png</file>
+        <file alias="downArrow">res/images/downArrow.svg</file>
+        <file alias="upArrow">res/images/upArrow.svg</file>
         <file alias="downArrow_small">res/images/downArrow_small_dark.png</file>
         <file alias="downArrow_small_white">res/images/downArrow_small.png</file>
         <file alias="upArrow_small">res/images/upArrow_small_dark.png</file>
@@ -116,7 +117,10 @@
         <file alias="spinner-033">res/movies/spinner-033.png</file>
         <file alias="spinner-034">res/movies/spinner-034.png</file>
     </qresource>
+    
     <qresource prefix="/fonts">
          <file alias="AndaleMono">res/fonts/Andale-Mono.ttf</file>
      </qresource>
 </RCC>
+
+

@@ -231,9 +231,11 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
     progressBarLabel = new QLabel();
     progressBarLabel->setVisible(true);
     progressBarLabel->setObjectName("progressBarLabel");
+    progressBarLabel->setFont(QFont("Andale Mono"));
     progressBar = new GUIUtil::ProgressBar();
     progressBar->setAlignment(Qt::AlignCenter);
-    progressBar->setFixedHeight(20);
+    progressBar->setFont(QFont("Andale Mono"));
+    progressBar->setFixedHeight(24);
     progressBar->setVisible(true);
 
     // Override style sheet for progress bar for styles that have a segmented progress bar,
