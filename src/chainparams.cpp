@@ -5,7 +5,6 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "libzerocoin/Params.h"
 #include "chainparams.h"
 #include "random.h"
 #include "util.h"
@@ -97,24 +96,6 @@ static const Checkpoints::CCheckpointData dataRegtest = {
     0,
     100};
 
-libzerocoin::ZerocoinParams* CChainParams::Zerocoin_Params(bool useModulusV1) const
-{
-    assert(this);
-    static CBigNum bnHexModulus = 0;
-    if (!bnHexModulus)
-        bnHexModulus.SetHex(zerocoinModulus);
-    static libzerocoin::ZerocoinParams ZCParamsHex = libzerocoin::ZerocoinParams(bnHexModulus);
-    static CBigNum bnDecModulus = 0;
-    if (!bnDecModulus)
-        bnDecModulus.SetDec(zerocoinModulus);
-    static libzerocoin::ZerocoinParams ZCParamsDec = libzerocoin::ZerocoinParams(bnDecModulus);
-
-    if (useModulusV1)
-        return &ZCParamsHex;
-
-    return &ZCParamsDec;
-}
-
 class CMainParams : public CChainParams
 {
 public:
@@ -150,15 +131,12 @@ public:
         /** Height or Time Based Activations **/
         nLastPOWBlock = 200;
         nModifierUpdateBlock = 615800;
-        nZerocoinStartHeight = 209467;
-        nZerocoinStartTime = 1536314400; // september 7, 2018 12:00:00 UTC
         nBlockEnforceSerialRange = 895400; //Enforce serial range starting this block
         nBlockRecalculateAccumulators = 908000; //Trigger a recalculation of accumulators
         nBlockFirstFraudulent = 891737; //First block that bad serials emerged
         nBlockLastGoodCheckpoint = 891730; //Last valid accumulator checkpoint
         nBlockEnforceInvalidUTXO = 902850; //Start enforcing the invalid UTXO's
         nInvalidAmountFiltered = 268200*COIN; //Amount of invalid coins filtered through exchanges, that should be considered valid
-        nBlockZerocoinV2 = 999999999; //The block that zerocoin v2 becomes active
         nEnforceNewSporkKey = 1596240000; //!> Sporks signed after (GMT): August 1, 2020 12:00:00 AM must use the new spork key
         nRejectOldSporkKey = 1604188800; //!> Fully reject old spork key after (GMT): November 1, 2020 12:00:00 AM
 
@@ -228,20 +206,6 @@ public:
         strObfuscationPoolDummyAddress = "VjVqgZbamLZ3KmEKBZZzmZgvtqDWw7jsrL";
         nStartFundamentalnodePayments = 1524487214;
 
-        /** Zerocoin */
-        zerocoinModulus = "25195908475657893494027183240048398571429282126204032027777137836043662020707595556264018525880784"
-            "4069182906412495150821892985591491761845028084891200728449926873928072877767359714183472702618963750149718246911"
-            "6507761337985909570009733045974880842840179742910064245869181719511874612151517265463228221686998754918242243363"
-            "7259085141865462043576798423387184774447920739934236584823824281198163815010674810451660377306056201619676256133"
-            "8441436038339044149526344321901146575444541784240209246165157233507787077498171257724679629263863563732899121548"
-            "31438167899885040445364023527381951378636564391212010397122822120720357";
-        nMaxZerocoinSpendsPerTransaction = 7; // Assume about 20kb each
-        nMinZerocoinMintFee = 1 * CENT; //high fee required for zerocoin mints
-        nMintRequiredConfirmations = 20; //the maximum amount of confirmations until accumulated in 19
-        nRequiredAccumulation = 1;
-        nDefaultSecurityLevel = 100; //full security level for accumulators
-        nZerocoinHeaderVersion = 5; //Block headers must be this version once zerocoin is active
-        nZerocoinRequiredStakeDepth = 200; //The required confirmations for a zVITAE to be stakable
         nBudget_Fee_Confirmations = 6; // Number of confirmations for the finalization fee
     }
 
@@ -318,15 +282,12 @@ public:
         nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 51197; //approx Mon, 17 Apr 2017 04:00:00 GMT
         nMaxMoneyOut = 43199500 * COIN;
-        nZerocoinStartHeight = 201576;
-        nZerocoinStartTime = 2004318070; // disabled
         nBlockEnforceSerialRange = 1; //Enforce serial range starting this block
         nBlockRecalculateAccumulators = 9908000; //Trigger a recalculation of accumulators
         nBlockFirstFraudulent = 9891737; //First block that bad serials emerged
         nBlockLastGoodCheckpoint = 9891730; //Last valid accumulator checkpoint
         nBlockEnforceInvalidUTXO = 9902850; //Start enforcing the invalid UTXO's
         nInvalidAmountFiltered = 0; //Amount of invalid coins filtered through exchanges, that should be considered valid
-        nBlockZerocoinV2 = 999999999; //!> The block that zerocoin v2 becomes active
         nEnforceNewSporkKey = 1596240000; //!> Sporks signed after (GMT): August 1, 2020 12:00:00 AM must use the new spork key
         nRejectOldSporkKey = 1601510400; //!> Fully reject old spork key after (GMT): October 1, 2020 12:00:00 AM
 
@@ -393,8 +354,6 @@ public:
         nStartFundamentalnodePayments = 1420837558; //Fri, 09 Jan 2015 21:05:58 GMT
         nBudget_Fee_Confirmations = 3; // Number of confirmations for the finalization fee. We have to make this very short
                                        // here because we only have a 8 block finalization window on testnet
-
-        nZerocoinHeaderVersion = 5; //Block headers must be this version once zerocoin is active
     }
     const Checkpoints::CCheckpointData& Checkpoints() const
     {

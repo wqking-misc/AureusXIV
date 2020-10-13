@@ -1432,28 +1432,6 @@ bool CObfuscationPool::DoAutomaticDenominating(bool fDryRun)
 
     LogPrint("obfuscation", "DoAutomaticDenominating : nLowestDenom=%d, nBalanceNeedsAnonymized=%d\n", nLowestDenom, nBalanceNeedsAnonymized);
 
-    // select coins that should be given to the pool
-    if (!pwalletMain->SelectCoinsDark(nValueMin, nBalanceNeedsAnonymized, vCoins, nValueIn, 0, nZeromintPercentage)) {
-        nValueIn = 0;
-        vCoins.clear();
-
-        if (pwalletMain->SelectCoinsDark(nValueMin, 9999999 * COIN, vCoins, nValueIn, -2, 0)) {
-            nOnlyDenominatedBalance = pwalletMain->GetDenominatedBalance(true) + pwalletMain->GetDenominatedBalance() - pwalletMain->GetAnonymizedBalance();
-            nBalanceNeedsDenominated = nBalanceNeedsAnonymized - nOnlyDenominatedBalance;
-
-            if (nBalanceNeedsDenominated > nValueIn) nBalanceNeedsDenominated = nValueIn;
-
-            if (nBalanceNeedsDenominated < nLowestDenom) return false; // most likely we just waiting for denoms to confirm
-            if (!fDryRun) return CreateDenominated(nBalanceNeedsDenominated);
-
-            return true;
-        } else {
-            LogPrintf("DoAutomaticDenominating : Can't denominate - no compatible inputs left\n");
-            strAutoDenomResult = _("Can't denominate: no compatible inputs left.");
-            return false;
-        }
-    }
-
     if (fDryRun) return true;
 
     nOnlyDenominatedBalance = pwalletMain->GetDenominatedBalance(true) + pwalletMain->GetDenominatedBalance() - pwalletMain->GetAnonymizedBalance();
@@ -1538,7 +1516,7 @@ bool CObfuscationPool::DoAutomaticDenominating(bool fDryRun)
                 std::vector<CTxIn> vTempCoins;
                 std::vector<COutput> vTempCoins2;
                 // Try to match their denominations if possible
-                if (!pwalletMain->SelectCoinsByDenominations(dsq.nDenom, nValueMin, nBalanceNeedsAnonymized, vTempCoins, vTempCoins2, nValueIn, 0, nZeromintPercentage)) {
+                if (!pwalletMain->SelectCoinsByDenominations(dsq.nDenom, nValueMin, nBalanceNeedsAnonymized, vTempCoins, vTempCoins2, nValueIn, 0, 5)) {
                     LogPrintf("DoAutomaticDenominating --- Couldn't match denominations %d\n", dsq.nDenom);
                     continue;
                 }
@@ -1631,14 +1609,14 @@ bool CObfuscationPool::PrepareObfuscationDenominate()
     std::string strError = "";
     // Submit transaction to the pool if we get here
     // Try to use only inputs with the same number of rounds starting from lowest number of rounds possible
-    for (int i = 0; i < nZeromintPercentage; i++) {
+    for (int i = 0; i < 5; i++) {
         strError = pwalletMain->PrepareObfuscationDenominate(i, i + 1);
         LogPrintf("DoAutomaticDenominating : Running Obfuscation denominate for %d rounds. Return '%s'\n", i, strError);
         if (strError == "") return true;
     }
 
     // We failed? That's strange but let's just make final attempt and try to mix everything
-    strError = pwalletMain->PrepareObfuscationDenominate(0, nZeromintPercentage);
+    strError = pwalletMain->PrepareObfuscationDenominate(0, 5);
     LogPrintf("DoAutomaticDenominating : Running Obfuscation denominate for all rounds. Return '%s'\n", strError);
     if (strError == "") return true;
 

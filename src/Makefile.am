@@ -37,7 +37,6 @@ LIBBITCOIN_COMMON=libbitcoin_common.a
 LIBBITCOIN_CLI=libbitcoin_cli.a
 LIBBITCOIN_UTIL=libbitcoin_util.a
 LIBBITCOIN_CRYPTO=crypto/libbitcoin_crypto.a
-LIBBITCOIN_ZEROCOIN=libzerocoin/libbitcoin_zerocoin.a
 LIBBITCOINQT=qt/libbitcoinqt.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
 
@@ -50,7 +49,6 @@ EXTRA_LIBRARIES = \
   crypto/libbitcoin_crypto.a \
   libbitcoin_util.a \
   libbitcoin_common.a \
-  libzerocoin/libbitcoin_zerocoin.a \
   libbitcoin_server.a \
   libbitcoin_cli.a
 if ENABLE_WALLET
@@ -85,15 +83,12 @@ endif
 BITCOIN_CORE_H = \
   activefundamentalnode.h \
   activemasternode.h \
-  accumulators.h \
-  accumulatorcheckpoints.h \
-  accumulatorcheckpoints.json.h \
-  accumulatormap.h \
   addrman.h \
   alert.h \
   allocators.h \
   amount.h \
   base58.h \
+  bignum.h \
   bip38.h \
   bloom.h \
   blocksignature.h \
@@ -110,12 +105,9 @@ BITCOIN_CORE_H = \
   compat/sanity.h \
   compressor.h \
   primitives/block.h \
-  primitives/deterministicmint.h \
   primitives/transaction.h \
-  primitives/zerocoin.h \
   core_io.h \
   crypter.h \
-  denomination_functions.h \
   obfuscation.h \
   obfuscation-relay.h \
   db.h \
@@ -149,7 +141,6 @@ BITCOIN_CORE_H = \
   fundamentalnodeconfig.h \
   merkleblock.h \
   miner.h \
-  mintpool.h \
   mruset.h \
   netbase.h \
   net.h \
@@ -195,9 +186,6 @@ BITCOIN_CORE_H = \
   wallet.h \
   wallet_ismine.h \
   walletdb.h \
-  zvitchain.h \
-  zvittracker.h \
-  zvitwallet.h \
   zmq/zmqabstractnotifier.h \
   zmq/zmqconfig.h \
   zmq/zmqnotificationinterface.h \
@@ -246,7 +234,6 @@ libbitcoin_server_a_SOURCES = \
   txdb.cpp \
   txmempool.cpp \
   validationinterface.cpp \
-  zvitchain.cpp \
   $(BITCOIN_CORE_H)
 
 if ENABLE_ZMQ
@@ -269,7 +256,6 @@ libbitcoin_wallet_a_SOURCES = \
   activefundamentalnode.cpp \
   activemasternode.cpp \
   bip38.cpp \
-  denomination_functions.cpp \
   obfuscation.cpp \
   bitpool.cpp \
   obfuscation-relay.cpp \
@@ -282,17 +268,12 @@ libbitcoin_wallet_a_SOURCES = \
   fundamentalnode-sync.cpp \
   fundamentalnodeconfig.cpp \
   fundamentalnodeman.cpp \
-  mintpool.cpp \
   rpcdump.cpp \
-  primitives/deterministicmint.cpp \
-  primitives/zerocoin.cpp \
   rpcwallet.cpp \
   kernel.cpp \
   wallet.cpp \
   wallet_ismine.cpp \
   walletdb.cpp \
-  zvitwallet.cpp \
-  zvittracker.cpp \
   stakeinput.cpp \
   $(BITCOIN_CORE_H)
 
@@ -332,39 +313,10 @@ crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/sph_skein.h \
   crypto/sph_types.h
 
-# libzerocoin library
-libzerocoin_libbitcoin_zerocin_a_CPPFLAGS = $(AM_CPPFLAGS) $(BOOST_CPPFLAGS)
-libzerocoin_libbitcoin_zerocin_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-libzerocoin_libbitcoin_zerocoin_a_SOURCES = \
-  libzerocoin/Accumulator.h \
-  libzerocoin/AccumulatorProofOfKnowledge.h \
-  libzerocoin/bignum.h \
-  libzerocoin/Coin.h \
-  libzerocoin/CoinSpend.h \
-  libzerocoin/Commitment.h \
-  libzerocoin/Denominations.h \
-  libzerocoin/ParamGeneration.h \
-  libzerocoin/Params.h \
-  libzerocoin/SerialNumberSignatureOfKnowledge.h \
-  libzerocoin/SpendType.h \
-  libzerocoin/ZerocoinDefines.h \
-  libzerocoin/Accumulator.cpp \
-  libzerocoin/AccumulatorProofOfKnowledge.cpp \
-  libzerocoin/Coin.cpp \
-  libzerocoin/Denominations.cpp \
-  libzerocoin/CoinSpend.cpp \
-  libzerocoin/Commitment.cpp \
-  libzerocoin/ParamGeneration.cpp \
-  libzerocoin/Params.cpp \
-  libzerocoin/SerialNumberSignatureOfKnowledge.cpp
-
 # common: shared between vitaed, and vitae-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(BITCOIN_INCLUDES)
 libbitcoin_common_a_SOURCES = \
   activemasternode.cpp \
-  accumulators.cpp \
-  accumulatorcheckpoints.cpp \
-  accumulatormap.cpp \
   allocators.cpp \
   amount.cpp \
   base58.cpp \
@@ -373,9 +325,7 @@ libbitcoin_common_a_SOURCES = \
   coins.cpp \
   compressor.cpp \
   primitives/block.cpp \
-  primitives/deterministicmint.cpp \
   primitives/transaction.cpp \
-  primitives/zerocoin.cpp \
   masternode.cpp \
   masternode-pos.cpp \
   masternodeman.cpp \
@@ -440,7 +390,6 @@ vitaed_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_COMMON) \
   $(LIBUNIVALUE) \
-  $(LIBBITCOIN_ZEROCOIN) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBLEVELDB) \
@@ -486,7 +435,6 @@ vitae_cli_CPPFLAGS = $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
 vitae_tx_LDADD = \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_COMMON) \
-  $(LIBBITCOIN_ZEROCOIN) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBSECP256K1) \

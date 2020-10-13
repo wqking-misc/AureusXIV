@@ -254,7 +254,7 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
         if(pindex != NULL){
             if(pindex->GetBlockHash() == block.hashPrevBlock){
                 CAmount stakeReward = GetBlockValue(pindex->nHeight + 1);
-                CAmount masternodePaymentAmount = GetMasternodePayment(pindex->nHeight+1, stakeReward, 0, false);//todo++
+                CAmount masternodePaymentAmount = GetMasternodePayment(pindex->nHeight+1, stakeReward, 0);//todo++
 
                 bool fIsInitialDownload = IsInitialBlockDownload();
 
@@ -420,7 +420,7 @@ void CFundamentalnodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_
 
     CAmount blockValue = GetBlockValue(pindexPrev->nHeight);
     CAmount fundamentalnodePayment = GetFundamentalnodePayment(pindexPrev->nHeight + 1, blockValue);
-    CAmount masternodepayment = GetMasternodePayment(pindexPrev->nHeight +1 , blockValue, 0, false);
+    CAmount masternodepayment = GetMasternodePayment(pindexPrev->nHeight +1 , blockValue, 0);
 
     //txNew.vout[0].nValue = blockValue;
 

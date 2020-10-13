@@ -78,10 +78,6 @@ void OptionsModel::Init()
         settings.setValue("fCoinControlFeatures", false);
     fCoinControlFeatures = settings.value("fCoinControlFeatures", false).toBool();
     
-    if (!settings.contains("nPreferredDenom"))
-        settings.setValue("nPreferredDenom", 0);
-    nPreferredDenom = settings.value("nPreferredDenom", "0").toLongLong();
-
     if (!settings.contains("nAnonymizeVitaeAmount"))
         settings.setValue("nAnonymizeVitaeAmount", 1000);
 
@@ -156,8 +152,6 @@ void OptionsModel::Init()
     if (!SoftSetArg("-lang", settings.value("language").toString().toStdString()))
         addOverriddenOption("-lang");
 
-    if (settings.contains("nPreferredDenom"))
-        SoftSetArg("-preferredDenom", settings.value("nPreferredDenom").toString().toStdString());
     if (settings.contains("nAnonymizeVitaeAmount"))
         SoftSetArg("-anonymizevitaeamount", settings.value("nAnonymizeVitaeAmount").toString().toStdString());
 
@@ -247,8 +241,6 @@ QVariant OptionsModel::data(const QModelIndex& index, int role) const
             return settings.value("nThreadsScriptVerif");
         case HideZeroBalances:
             return settings.value("fHideZeroBalances");
-       case ZeromintPrefDenom:
-            return QVariant(nPreferredDenom);
         case AnonymizeVitaeAmount:
             return QVariant(nAnonymizeVitaeAmount);
         case Listen:
@@ -363,11 +355,6 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
                 settings.setValue("language", value);
                 setRestartRequired(true);
             }
-            break;
-       case ZeromintPrefDenom:
-            nPreferredDenom = value.toInt();
-            settings.setValue("nPreferredDenom", nPreferredDenom);
-            emit preferredDenomChanged(nPreferredDenom);
             break;
         case HideZeroBalances:
             fHideZeroBalances = value.toBool();

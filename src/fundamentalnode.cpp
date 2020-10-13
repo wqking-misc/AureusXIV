@@ -682,10 +682,7 @@ bool CFundamentalnodeBroadcast::Sign(CKey& keyCollateralAddress)
     sigTime = GetAdjustedTime();
 
     std::string strMessage;
-    if(chainActive.Height() < Params().Zerocoin_Block_V2_Start())
-    	strMessage = GetOldStrMessage();
-    else
-    	strMessage = GetNewStrMessage();
+   	strMessage = GetOldStrMessage();
 
     if (!obfuScationSigner.SignMessage(strMessage, errorMessage, sig, keyCollateralAddress)) {
         return error("CFundamentalnodeBroadcast::Sign() - Error: %s\n", errorMessage);

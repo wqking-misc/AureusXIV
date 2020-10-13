@@ -114,8 +114,6 @@ bool fLiteMode = false;
 // SwiftX
 bool fEnableSwiftTX = true;
 int nSwiftTXDepth = 5;
-int nZeromintPercentage = 0;
-int nPreferredDenom = 0;
 
 int nAnonymizeVitaeAmount = 1000;
 int nLiquidityProvider = 0;
