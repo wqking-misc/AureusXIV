@@ -79,7 +79,7 @@ public:
         uint256 n;
 
         {
-            n = HashQuark(BEGIN(nMNSporkID), END(nTimeSigned));
+            n = Hash(BEGIN(nMNSporkID), END(nTimeSigned));
             return n;
         }
 
