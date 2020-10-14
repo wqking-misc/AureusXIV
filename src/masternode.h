@@ -31,6 +31,7 @@
 #define MASTERNODE_REMOTELY_ENABLED            9
 
 #define MASTERNODE_MIN_CONFIRMATIONS           15
+#define MASTERNODE_MIN_MNP_SECONDS (10 * 60)
 #define MASTERNODE_MIN_DSEEP_SECONDS           (30*60)
 #define MASTERNODE_MIN_DSEE_SECONDS            (10*60)  // bitsenddev 12-05 Old 5*60
 #define MASTERNODE_PING_SECONDS                (5*60)   // bitsenddev 12-05 OLD 1*60
@@ -73,8 +74,8 @@ public:
 
     CTxIn vin;
     CService addr;
-    CPubKey pubkey;
-    CPubKey pubkey2;
+    CPubKey pubkey; // pubKeyCollateralAddress
+    CPubKey pubkey2; // pubKeyMasternode
     std::vector<unsigned char> sig;
     int activeState;
     int64_t sigTime; //dsee message times
@@ -190,6 +191,9 @@ public:
     }
 
     void Check();
+
+    int64_t SecondsSincePayment();
+    int64_t GetLastPaid();
 
     bool UpdatedWithin(int seconds)
     {

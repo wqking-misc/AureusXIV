@@ -39,6 +39,7 @@
 #include "masternode-pos.h"
 #include "masternode.h"
 #include "masternode-payments.h"
+#include "masternode-sync.h"
 #include "masternodeman.h"
 #include "activemasternode.h"
 
@@ -5619,9 +5620,13 @@ bool static AlreadyHave(const CInv& inv)
     case MSG_MN_SPORK:
             return mapMNSporks.count(inv.hash);
     case MSG_MASTERNODE_WINNER:
-            return mapSeenMasternodeVotes.count(inv.hash);
+        if (masternodePayments.mapMasternodePayeeVotes.count(inv.hash)) {
+            masternodeSync.AddedMasternodeWinner(inv.hash);
+            return true;
+        }
+        return false;
     case MSG_MASTERNODE_SCANNING_ERROR:
-            return mapMasternodeScanningErrors.count(inv.hash);
+        return mapMasternodeScanningErrors.count(inv.hash);
     }
     // Don't know what it is, just say we already got one
     return true;
@@ -5842,10 +5847,10 @@ void static ProcessGetData(CNode* pfrom)
                     }
                 }
                 if (!pushed && inv.type == MSG_MASTERNODE_WINNER) {
-                    if(mapSeenMasternodeVotes.count(inv.hash)){
+                    if (masternodePayments.mapMasternodePayeeVotes.count(inv.hash)) {
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                         ss.reserve(1000);
-                        ss << mapSeenMasternodeVotes[inv.hash];
+                        ss << masternodePayments.mapMasternodePayeeVotes[inv.hash];
                         pfrom->PushMessage("mnw", ss);
                         pushed = true;
                     }
@@ -6732,7 +6737,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         fundamentalnodeSync.ProcessMessage(pfrom, strCommand, vRecv);
 
         m_nodeman.ProcessMessage(pfrom, strCommand, vRecv);
-        ProcessMessageMasternodePayments(pfrom, strCommand, vRecv);
+        masternodeSync.ProcessMessage(pfrom, strCommand, vRecv);
 
         ProcessMNSpork(pfrom, strCommand, vRecv);
         ProcessMessageMasternodePOS(pfrom, strCommand, vRecv);

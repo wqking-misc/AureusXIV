@@ -376,6 +376,7 @@ libbitcoin_common_a_SOURCES = \
   primitives/transaction.cpp \
   primitives/zerocoin.cpp \
   masternode.cpp \
+  masternode-sync.cpp \
   masternode-payments.cpp \
   masternode-pos.cpp \
   masternodeman.cpp \

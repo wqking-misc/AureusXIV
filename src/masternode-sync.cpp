@@ -87,7 +87,17 @@ void CMasternodeSync::Reset()
 
 void CMasternodeSync::AddedMasternodeList(uint256 hash)
 {
-    if (mnodeman.mapSeenMasternodeBroadcast.count(hash)) {
+    if(mapSeenSyncMNB.find(hash) != mapSeenSyncMNB.end()) {
+        if (mapSeenSyncMNB[hash] < MASTERNODE_SYNC_THRESHOLD) {
+            lastMasternodeList = GetTime();
+            mapSeenSyncMNB[hash]++;
+        }
+    }
+    else {
+        lastMasternodeList = GetTime();
+        mapSeenSyncMNB.insert(make_pair(hash, 1));
+    }
+/*    if (m_nodeman.mapSeenMasternodeBroadcast.count(hash)) {
         if (mapSeenSyncMNB[hash] < MASTERNODE_SYNC_THRESHOLD) {
             lastMasternodeList = GetTime();
             mapSeenSyncMNB[hash]++;
@@ -95,7 +105,7 @@ void CMasternodeSync::AddedMasternodeList(uint256 hash)
     } else {
         lastMasternodeList = GetTime();
         mapSeenSyncMNB.insert(make_pair(hash, 1));
-    }
+    }*/
 }
 
 void CMasternodeSync::AddedMasternodeWinner(uint256 hash)
@@ -242,7 +252,7 @@ void CMasternodeSync::Process()
         /*
             Resync if we lose all masternodes from sleep/wake or failure to sync originally
         */
-        if (mnodeman.CountEnabled() == 0) {
+        if (m_nodeman.CountEnabled() == 0) {
             Reset();
         } else
             return;
@@ -271,9 +281,9 @@ void CMasternodeSync::Process()
             if (RequestedMasternodeAttempt <= 2) {
                 pnode->PushMessage("getsporks"); //get current network sporks
             } else if (RequestedMasternodeAttempt < 4) {
-                mnodeman.DsegUpdate(pnode);
+                m_nodeman.DsegUpdate(pnode);
             } else if (RequestedMasternodeAttempt < 6) {
-                int nMnCount = mnodeman.CountEnabled();
+                int nMnCount = m_nodeman.CountEnabled();
                 pnode->PushMessage("mnget", nMnCount); //sync payees
                 uint256 n = 0;
                 pnode->PushMessage("mnvs", n); //sync masternode votes
@@ -310,7 +320,7 @@ void CMasternodeSync::Process()
                 // timeout
                 if (lastMasternodeList == 0 &&
                     (RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD * 3 || GetTime() - nAssetSyncStarted > MASTERNODE_SYNC_TIMEOUT * 5)) {
-                    if (IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
+                    if (IsSporkActive(SPORK_23_MASTERNODE_PAYMENT_ENFORCEMENT)) {
                         LogPrintf("CMasternodeSync::Process - ERROR - Sync has failed, will retry later\n");
                         RequestedMasternodeAssets = MASTERNODE_SYNC_FAILED;
                         RequestedMasternodeAttempt = 0;
@@ -324,7 +334,7 @@ void CMasternodeSync::Process()
 
                 if (RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD * 3) return;
 
-                mnodeman.DsegUpdate(pnode);
+                m_nodeman.DsegUpdate(pnode);
                 RequestedMasternodeAttempt++;
                 return;
             }
@@ -341,7 +351,7 @@ void CMasternodeSync::Process()
                 // timeout
                 if (lastMasternodeWinner == 0 &&
                     (RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD * 3 || GetTime() - nAssetSyncStarted > MASTERNODE_SYNC_TIMEOUT * 5)) {
-                    if (IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
+                    if (IsSporkActive(SPORK_23_MASTERNODE_PAYMENT_ENFORCEMENT)) {
                         LogPrintf("CMasternodeSync::Process - ERROR - Sync has failed, will retry later\n");
                         RequestedMasternodeAssets = MASTERNODE_SYNC_FAILED;
                         RequestedMasternodeAttempt = 0;
@@ -358,7 +368,7 @@ void CMasternodeSync::Process()
                 CBlockIndex* pindexPrev = chainActive.Tip();
                 if (pindexPrev == NULL) return;
 
-                int nMnCount = mnodeman.CountEnabled();
+                int nMnCount = m_nodeman.CountEnabled();
                 pnode->PushMessage("mnget", nMnCount); //sync payees
                 RequestedMasternodeAttempt++;
 

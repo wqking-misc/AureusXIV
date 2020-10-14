@@ -97,6 +97,9 @@ public:
     /// Add an entry
     bool Add(CMasternode &mn);
 
+    /// Ask (source) node for mnb
+    void AskForMN(CNode* pnode, CTxIn& vin);
+
     /// Check all Masternodes
     void Check();
 
@@ -123,6 +126,9 @@ public:
 
     /// Find a random entry
     CMasternode* FindRandom();
+
+    /// Find an entry in the masternode list that is next to be paid
+    CMasternode* GetNextMasternodeInQueueForPayment(int nBlockHeight, bool fFilterSigTime, int& nCount);
 
     /// Get the current winner for this block
     CMasternode* GetCurrentMasterNode(int mod=1, int64_t nBlockHeight=0, int minProtocol=0);

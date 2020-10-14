@@ -7,6 +7,7 @@
 
 #include "masternodeman.h"
 #include "masternode.h"
+#include "masternode-payments.h"
 #include "activemasternode.h"
 #include "obfuscation.h"
 #include "spork.h"
@@ -23,6 +24,15 @@ CCriticalSection cs_process_message;
 
 /** Masternode manager */
 CMasternodeMan m_nodeman;
+
+struct CompareLastPaid {
+    bool operator()(const pair<int64_t, CTxIn>& t1,
+        const pair<int64_t, CTxIn>& t2) const
+    {
+        return t1.first < t2.first;
+    }
+};
+
 
 struct CompareValueOnly
 {
@@ -217,6 +227,22 @@ bool CMasternodeMan::Add(CMasternode &mn)
     }
 
     return false;
+}
+
+void CMasternodeMan::AskForMN(CNode* pnode, CTxIn& vin)
+{
+    std::map<COutPoint, int64_t>::iterator i = mWeAskedForMasternodeListEntry.find(vin.prevout);
+    if (i != mWeAskedForMasternodeListEntry.end()) {
+        int64_t t = (*i).second;
+        if (GetTime() < t) return; // we've asked recently
+    }
+
+    // ask for the mnb info once from the node that sent mnp
+
+    LogPrint("masternode", "CMasternodeMan::AskForMN - Asking node for missing entry, vin: %s\n", vin.prevout.hash.ToString());
+    pnode->PushMessage("dseg", vin);
+    int64_t askAgain = GetTime() + MASTERNODE_MIN_MNP_SECONDS;
+    mWeAskedForMasternodeListEntry[vin.prevout] = askAgain;
 }
 
 void CMasternodeMan::Check()
@@ -443,6 +469,70 @@ CMasternode *CMasternodeMan::FindRandom()
     if(size() == 0) return NULL;
 
     return &vMasternodes[GetRandInt(vMasternodes.size())];
+}
+
+//
+// Deterministically select the oldest/best masternode to pay on the network
+//
+CMasternode* CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight, bool fFilterSigTime, int& nCount)
+{
+    LOCK(cs);
+
+    CMasternode* pBestMasternode = NULL;
+    std::vector<pair<int64_t, CTxIn> > vecMasternodeLastPaid;
+
+    /*
+        Make a vector with all of the last paid times
+    */
+
+    int nMnCount = CountEnabled();
+    for (CMasternode& mn : vMasternodes) {
+        mn.Check();
+        if (!mn.IsEnabled()) continue;
+
+        // //check protocol version
+        if (mn.protocolVersion < masternodePayments.GetMinMasternodePaymentsProto()) continue;
+
+        //it's in the list (up to 8 entries ahead of current block to allow propagation) -- so let's skip it
+        if (masternodePayments.IsScheduled(mn, nBlockHeight)) continue;
+
+        //it's too new, wait for a cycle
+        if (fFilterSigTime && mn.sigTime + (nMnCount * 2.6 * 60) > GetAdjustedTime()) continue;
+
+        //make sure it has as many confirmations as there are masternodes
+        if (mn.GetMasternodeInputAge() < nMnCount) continue;
+
+        vecMasternodeLastPaid.push_back(make_pair(mn.SecondsSincePayment(), mn.vin));
+    }
+
+    nCount = (int)vecMasternodeLastPaid.size();
+
+    //when the network is in the process of upgrading, don't penalize nodes that recently restarted
+    if (fFilterSigTime && nCount < nMnCount / 3) return GetNextMasternodeInQueueForPayment(nBlockHeight, false, nCount);
+
+    // Sort them high to low
+    sort(vecMasternodeLastPaid.rbegin(), vecMasternodeLastPaid.rend(), CompareLastPaid());
+
+    // Look at 1/10 of the oldest nodes (by last payment), calculate their scores and pay the best one
+    //  -- This doesn't look at who is being paid in the +8-10 blocks, allowing for double payments very rarely
+    //  -- 1/100 payments should be a double payment on mainnet - (1/(3000/10))*2
+    //  -- (chance per block * chances before IsScheduled will fire)
+    int nTenthNetwork = CountEnabled() / 10;
+    int nCountTenth = 0;
+    uint256 nHigh = 0;
+    for (PAIRTYPE(int64_t, CTxIn) & s : vecMasternodeLastPaid) {
+        CMasternode* pmn = Find(s.second);
+        if (!pmn) break;
+
+        uint256 n = pmn->CalculateScore(1, nBlockHeight - 100);
+        if (n > nHigh) {
+            nHigh = n;
+            pBestMasternode = pmn;
+        }
+        nCountTenth++;
+        if (nCountTenth >= nTenthNetwork) break;
+    }
+    return pBestMasternode;
 }
 
 CMasternode* CMasternodeMan::GetCurrentMasterNode(int mod, int64_t nBlockHeight, int minProtocol)
@@ -997,3 +1087,4 @@ int CMasternodeMan::GetMinMasternodePaymentsProto()
     else
         return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT; // Also allow old peers as long as they are allowed to run
 }
+
