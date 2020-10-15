@@ -377,10 +377,11 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 
     QSettings settings;
     if (settings.value("fShowFundamentalnodesTab").toBool()) {
-        fundamentalnodeAction = new QAction(tr("&Fundamentalnodes"), this);
+        fundamentalnodeAction = new QAction(QIcon(":/icons/send"), tr("&Fundamentalnodes"), this);
         fundamentalnodeAction->setStatusTip(tr("Browse fundamentalnodes"));
         fundamentalnodeAction->setToolTip(fundamentalnodeAction->statusTip());
         fundamentalnodeAction->setCheckable(true);
+        fundamentalnodeAction->setFont(GUIUtil::primaryFont());
 #ifdef Q_OS_MAC
         fundamentalnodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
 #else
@@ -632,22 +633,22 @@ void BitcoinGUI::createToolBars()
        // syncLabel->setPixmap((":/icons/overview").pixmap(274, 107));
         //syncLabel->setAlignment(Qt::AlignLeft);
 
-    //     QLayout* lay = toolbar->layout();
-    // for(int i = 0; i < lay->count(); ++i)
-    //     lay->itemAt(i)->setAlignment(Qt::AlignLeft);
        // Add some empty space at the top of the toolbars
        QAction* spacer = new QAction(this);
        toolbar->addAction(spacer);
        toolbar->widgetForAction(spacer)->setObjectName("ToolbarSpacer");
        toolbar->addWidget(label);
+        QAction* spacer2 = new QAction(this);
+       toolbar->addAction(spacer2);
+       toolbar->widgetForAction(spacer2)->setObjectName("ToolbarSpacer2");
        //toolbar->addWidget(syncLabel);
-    //    toolbar->setStyleSheet("text-align:left;");
+       //toolbar->setStyleSheet("text-align:left;");
 
-// QToolButton *button=new QToolButton(toolbar);
-// button->setFixedSize(50,50);
-// QWidgetAction *action=new QWidgetAction(this);
-// action->setDefaultWidget(button);
-// toolbar->addAction(action);
+        // QToolButton *button=new QToolButton(toolbar);
+        // button->setFixedSize(50,50);
+        // QWidgetAction *action=new QWidgetAction(this);
+        // action->setDefaultWidget(button);
+        // toolbar->addAction(action);
 
 
         toolbar->addAction(overviewAction);
@@ -657,9 +658,9 @@ void BitcoinGUI::createToolBars()
         toolbar->addAction(historyAction);
         //toolbar->addAction(privacyAction);
         QSettings settings;
-        // if (settings.value("fShowFundamentalnodesTab").toBool()) {
-        //     toolbar->addAction(fundamentalnodeAction);
-        // }
+        if (settings.value("fShowFundamentalnodesTab").toBool()) {
+            toolbar->addAction(fundamentalnodeAction);
+        }
         if (settings.value("fShowMasternodesTab").toBool()) {
             toolbar->addAction(masternodeAction);
         }
