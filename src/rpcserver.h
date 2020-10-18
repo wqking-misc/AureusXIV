@@ -295,6 +295,7 @@ extern UniValue getfundamentalnodestatus(const UniValue& params, bool fHelp);
 extern UniValue getfundamentalnodewinners(const UniValue& params, bool fHelp);
 extern UniValue getfundamentalnodescores(const UniValue& params, bool fHelp);
 
+/*
 extern UniValue fnbudget(const UniValue& params, bool fHelp); // in rpcfundamentalnode-budget.cpp
 extern UniValue preparebudget(const UniValue& params, bool fHelp);
 extern UniValue submitbudget(const UniValue& params, bool fHelp);
@@ -306,6 +307,7 @@ extern UniValue getbudgetinfo(const UniValue& params, bool fHelp);
 extern UniValue fnbudgetrawvote(const UniValue& params, bool fHelp);
 extern UniValue fnfinalbudget(const UniValue& params, bool fHelp);
 extern UniValue checkbudgets(const UniValue& params, bool fHelp);
+*/
 
 extern UniValue getinfo(const UniValue& params, bool fHelp); // in rpcmisc.cpp
 extern UniValue fnsync(const UniValue& params, bool fHelp);
