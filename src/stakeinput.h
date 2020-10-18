@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef VITAE_STAKEINPUT_H
-#define VITAE_STAKEINPUT_H
+#ifndef AUREUSXIV_STAKEINPUT_H
+#define AUREUSXIV_STAKEINPUT_H
 
 class CKeyStore;
 class CWallet;
@@ -27,13 +27,13 @@ public:
 };
 
 
-class CVitStake : public CStakeInput
+class CAXIVStake : public CStakeInput
 {
 private:
     CTransaction txFrom;
     unsigned int nPosition;
 public:
-    CVitStake()
+    CAXIVStake()
     {
         this->pindexFrom = nullptr;
     }
@@ -51,4 +51,4 @@ public:
 };
 
 
-#endif //VITAE_STAKEINPUT_H
+#endif //AUREUSXIV_STAKEINPUT_H

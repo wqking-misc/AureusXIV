@@ -264,11 +264,11 @@ UniValue stop(const UniValue& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "stop\n"
-            "\nStop VITAE server.");
+            "\nStop AureusXIV server.");
     // Event loop will exit after current HTTP requests have been handled, so
     // this reply will get back to the client.
     StartShutdown();
-    return "VITAE server stopping";
+    return "AureusXIV server stopping";
 }
 
 
@@ -350,44 +350,44 @@ static const CRPCCommand vRPCCommands[] =
         {"hidden", "reconsiderblock", &reconsiderblock, true, true, false},
         {"hidden", "setmocktime", &setmocktime, true, false, false},
 
-        /* VITAE features */
-        {"vitae", "fundamentalnode", &fundamentalnode, true, true, false},
-        {"vitae", "listfundamentalnodes", &listfundamentalnodes, true, true, false},
-        {"vitae", "getfundamentalnodecount", &getfundamentalnodecount, true, true, false},
-        {"vitae", "fundamentalnodeconnect", &fundamentalnodeconnect, true, true, false},
-        {"vitae", "createfundamentalnodebroadcast", &createfundamentalnodebroadcast, true, true, false},
-        {"vitae", "decodefundamentalnodebroadcast", &decodefundamentalnodebroadcast, true, true, false},
-        {"vitae", "relayfundamentalnodebroadcast", &relayfundamentalnodebroadcast, true, true, false},
-        {"vitae", "fundamentalnodecurrent", &fundamentalnodecurrent, true, true, false},
-        {"vitae", "fundamentalnodedebug", &fundamentalnodedebug, true, true, false},
-        {"vitae", "startfundamentalnode", &startfundamentalnode, true, true, false},
-        {"vitae", "createfundamentalnodekey", &createfundamentalnodekey, true, true, false},
-        {"vitae", "getfundamentalnodeoutputs", &getfundamentalnodeoutputs, true, true, false},
-        {"vitae", "listfundamentalnodeconf", &listfundamentalnodeconf, true, true, false},
-        {"vitae", "getfundamentalnodestatus", &getfundamentalnodestatus, true, true, false},
-        {"vitae", "getfundamentalnodewinners", &getfundamentalnodewinners, true, true, false},
-        {"vitae", "getfundamentalnodescores", &getfundamentalnodescores, true, true, false},
-        {"vitae", "fnbudget", &fnbudget, true, true, false},
-        {"vitae", "preparebudget", &preparebudget, true, true, false},
-        {"vitae", "submitbudget", &submitbudget, true, true, false},
-        {"vitae", "fnbudgetvote", &fnbudgetvote, true, true, false},
-        {"vitae", "getbudgetvotes", &getbudgetvotes, true, true, false},
-        {"vitae", "getnextsuperblock", &getnextsuperblock, true, true, false},
-        {"vitae", "getbudgetprojection", &getbudgetprojection, true, true, false},
-        {"vitae", "getbudgetinfo", &getbudgetinfo, true, true, false},
-        {"vitae", "fnbudgetrawvote", &fnbudgetrawvote, true, true, false},
-        {"vitae", "fnfinalbudget", &fnfinalbudget, true, true, false},
-        {"vitae", "checkbudgets", &checkbudgets, true, true, false},
-        {"vitae", "fnsync", &fnsync, true, true, false},
-        {"vitae", "spork", &spork, true, true, false},
-        {"vitae", "getpoolinfo", &getpoolinfo, true, true, false},
-        {"vitae", "makekeypair", &makekeypair, true, true, false},
-        {"vitae", "mnspork", &mnspork, true, true, false},
-        {"vitae", "masternode", &masternode, true, true, false},
-        {"vitae", "masternodelist", &masternodelist, true, true, false},
-        {"vitae", "getmasternodestatus", &getmasternodestatus, true, true, false},
+        /* AXIV features */
+        {"axiv", "fundamentalnode", &fundamentalnode, true, true, false},
+        {"axiv", "listfundamentalnodes", &listfundamentalnodes, true, true, false},
+        {"axiv", "getfundamentalnodecount", &getfundamentalnodecount, true, true, false},
+        {"axiv", "fundamentalnodeconnect", &fundamentalnodeconnect, true, true, false},
+        {"axiv", "createfundamentalnodebroadcast", &createfundamentalnodebroadcast, true, true, false},
+        {"axiv", "decodefundamentalnodebroadcast", &decodefundamentalnodebroadcast, true, true, false},
+        {"axiv", "relayfundamentalnodebroadcast", &relayfundamentalnodebroadcast, true, true, false},
+        {"axiv", "fundamentalnodecurrent", &fundamentalnodecurrent, true, true, false},
+        {"axiv", "fundamentalnodedebug", &fundamentalnodedebug, true, true, false},
+        {"axiv", "startfundamentalnode", &startfundamentalnode, true, true, false},
+        {"axiv", "createfundamentalnodekey", &createfundamentalnodekey, true, true, false},
+        {"axiv", "getfundamentalnodeoutputs", &getfundamentalnodeoutputs, true, true, false},
+        {"axiv", "listfundamentalnodeconf", &listfundamentalnodeconf, true, true, false},
+        {"axiv", "getfundamentalnodestatus", &getfundamentalnodestatus, true, true, false},
+        {"axiv", "getfundamentalnodewinners", &getfundamentalnodewinners, true, true, false},
+        {"axiv", "getfundamentalnodescores", &getfundamentalnodescores, true, true, false},
+        {"axiv", "fnbudget", &fnbudget, true, true, false},
+        {"axiv", "preparebudget", &preparebudget, true, true, false},
+        {"axiv", "submitbudget", &submitbudget, true, true, false},
+        {"axiv", "fnbudgetvote", &fnbudgetvote, true, true, false},
+        {"axiv", "getbudgetvotes", &getbudgetvotes, true, true, false},
+        {"axiv", "getnextsuperblock", &getnextsuperblock, true, true, false},
+        {"axiv", "getbudgetprojection", &getbudgetprojection, true, true, false},
+        {"axiv", "getbudgetinfo", &getbudgetinfo, true, true, false},
+        {"axiv", "fnbudgetrawvote", &fnbudgetrawvote, true, true, false},
+        {"axiv", "fnfinalbudget", &fnfinalbudget, true, true, false},
+        {"axiv", "checkbudgets", &checkbudgets, true, true, false},
+        {"axiv", "fnsync", &fnsync, true, true, false},
+        {"axiv", "spork", &spork, true, true, false},
+        {"axiv", "getpoolinfo", &getpoolinfo, true, true, false},
+        {"axiv", "makekeypair", &makekeypair, true, true, false},
+        {"axiv", "mnspork", &mnspork, true, true, false},
+        {"axiv", "masternode", &masternode, true, true, false},
+        {"axiv", "masternodelist", &masternodelist, true, true, false},
+        {"axiv", "getmasternodestatus", &getmasternodestatus, true, true, false},
 #ifdef ENABLE_WALLET
-        {"vitae", "obfuscation", &obfuscation, false, false, true}, /* not threadSafe because of SendMoney */
+        {"axiv", "obfuscation", &obfuscation, false, false, true}, /* not threadSafe because of SendMoney */
 
         /* Wallet */
         {"wallet", "addmultisigaddress", &addmultisigaddress, true, false, true},
@@ -600,7 +600,7 @@ std::vector<std::string> CRPCTable::listCommands() const
 
 std::string HelpExampleCli(string methodname, string args)
 {
-    return "> vitae-cli " + methodname + " " + args + "\n";
+    return "> aureusxiv-cli " + methodname + " " + args + "\n";
 }
 
 std::string HelpExampleRpc(string methodname, string args)

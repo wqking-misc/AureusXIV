@@ -211,7 +211,7 @@ UniValue preparebudget(const UniValue& params, bool fHelp)
 
     CBitcoinAddress address(params[4].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VITAE address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid AureusXIV address");
 
     // Parse VITAE address
     CScript scriptPubKey = GetScriptForDestination(address.Get());
@@ -305,7 +305,7 @@ UniValue submitbudget(const UniValue& params, bool fHelp)
 
     CBitcoinAddress address(params[4].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VITAE address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid AureusXIV address");
 
     // Parse VITAE address
     CScript scriptPubKey = GetScriptForDestination(address.Get());
