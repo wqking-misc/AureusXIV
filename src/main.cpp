@@ -16,7 +16,7 @@
 #include "checkqueue.h"
 #include "init.h"
 #include "kernel.h"
-#include "fundamentalnode-budget.h"
+//#include "fundamentalnode-budget.h"
 #include "fundamentalnode-payments.h"
 #include "fundamentalnodeman.h"
 #include "merkleblock.h"
@@ -4153,7 +4153,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
         if (fundamentalnodeSync.RequestedFundamentalnodeAssets > FUNDAMENTALNODE_SYNC_LIST) {
             obfuScationPool.NewBlock();
             fundamentalnodePayments.ProcessBlock(GetHeight() + 10);
-            budget.NewBlock();
+            //budget.NewBlock();
         }
     }
 
@@ -4868,6 +4868,7 @@ bool static AlreadyHave(const CInv& inv)
             return true;
         }
         return false;
+    /*
     case MSG_BUDGET_VOTE:
         if (budget.mapSeenFundamentalnodeBudgetVotes.count(inv.hash)) {
             fundamentalnodeSync.AddedBudgetItem(inv.hash);
@@ -4892,6 +4893,7 @@ bool static AlreadyHave(const CInv& inv)
             return true;
         }
         return false;
+    */
     case MSG_FUNDAMENTALNODE_ANNOUNCE:
         if (mnodeman.mapSeenFundamentalnodeBroadcast.count(inv.hash)) {
             fundamentalnodeSync.AddedFundamentalnodeList(inv.hash);
@@ -5046,6 +5048,7 @@ void static ProcessGetData(CNode* pfrom)
                         pushed = true;
                     }
                 }
+                /*
                 if (!pushed && inv.type == MSG_BUDGET_VOTE) {
                     if (budget.mapSeenFundamentalnodeBudgetVotes.count(inv.hash)) {
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
@@ -5085,6 +5088,7 @@ void static ProcessGetData(CNode* pfrom)
                         pushed = true;
                     }
                 }
+                */
 
                 if (!pushed && inv.type == MSG_FUNDAMENTALNODE_ANNOUNCE) {
                     if (mnodeman.mapSeenFundamentalnodeBroadcast.count(inv.hash)) {
@@ -5999,7 +6003,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         //probably one the extensions
         obfuScationPool.ProcessMessageObfuscation(pfrom, strCommand, vRecv);
         mnodeman.ProcessMessage(pfrom, strCommand, vRecv);
-        budget.ProcessMessage(pfrom, strCommand, vRecv);
+        //budget.ProcessMessage(pfrom, strCommand, vRecv);
         fundamentalnodePayments.ProcessMessageFundamentalnodePayments(pfrom, strCommand, vRecv);
         ProcessMessageSwiftTX(pfrom, strCommand, vRecv);
         ProcessSpork(pfrom, strCommand, vRecv);
