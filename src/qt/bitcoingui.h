@@ -88,6 +88,7 @@ private:
     QLabel* labelTorIcon;
     QPushButton* labelConnectionsIcon;
     QLabel* labelBlocksIcon;
+    QLabel *syncLabel;
     QLabel* progressBarLabel;
     QProgressBar* progressBar;
     QProgressDialog* progressDialog;
