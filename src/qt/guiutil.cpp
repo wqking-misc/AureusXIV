@@ -79,6 +79,10 @@ extern double NSAppKitVersionNumber;
 
 #define URI_SCHEME "vitae"
 
+#if QT_VERSION >= 0x50200
+#include <QFontDatabase>
+#endif
+
 namespace GUIUtil
 {
 QString dateTimeStr(const QDateTime& date)
@@ -93,7 +97,8 @@ QString dateTimeStr(qint64 nTime)
 
 QFont bitcoinAddressFont()
 {
-    QFont font("Monospace");
+    QFontDatabase::addApplicationFont(":/fonts/AndaleMono");
+    QFont font("Andale Mono");
 #if QT_VERSION >= 0x040800
     font.setStyleHint(QFont::Monospace);
 #else
@@ -101,6 +106,51 @@ QFont bitcoinAddressFont()
 #endif
     return font;
 }
+
+QFont primaryFont()
+{
+    QFontDatabase::addApplicationFont(":/fonts/AndaleMono");
+    QFont font("Andale Mono");
+    font.setPointSize(26);
+#if QT_VERSION >= 0x040800
+    font.setStyleHint(QFont::Monospace);
+#else
+    font.setStyleHint(QFont::TypeWriter);
+#endif
+    return font;
+}
+
+
+QFont secondaryFont()
+{
+    QFontDatabase::addApplicationFont(":/fonts/AndaleMono");
+    QFont font("Andale Mono");
+    font.setPointSize(16);
+#if QT_VERSION >= 0x040800
+    font.setStyleHint(QFont::Monospace);
+#else
+    font.setStyleHint(QFont::TypeWriter);
+#endif
+    return font;
+}
+
+
+
+
+// QFont andaleMonoFont()
+// {
+// #if QT_VERSION >= 0x50200
+//     return QFontDatabase::addApplicationFont(":/fonts/AndaleMono");
+// #else
+//     QFont font("Monospace");
+// #if QT_VERSION >= 0x040800
+//     font.setStyleHint(QFont::Monospace);
+// #else
+//     font.setStyleHint(QFont::TypeWriter);
+// #endif
+//     return font;
+// #endif
+// }
 
 void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent)
 {
