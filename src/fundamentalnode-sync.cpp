@@ -8,7 +8,7 @@
 #include "activefundamentalnode.h"
 #include "fundamentalnode-sync.h"
 #include "fundamentalnode-payments.h"
-//#include "fundamentalnode-budget.h"
+#include "fundamentalnode-budget.h"
 #include "fundamentalnode.h"
 #include "fundamentalnodeman.h"
 #include "spork.h"
@@ -64,20 +64,20 @@ void CFundamentalnodeSync::Reset()
 {
     lastFundamentalnodeList = 0;
     lastFundamentalnodeWinner = 0;
-    //lastBudgetItem = 0;
+    lastBudgetItem = 0;
     mapSeenSyncMNB.clear();
     mapSeenSyncMNW.clear();
-    //mapSeenSyncBudget.clear();
+    mapSeenSyncBudget.clear();
     lastFailure = 0;
     nCountFailures = 0;
     sumFundamentalnodeList = 0;
     sumFundamentalnodeWinner = 0;
-    //sumBudgetItemProp = 0;
-    //sumBudgetItemFin = 0;
+    sumBudgetItemProp = 0;
+    sumBudgetItemFin = 0;
     countFundamentalnodeList = 0;
     countFundamentalnodeWinner = 0;
-    //countBudgetItemProp = 0;
-    //countBudgetItemFin = 0;
+    countBudgetItemProp = 0;
+    countBudgetItemFin = 0;
     RequestedFundamentalnodeAssets = FUNDAMENTALNODE_SYNC_INITIAL;
     RequestedFundamentalnodeAttempt = 0;
     nAssetSyncStarted = GetTime();
@@ -109,7 +109,6 @@ void CFundamentalnodeSync::AddedFundamentalnodeWinner(uint256 hash)
     }
 }
 
-/*
 void CFundamentalnodeSync::AddedBudgetItem(uint256 hash)
 {
     if (budget.mapSeenFundamentalnodeBudgetProposals.count(hash) || budget.mapSeenFundamentalnodeBudgetVotes.count(hash) ||
@@ -133,7 +132,6 @@ bool CFundamentalnodeSync::IsBudgetFinEmpty()
 {
     return sumBudgetItemFin == 0 && countBudgetItemFin > 0;
 }
-*/
 
 void CFundamentalnodeSync::GetNextAsset()
 {
@@ -150,9 +148,9 @@ void CFundamentalnodeSync::GetNextAsset()
         RequestedFundamentalnodeAssets = FUNDAMENTALNODE_SYNC_MNW;
         break;
     case (FUNDAMENTALNODE_SYNC_MNW):
-    //    RequestedFundamentalnodeAssets = FUNDAMENTALNODE_SYNC_BUDGET;
-    //    break;
-    //case (FUNDAMENTALNODE_SYNC_BUDGET):
+        RequestedFundamentalnodeAssets = FUNDAMENTALNODE_SYNC_BUDGET;
+        break;
+    case (FUNDAMENTALNODE_SYNC_BUDGET):
         LogPrintf("CFundamentalnodeSync::GetNextAsset - Sync has finished\n");
         RequestedFundamentalnodeAssets = FUNDAMENTALNODE_SYNC_FINISHED;
         break;
@@ -172,8 +170,8 @@ std::string CFundamentalnodeSync::GetSyncStatus()
         return _("Synchronizing fundamentalnodes...");
     case FUNDAMENTALNODE_SYNC_MNW:
         return _("Synchronizing fundamentalnode winners...");
-    //case FUNDAMENTALNODE_SYNC_BUDGET:
-    //    return _("Synchronizing budgets...");
+    case FUNDAMENTALNODE_SYNC_BUDGET:
+        return _("Synchronizing budgets...");
     case FUNDAMENTALNODE_SYNC_FAILED:
         return _("Synchronization failed");
     case FUNDAMENTALNODE_SYNC_FINISHED:
@@ -203,7 +201,6 @@ void CFundamentalnodeSync::ProcessMessage(CNode* pfrom, std::string& strCommand,
             sumFundamentalnodeWinner += nCount;
             countFundamentalnodeWinner++;
             break;
-        /*
         case (FUNDAMENTALNODE_SYNC_BUDGET_PROP):
             if (RequestedFundamentalnodeAssets != FUNDAMENTALNODE_SYNC_BUDGET) return;
             sumBudgetItemProp += nCount;
@@ -214,7 +211,6 @@ void CFundamentalnodeSync::ProcessMessage(CNode* pfrom, std::string& strCommand,
             sumBudgetItemFin += nCount;
             countBudgetItemFin++;
             break;
-        */
         }
 
         LogPrint("fundamentalnode", "CFundamentalnodeSync:ProcessMessage - ssc - got inventory count %d %d\n", nItemID, nCount);
@@ -368,7 +364,6 @@ void CFundamentalnodeSync::Process()
             }
         }
 
-        /*
         if (pnode->nVersion >= ActiveProtocol()) {
             if (RequestedFundamentalnodeAssets == FUNDAMENTALNODE_SYNC_BUDGET) {
 
@@ -405,6 +400,5 @@ void CFundamentalnodeSync::Process()
                 return;
             }
         }
-        */
     }
 }

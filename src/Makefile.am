@@ -128,12 +128,14 @@ BITCOIN_CORE_H = \
   masternode.h \
   masternode-sync.h \
   masternode-payments.h \
+  masternode-budget.h \
   masternodeman.h \
   masternode-pos.h \
   masternodeman.h \
   masternodeconfig.h \
   fundamentalnode.h \
   fundamentalnode-payments.h \
+  fundamentalnode-budget.h \
   fundamentalnode-sync.h \
   fundamentalnodeman.h \
   fundamentalnodeconfig.h \
@@ -219,6 +221,7 @@ libbitcoin_server_a_SOURCES = \
   rest.cpp \
   rpcblockchain.cpp \
   rpcfundamentalnode.cpp \
+  rpcfundamentalnode-budget.cpp \
   rpcmining.cpp \
   rpcmisc.cpp \
   rpcnet.cpp \
@@ -260,6 +263,7 @@ libbitcoin_wallet_a_SOURCES = \
   crypter.cpp \
   swifttx.cpp \
   fundamentalnode.cpp \
+  fundamentalnode-budget.cpp \
   fundamentalnode-payments.cpp \
   fundamentalnode-sync.cpp \
   fundamentalnodeconfig.cpp \

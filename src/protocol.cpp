@@ -27,12 +27,10 @@ static const char* ppszTypeName[] =
         "spork",
         "fn winner",
         "fn scan error",
-        /*
         "fn budget vote",
         "fn budget proposal",
         "fn budget finalized",
         "fn budget finalized vote",
-        */
         "fn quorum",
         "fn announce",
         "fn ping",
