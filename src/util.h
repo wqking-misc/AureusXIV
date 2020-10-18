@@ -36,14 +36,11 @@ extern bool fLiteMode;
 extern bool fEnableSwiftTX;
 extern int nSwiftTXDepth;
 extern int nPreferredDenom;
-extern int nAnonymizeVitaeAmount;
-extern int nLiquidityProvider;
 extern int nZeromintPercentage;
 extern int64_t enforceFundamentalnodePaymentsTime;
 extern std::string strFundamentalNodeAddr;
 extern int keysLoaded;
 extern bool fSucessfullyLoaded;
-extern std::vector<int64_t> obfuScationDenominations;
 extern std::string strBudgetMode;
 
 //masternodes
