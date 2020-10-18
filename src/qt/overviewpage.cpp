@@ -33,7 +33,7 @@ class TxViewDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
 public:
-    TxViewDelegate() : QAbstractItemDelegate(), unit(BitcoinUnits::VITAE)
+    TxViewDelegate() : QAbstractItemDelegate(), unit(BitcoinUnits::AXIV)
     {
     }
 
@@ -165,7 +165,7 @@ void OverviewPage::getPercentage(CAmount nUnlockedBalance, QString& sVITPercenta
     double dzPercentage = 0.0;
 
     double dPercentage = 100.0 - dzPercentage;
-    
+
     sVITPercentage = "(" + QLocale(QLocale::system()).toString(dPercentage, 'f', nPrecision) + " %)";
     
 }
@@ -186,7 +186,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
         nLockedBalance = pwalletMain->GetLockedCoins();
         nWatchOnlyLockedBalance = pwalletMain->GetLockedWatchOnlyBalance();
     }
-    // VITAE Balance
+    // AureusXIV Balance
     CAmount nTotalBalance = balance + unconfirmedBalance;
     CAmount vitAvailableBalance = balance - immatureBalance - nLockedBalance;
     CAmount nTotalWatchBalance = watchOnlyBalance + watchUnconfBalance + watchImmatureBalance;    
@@ -199,7 +199,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     CAmount availableTotalBalance = vitAvailableBalance;
     CAmount sumTotalBalance = nTotalBalance;
 
-    // VITAE labels
+    // AureusXIV labels
     ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, vitAvailableBalance, false, BitcoinUnits::separatorAlways));
     ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedBalance, false, BitcoinUnits::separatorAlways));
     ui->labelImmature->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, immatureBalance, false, BitcoinUnits::separatorAlways));
@@ -219,7 +219,6 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
 
     // Percentage labels
     ui->labelVITPercent->setText(sPercentage);
-
 
     // Only show most balances if they are non-zero for the sake of simplicity
     QSettings settings;
@@ -319,7 +318,7 @@ void OverviewPage::setWalletModel(WalletModel* model)
         connect(model, SIGNAL(notifyWatchonlyChanged(bool)), this, SLOT(updateWatchOnlyLabels(bool)));
     }
 
-    // update the display unit, to not use the default ("VITAE")
+    // update the display unit, to not use the default ("AXIV")
     updateDisplayUnit();
 }
 
