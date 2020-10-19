@@ -195,6 +195,9 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
         list<COrphan> vOrphan; // list memory doesn't move
         map<uint256, vector<COrphan*> > mapDependers;
         bool fPrintPriority = GetBoolArg("-printpriority", false);
+        
+        // Keep a list of any transactions with completely missing inputs
+        vector<CTransaction> vecMissingInputTXs;
 
         // This vector will be sorted into a priority queue:
         vector<TxPriority> vecPriority;
@@ -218,9 +221,10 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
                     // pool should connect to either transactions in the chain
                     // or other transactions in the memory pool.
                     if (!mempool.mapTx.count(txin.prevout.hash)) {
-                        LogPrintf("ERROR: mempool transaction missing input\n");
+                        LogPrintf("ERROR: mempool transaction missing input, evicting transaction from mempool (%s)\n", tx.GetHash().ToString().c_str());                        
                         if (fDebug) assert("mempool transaction missing input" == 0);
                         fMissingInputs = true;
+                        vecMissingInputTXs.push_back(tx);
                         if (porphan)
                             vOrphan.pop_back();
                         break;
@@ -274,6 +278,16 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
             } else
                 vecPriority.push_back(TxPriority(dPriority, feeRate, &mi->second.GetTx()));
         }
+        
+        // Remove any bad transaction(s) (And any of it's depended-on inputs) from the mempool entirely
+        list<CTransaction> removed;
+        for (const CTransaction& badTx : vecMissingInputTXs) {
+            mempool.remove(badTx, removed, true);
+        }
+        if (!removed.empty()) {
+            LogPrintf("CreateNewBlock() : Evicted %u transaction(s) from the mempool for missing inputs", removed.size());
+        }
+        
 
         // Collect transactions into block
         uint64_t nBlockSize = 1000;
