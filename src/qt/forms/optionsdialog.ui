@@ -40,10 +40,10 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Automatically start VITAE after logging in to the system.</string>
+          <string>Automatically start AureusXIV after logging in to the system.</string>
          </property>
          <property name="text">
-          <string>&amp;Start VITAE on system login</string>
+          <string>&amp;Start AureusXIV on system login</string>
          </property>
         </widget>
        </item>
@@ -289,7 +289,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Automatically open the VITAE client port on the router. This only works when your router supports UPnP and it is enabled.</string>
+          <string>Automatically open the AureusXIV client port on the router. This only works when your router supports UPnP and it is enabled.</string>
          </property>
          <property name="text">
           <string>Map port using &amp;UPnP</string>
@@ -319,7 +319,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Connect to the VITAE network through a SOCKS5 proxy.</string>
+          <string>Connect to the AureusXIV network through a SOCKS5 proxy.</string>
          </property>
          <property name="text">
           <string>&amp;Connect through SOCKS5 proxy (default proxy):</string>
@@ -525,7 +525,7 @@
             </font>
            </property>
            <property name="toolTip">
-            <string>The user interface language can be set here. This setting will take effect after restarting VITAE.</string>
+            <string>The user interface language can be set here. This setting will take effect after restarting AureusXIV.</string>
            </property>
           </widget>
          </item>
@@ -552,7 +552,7 @@
          </property>
          <property name="text">
           <string>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/vitae-project/vitae-project-translations</string>
+https://www.transifex.com/aureusxiv-project/aureusxiv-project-translations</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
