@@ -1439,7 +1439,7 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
 
 UniValue createfundamentalnodekey (const UniValue& params, bool fHelp)
 {
-    if(GetSporkValue(SPORK_23_DISABLE_NEW_FUNDAMENTALNODE) > 0) {
+    if(sporkManager.GetSporkValue(SPORK_14_DISABLE_NEW_FUNDAMENTALNODE) > 0) {
         throw runtime_error("Fundamental node creation is disabled.");
     }
 
