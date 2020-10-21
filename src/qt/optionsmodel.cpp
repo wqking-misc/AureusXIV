@@ -109,12 +109,6 @@ void OptionsModel::Init()
         addOverriddenOption("-par");
 
 // Wallet
-#ifdef ENABLE_WALLET
-    if (!settings.contains("bSpendZeroConfChange"))
-        settings.setValue("bSpendZeroConfChange", false);
-    if (!SoftSetBoolArg("-spendzeroconfchange", settings.value("bSpendZeroConfChange").toBool()))
-        addOverriddenOption("-spendzeroconfchange");
-#endif
     if (!settings.contains("nStakeSplitThreshold"))
         settings.setValue("nStakeSplitThreshold", 1);
 
