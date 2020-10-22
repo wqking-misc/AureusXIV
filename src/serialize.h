@@ -303,6 +303,8 @@ inline void Unserialize(Stream& s, SporkId& sporkID, int, int = 0)
     sporkID = (SporkId) f;
 }
 
+inline unsigned int GetSerializeSize(SporkId sporkID, int, int = 0) { return sizeof(sporkID); }
+
 /**
  * Compact Size
  * size <  253        -- 1 byte
