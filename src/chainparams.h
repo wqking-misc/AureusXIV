@@ -111,6 +111,7 @@ public:
     int LAST_POW_BLOCK() const { return nLastPOWBlock; }
     int Block_Enforce_Invalid() const { return nBlockEnforceInvalidUTXO; }
     CAmount InvalidAmountFiltered() const { return nInvalidAmountFiltered; };
+    int START_MASTERNODE_PAYMENTS() const { return nStartMasternodePayments; }
 
 protected:
     CChainParams() {}
@@ -129,6 +130,7 @@ protected:
     int64_t nTargetTimespan;
     int64_t nTargetSpacing;
     int nLastPOWBlock;
+    int nStartMasternodePayments;
     int nFundamentalnodeCountDrift;
 	int nMasternodeCountDrift;
     int nBudgetCycleBlocks;

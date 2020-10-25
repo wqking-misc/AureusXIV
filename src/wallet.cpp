@@ -2203,14 +2203,8 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
     bool bMasterNodePayment = false;
 
-    if ( Params().NetworkID() == CBaseChainParams::TESTNET ){
-        if (GetTimeMicros() > START_MASTERNODE_PAYMENTS_TESTNET ){
-            bMasterNodePayment = true;
-        }
-    }else{
-        if (GetTimeMicros() > START_MASTERNODE_PAYMENTS){
-            bMasterNodePayment = true;
-        }
+    if (chainActive.Tip()->nHeight > Params().START_MASTERNODE_PAYMENTS()){
+        bMasterNodePayment = true;
     }
 
     CAmount nCredit = 0;
