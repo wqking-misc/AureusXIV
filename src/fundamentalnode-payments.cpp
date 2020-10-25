@@ -239,7 +239,7 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
 	bool MasternodePayments = false;
 
 
-    if(block.nTime > START_MASTERNODE_PAYMENTS) MasternodePayments = true;
+    if(nBlockHeight > Params().START_MASTERNODE_PAYMENTS()) MasternodePayments = true;
 
     if(!IsMNSporkActive(MN_SPORK_1_MASTERNODE_PAYMENTS_ENFORCEMENT)){
         MasternodePayments = false; //
