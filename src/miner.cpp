@@ -183,6 +183,9 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
         list<COrphan> vOrphan; // list memory doesn't move
         map<uint256, vector<COrphan*> > mapDependers;
         bool fPrintPriority = GetBoolArg("-printpriority", false);
+        
+        // Keep a list of any transactions with completely missing inputs
+        vector<CTransaction> vecInvalidTXs;
 
         // This vector will be sorted into a priority queue:
         vector<TxPriority> vecPriority;
@@ -206,9 +209,10 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
                     // pool should connect to either transactions in the chain
                     // or other transactions in the memory pool.
                     if (!mempool.mapTx.count(txin.prevout.hash)) {
-                        LogPrintf("ERROR: mempool transaction missing input\n");
+                        LogPrintf("ERROR: mempool transaction missing input, evicting transaction from mempool (%s)\n", tx.GetHash().ToString().c_str());                        
                         if (fDebug) assert("mempool transaction missing input" == 0);
                         fMissingInputs = true;
+                        vecInvalidTXs.push_back(tx);
                         if (porphan)
                             vOrphan.pop_back();
                         break;
@@ -246,6 +250,15 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
 
             }
             if (fMissingInputs) continue;
+            
+            // Sanity check for double-spends and other irregularities (If, somehow, they get past mempool checks)
+            CValidationState txCheckState;
+            if (!CheckTransaction(tx, chainActive.Height() >= Params().Zerocoin_StartHeight(), true, txCheckState)) {
+                LogPrintf("ERROR: mempool transaction invalid (%s), evicting transaction from mempool (%s)\n", txCheckState.GetRejectReason(),
+                                                                                                               tx.GetHash().ToString().c_str());
+                vecInvalidTXs.push_back(tx);
+                continue;
+            }
 
             // Priority is sum(valuein * age) / modified_txsize
             unsigned int nTxSize = ::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION);
@@ -262,6 +275,16 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
             } else
                 vecPriority.push_back(TxPriority(dPriority, feeRate, &mi->second.GetTx()));
         }
+        
+        // Remove any invalid transaction(s) (And any of it's depended-on inputs) from the mempool entirely
+        list<CTransaction> removed;
+        for (const CTransaction& badTx : vecInvalidTXs) {
+            mempool.remove(badTx, removed, true);
+        }
+        if (!removed.empty()) {
+            LogPrintf("CreateNewBlock() : Evicted %u invalid transaction(s) from the mempool", removed.size());
+        }
+        
 
         // Collect transactions into block
         uint64_t nBlockSize = 1000;
