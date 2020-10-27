@@ -225,10 +225,10 @@ QT_TRANSLATE_NOOP("aureusxiv-core", ""
 QT_TRANSLATE_NOOP("aureusxiv-core", ""
 "You must specify a fundamentalnodeprivkey in the configuration. Please see "
 "documentation for help."),
-QT_TRANSLATE_NOOP("aureusxiv-core", "(8765 could be used only on mainnet)"),
+QT_TRANSLATE_NOOP("aureusxiv-core", "(10135 could be used only on mainnet)"),
 QT_TRANSLATE_NOOP("aureusxiv-core", "(default: %s)"),
 QT_TRANSLATE_NOOP("aureusxiv-core", "(default: 1)"),
-QT_TRANSLATE_NOOP("aureusxiv-core", "(must be 8765 for mainnet)"),
+QT_TRANSLATE_NOOP("aureusxiv-core", "(must be 101335 for mainnet)"),
 QT_TRANSLATE_NOOP("aureusxiv-core", "<category> can be:"),
 QT_TRANSLATE_NOOP("aureusxiv-core", "Accept command line and JSON-RPC commands"),
 QT_TRANSLATE_NOOP("aureusxiv-core", "Accept connections from outside (default: 1 if no -proxy or -connect)"),
