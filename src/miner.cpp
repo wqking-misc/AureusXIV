@@ -253,7 +253,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
             
             // Sanity check for double-spends and other irregularities (If, somehow, they get past mempool checks)
             CValidationState txCheckState;
-            if (!CheckTransaction(tx, chainActive.Height() >= Params().Zerocoin_StartHeight(), true, txCheckState)) {
+            if (!CheckTransaction(tx, true, txCheckState)) {
                 LogPrintf("ERROR: mempool transaction invalid (%s), evicting transaction from mempool (%s)\n", txCheckState.GetRejectReason(),
                                                                                                                tx.GetHash().ToString().c_str());
                 vecInvalidTXs.push_back(tx);
