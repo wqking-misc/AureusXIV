@@ -1707,7 +1707,7 @@
       <string>AureusXIV</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="UnitsInputVIT">
+    <widget class="QLineEdit" name="UnitsInputAXIV">
      <property name="geometry">
       <rect>
        <x>310</x>
