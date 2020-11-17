@@ -1002,6 +1002,59 @@ min-width:260px;
 /* QDialog#MultisigDialog QPushButton { */
 /* QDialog#MultisigDialog QFrame#addressFrame { */
 
+/**************************** Privacy Dialog ********************************************/
+
+
+QWidget#PrivacyDialog QFrame {
+background-color:transparent;
+border:0px solid #000;
+}
+
+QWidget#PrivacyDialog QFrame#labelMintStatus {
+background-color:#eee;
+border: 1px inset gray;
+}
+
+QWidget#PrivacyDialog QLabel {
+border:0px solid #000;
+}
+
+QWidget#PrivacyDialog QLabel#zAureusXIVLabel {
+font-size:14px;
+color:#ffffff;
+background-color: #f9ffdc;
+}
+
+QWidget#PrivacyDialog QLabel#oVITLabel {
+font-size:14px;
+color:#ffffff;
+background-color: #f9ffdc;
+}
+
+QWidget#PrivacyDialog QPushButton {
+font-size:12px;
+font-weight:normal;
+padding-left:5px;
+padding-right:5px;
+padding-top:1px;
+padding-bottom:1px;
+height: 26px;
+margin: 2px;
+}
+
+QWidget#PrivacyDialog QProgressBar#obfuscationProgress { /* Obfuscation Completion */
+border: 1px solid #818181;
+border-radius: 1px;
+margin-right:43px;
+text-align: right;
+color:#818181;
+}
+
+QWidget#PrivacyDialog QProgressBar#obfuscationProgress::chunk {
+background-color: #008020;
+width:1px;
+}
+
 /**************************** SETTINGS MENU *********************************************/
 
 QDialog {
@@ -1144,7 +1197,7 @@ background-color:transparent;
 
 QLabel#labelOverviewHeaderRight {
 qproperty-alignment: 'AlignVCenter | AlignRight';
-background-image: url(':/images/aureusxiv_logo_horizontal');
+/* background-image: url(':/images/aureusxiv_logo_horizontal'); */
 background-repeat: no-repeat;
 }
 
