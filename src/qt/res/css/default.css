@@ -677,6 +677,10 @@ background-color:#e7e7e7;
 QHeaderView { /* Table Header */
 background-color:transparent;
 outline:0;
+min-height:40px;
+}
+QTableView {
+    padding-top:10px;
 }
 
 QHeaderView::section { /* Table Header Sections */

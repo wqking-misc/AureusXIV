@@ -623,9 +623,7 @@ void BitcoinGUI::createToolBars()
        toolbar->addAction(spacer);
        toolbar->widgetForAction(spacer)->setObjectName("ToolbarSpacer");
        toolbar->addWidget(label);
-        QAction* spacer2 = new QAction(this);
-       toolbar->addAction(spacer2);
-       toolbar->widgetForAction(spacer2)->setObjectName("ToolbarSpacer2");
+ 
        //toolbar->addWidget(syncLabel);
        //toolbar->setStyleSheet("text-align:left;");
 
