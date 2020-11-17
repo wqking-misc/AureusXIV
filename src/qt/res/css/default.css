@@ -677,6 +677,10 @@ background-color:#e7e7e7;
 QHeaderView { /* Table Header */
 background-color:transparent;
 outline:0;
+min-height:40px;
+}
+QTableView {
+    padding-top:10px;
 }
 
 QHeaderView::section { /* Table Header Sections */
@@ -1197,7 +1201,7 @@ background-color:transparent;
 
 QLabel#labelOverviewHeaderRight {
 qproperty-alignment: 'AlignVCenter | AlignRight';
-/* background-image: url(':/images/aureusxiv_logo_horizontal'); */
+/* background-image: url(':/images/AureusXIV_logo_horizontal'); */
 background-repeat: no-repeat;
 }
 
