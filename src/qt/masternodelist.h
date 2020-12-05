@@ -9,6 +9,7 @@
 #include <QMenu>
 #include <QTimer>
 #include <QWidget>
+#include <QPalette>
 
 #define MY_MASTERNODELIST_UPDATE_SECONDS 60
 #define MASTERNODELIST_UPDATE_SECONDS 15
