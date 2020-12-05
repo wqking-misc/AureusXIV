@@ -1,4 +1,5 @@
 #include "masternodelist.h"
+#include <QPalette>
 #include "ui_masternodelist.h"
 
 #include "activemasternode.h"
@@ -15,6 +16,7 @@
 
 #include <QMessageBox>
 #include <QTimer>
+
 
 CCriticalSection cs_masternodes;
 
