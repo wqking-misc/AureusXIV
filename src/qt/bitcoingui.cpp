@@ -30,7 +30,6 @@
 #endif
 
 #include "init.h"
-#include "fundamentalnodelist.h"
 #include "fundamentalnode-sync.h"
 #include "masternodelist.h"
 #include "ui_interface.h"
@@ -85,7 +84,6 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
                                                                             appMenuBar(0),
                                                                             overviewAction(0),
                                                                             historyAction(0),
-                                                                            fundamentalnodeAction(0),
                                                                             masternodeAction(0),
                                                                             quitAction(0),
                                                                             sendCoinsAction(0),
@@ -364,21 +362,6 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #ifdef ENABLE_WALLET
 
     QSettings settings;
-    if (settings.value("fShowFundamentalnodesTab").toBool()) {
-        fundamentalnodeAction = new QAction(QIcon(":/icons/send"), tr("&Fundamentalnodes"), this);
-        fundamentalnodeAction->setStatusTip(tr("Browse fundamentalnodes"));
-        fundamentalnodeAction->setToolTip(fundamentalnodeAction->statusTip());
-        fundamentalnodeAction->setCheckable(true);
-        fundamentalnodeAction->setFont(GUIUtil::primaryFont());
-#ifdef Q_OS_MAC
-        fundamentalnodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
-#else
-        fundamentalnodeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
-#endif
-        tabGroup->addAction(fundamentalnodeAction);
-        connect(fundamentalnodeAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-        connect(fundamentalnodeAction, SIGNAL(triggered()), this, SLOT(gotoFundamentalnodePage()));
-    }
 
     if (settings.value("fShowMasternodesTab").toBool()) {
         masternodeAction = new QAction(QIcon(":/icons/send"), tr("&Nodes"), this);
@@ -640,9 +623,6 @@ void BitcoinGUI::createToolBars()
         toolbar->addAction(receiveCoinsAction);
         toolbar->addAction(historyAction);
         QSettings settings;
-        if (settings.value("fShowFundamentalnodesTab").toBool()) {
-            toolbar->addAction(fundamentalnodeAction);
-        }
         if (settings.value("fShowMasternodesTab").toBool()) {
             toolbar->addAction(masternodeAction);
         }
@@ -746,9 +726,6 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     receiveCoinsAction->setEnabled(enabled);
     historyAction->setEnabled(enabled);
     QSettings settings;
-    if (settings.value("fShowFundamentalnodesTab").toBool()) {
-        fundamentalnodeAction->setEnabled(enabled);
-    }
     if (settings.value("fShowMasternodesTab").toBool()) {
         masternodeAction->setEnabled(enabled);
     }
@@ -882,15 +859,6 @@ void BitcoinGUI::gotoHistoryPage()
 {
     historyAction->setChecked(true);
     if (walletFrame) walletFrame->gotoHistoryPage();
-}
-
-void BitcoinGUI::gotoFundamentalnodePage()
-{
-    QSettings settings;
-    if (settings.value("fShowFundamentalnodesTab").toBool()) {
-        fundamentalnodeAction->setChecked(true);
-        if (walletFrame) walletFrame->gotoFundamentalnodePage();
-    }
 }
 
 void BitcoinGUI::gotoMasternodePage()

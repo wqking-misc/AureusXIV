@@ -7,6 +7,7 @@
 #define MASTERNODELIST_H
 
 #include "masternode.h"
+#include "fundamentalnode.h"
 #include "platformstyle.h"
 #include "sync.h"
 #include "util.h"
@@ -45,6 +46,8 @@ public:
     void setWalletModel(WalletModel* walletModel);
     void StartAlias(std::string strAlias);
     void StartAll(std::string strCommand = "start-all");
+    void StartAliasFundamentalNode(std::string strAlias);
+    void StartAllFundamentalNode(std::string strCommand = "start-all");
 
 private:
     QMenu* contextMenu;
@@ -52,8 +55,10 @@ private:
     bool fFilterUpdated;
 
 public Q_SLOTS:
-            void updateMyMasternodeInfo(QString strAlias, QString strAddr, CMasternode* pmn);
+    void updateMyMasternodeInfo(QString strAlias, QString strAddr, CMasternode* pmn);
     void updateMyNodeList(bool fForce = false);
+    void updateMyFundamentalNodeInfo(QString strAlias, QString strAddr, CFundamentalnode* pmn);
+    void updateMyNodeListFundamentalNode(bool fForce = false);
 
     Q_SIGNALS:
 
@@ -66,11 +71,19 @@ private:
     QString strCurrentFilter;
 
 private Q_SLOTS:
-            void showContextMenu(const QPoint&);
+    void showContextMenu(const QPoint&);
+    //Masternodes
     void on_startButton_clicked();
     void on_startAllButton_clicked();
     void on_startMissingButton_clicked();
     void on_tableWidgetMyMasternodes_itemSelectionChanged();
     void on_UpdateButton_clicked();
+    //Fundamentalnodes
+    void on_startButtonFundamentalNode_clicked();
+    void on_startAllButtonFundamentalNode_clicked();
+    void on_startMissingButtonFundamentalNode_clicked();
+    void on_tableWidgetMyFundamentalnodes_itemSelectionChanged();
+    void on_UpdateButtonFundamentalNode_clicked();
+
 };
 #endif // MASTERNODELIST_H
