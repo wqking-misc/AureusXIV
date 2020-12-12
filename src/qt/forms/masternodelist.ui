@@ -298,7 +298,7 @@
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
         <item row="1" column="0">
-         <widget class="QTableWidget" name="tableWidgetMasternodes">
+         <widget class="QTableWidget" name="tableWidgetMyFundamentalnodes">
           <property name="palette">
            <palette>
             <active>
@@ -365,6 +365,11 @@
           </attribute>
           <column>
            <property name="text">
+            <string>Alias</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
             <string>Address</string>
            </property>
           </column>
@@ -395,56 +400,90 @@
           </column>
          </widget>
         </item>
-        <item row="0" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item row="2" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
           <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
-           <widget class="QLabel" name="label_filter">
-            <property name="text">
-             <string>Filter List:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="filterLineEdit">
-            <property name="toolTip">
-             <string>Filter masternode list</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>10</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_count">
-            <property name="text">
-             <string>Node Count:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="countLabel">
+           <widget class="QPushButton" name="startButtonFundamentalNode">
             <property name="font">
              <font>
               <family>Andale Mono</family>
              </font>
             </property>
             <property name="text">
+             <string>S&amp;tart alias</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="startAllButtonFundamentalNode">
+            <property name="font">
+             <font>
+              <family>Andale Mono</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>Start &amp;all</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="startMissingButtonFundamentalNode">
+            <property name="font">
+             <font>
+              <family>Andale Mono</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>Start &amp;MISSING</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="UpdateButtonFundamentalNode">
+            <property name="font">
+             <font>
+              <family>Andale Mono</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>&amp;Update status</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="autoupdate_labelFundamentalNode">
+            <property name="font">
+             <font>
+              <family>Andale Mono</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>Status will be updated automatically in (sec):</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="secondsLabelFundamentalNode">
+            <property name="text">
              <string>0</string>
             </property>
            </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </item>
