@@ -554,12 +554,8 @@ color: #f9ffdc;
 QAbstractSpinBox::up-button {
     subcontrol-origin: border;
 	subcontrol-position: top right;
-<<<<<<< HEAD
-	width: 23px;
-=======
     width: 16px;
     height:12px;
->>>>>>> b25e97552b9ecf006b66bc7caee20adb5fecedc4
 	background: transparent;
 	border: 0;
 	padding-right: 1px;
@@ -681,6 +677,10 @@ background-color:#e7e7e7;
 QHeaderView { /* Table Header */
 background-color:transparent;
 outline:0;
+min-height:40px;
+}
+QTableView {
+    padding-top:10px;
 }
 
 QHeaderView::section { /* Table Header Sections */
@@ -1006,6 +1006,59 @@ min-width:260px;
 /* QDialog#MultisigDialog QPushButton { */
 /* QDialog#MultisigDialog QFrame#addressFrame { */
 
+/**************************** Privacy Dialog ********************************************/
+
+
+QWidget#PrivacyDialog QFrame {
+background-color:transparent;
+border:0px solid #000;
+}
+
+QWidget#PrivacyDialog QFrame#labelMintStatus {
+background-color:#eee;
+border: 1px inset gray;
+}
+
+QWidget#PrivacyDialog QLabel {
+border:0px solid #000;
+}
+
+QWidget#PrivacyDialog QLabel#zAureusXIVLabel {
+font-size:14px;
+color:#ffffff;
+background-color: #f9ffdc;
+}
+
+QWidget#PrivacyDialog QLabel#oVITLabel {
+font-size:14px;
+color:#ffffff;
+background-color: #f9ffdc;
+}
+
+QWidget#PrivacyDialog QPushButton {
+font-size:12px;
+font-weight:normal;
+padding-left:5px;
+padding-right:5px;
+padding-top:1px;
+padding-bottom:1px;
+height: 26px;
+margin: 2px;
+}
+
+QWidget#PrivacyDialog QProgressBar#obfuscationProgress { /* Obfuscation Completion */
+border: 1px solid #818181;
+border-radius: 1px;
+margin-right:43px;
+text-align: right;
+color:#818181;
+}
+
+QWidget#PrivacyDialog QProgressBar#obfuscationProgress::chunk {
+background-color: #008020;
+width:1px;
+}
+
 /**************************** SETTINGS MENU *********************************************/
 
 QDialog {
@@ -1148,7 +1201,7 @@ background-color:transparent;
 
 QLabel#labelOverviewHeaderRight {
 qproperty-alignment: 'AlignVCenter | AlignRight';
-background-image: url(':/images/aureusxiv_logo_horizontal');
+/* background-image: url(':/images/AureusXIV_logo_horizontal'); */
 background-repeat: no-repeat;
 }
 
