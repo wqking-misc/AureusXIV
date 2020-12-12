@@ -554,12 +554,8 @@ color: #f9ffdc;
 QAbstractSpinBox::up-button {
     subcontrol-origin: border;
 	subcontrol-position: top right;
-<<<<<<< HEAD
-	width: 23px;
-=======
     width: 16px;
     height:12px;
->>>>>>> b25e97552b9ecf006b66bc7caee20adb5fecedc4
 	background: transparent;
 	border: 0;
 	padding-right: 1px;
