@@ -2,24 +2,24 @@
 
 # backward compatibility for existing gentoo layout
 #
-if [ -d "/var/lib/aureusxiv/.aureusxiv" ]; then
-	BITCOIND_DEFAULT_DATADIR="/var/lib/aureusxiv/.aureusxiv"
+if [ -d "/var/lib/axiv/.axiv" ]; then
+	BITCOIND_DEFAULT_DATADIR="/var/lib/axiv/.axiv"
 else
-	BITCOIND_DEFAULT_DATADIR="/var/lib/aureusxivd"
+	BITCOIND_DEFAULT_DATADIR="/var/lib/axivd"
 fi
 
-BITCOIND_CONFIGFILE=${BITCOIND_CONFIGFILE:-/etc/aureusxiv/aureusxiv.conf}
-BITCOIND_PIDDIR=${BITCOIND_PIDDIR:-/var/run/aureusxivd}
-BITCOIND_PIDFILE=${BITCOIND_PIDFILE:-${BITCOIND_PIDDIR}/aureusxivd.pid}
+BITCOIND_CONFIGFILE=${BITCOIND_CONFIGFILE:-/etc/axiv/axiv.conf}
+BITCOIND_PIDDIR=${BITCOIND_PIDDIR:-/var/run/axivd}
+BITCOIND_PIDFILE=${BITCOIND_PIDFILE:-${BITCOIND_PIDDIR}/axivd.pid}
 BITCOIND_DATADIR=${BITCOIND_DATADIR:-${BITCOIND_DEFAULT_DATADIR}}
-BITCOIND_USER=${BITCOIND_USER:-aureusxiv}
-BITCOIND_GROUP=${BITCOIND_GROUP:-aureusxiv}
-BITCOIND_BIN=${BITCOIND_BIN:-/usr/bin/aureusxivd}
+BITCOIND_USER=${BITCOIND_USER:-axiv}
+BITCOIND_GROUP=${BITCOIND_GROUP:-axiv}
+BITCOIND_BIN=${BITCOIND_BIN:-/usr/bin/axivd}
 
-name="AureusXIV Core Daemon"
-description="AureusXIV crypto-currency p2p network daemon"
+name="AXIV Core Daemon"
+description="AXIV crypto-currency p2p network daemon"
 
-command="/usr/bin/aureusxivd"
+command="/usr/bin/axivd"
 command_args="-pid=\"${BITCOIND_PIDFILE}\" \
 		-conf=\"${BITCOIND_CONFIGFILE}\" \
 		-datadir=\"${BITCOIND_DATADIR}\" \
@@ -65,7 +65,7 @@ checkconfig()
 {
 	if ! grep -qs '^rpcpassword=' "${BITCOIND_CONFIGFILE}" ; then
 		eerror ""
-		eerror "ERROR: You must set a secure rpcpassword to run aureusxivd."
+		eerror "ERROR: You must set a secure rpcpassword to run axivd."
 		eerror "The setting must appear in ${BITCOIND_CONFIGFILE}"
 		eerror ""
 		eerror "This password is security critical to securing wallets "
@@ -78,7 +78,7 @@ checkconfig()
 		eerror "It is also recommended that you also set alertnotify so you are "
 		eerror "notified of problems:"
 		eerror ""
-		eerror "ie: alertnotify=echo %%s | mail -s \"AureusXIV Alert\"" \
+		eerror "ie: alertnotify=echo %%s | mail -s \"AXIV Alert\"" \
 			"admin@foo.com"
 		eerror ""
 		return 1

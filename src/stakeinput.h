@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef AUREUSXIV_STAKEINPUT_H
-#define AUREUSXIV_STAKEINPUT_H
+#ifndef AXIV_STAKEINPUT_H
+#define AXIV_STAKEINPUT_H
 
 class CKeyStore;
 class CWallet;
@@ -51,4 +51,4 @@ public:
 };
 
 
-#endif //AUREUSXIV_STAKEINPUT_H
+#endif //AXIV_STAKEINPUT_H

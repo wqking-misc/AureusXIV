@@ -1,10 +1,10 @@
 Sample configuration files for:
 
-SystemD: aureusxivd.service
-Upstart: aureusxivd.conf
-OpenRC:  aureusxivd.openrc
-         aureusxivd.openrcconf
-CentOS:  aureusxivd.init
+SystemD: AXIVd.service
+Upstart: AXIVd.conf
+OpenRC:  AXIVd.openrc
+         AXIVd.openrcconf
+CentOS:  AXIVd.init
 
 have been made available to assist packagers in creating node packages here.
 

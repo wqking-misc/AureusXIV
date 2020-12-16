@@ -1,7 +1,7 @@
-#ifndef AUREUSXIV_INVALID_H
-#define AUREUSXIV_INVALID_H
+#ifndef AXIV_INVALID_H
+#define AXIV_INVALID_H
 
-#endif //AUREUSXIV_INVALID_H
+#endif //AXIV_INVALID_H
 
 #include <bignum.h>
 #include <univalue/include/univalue.h>

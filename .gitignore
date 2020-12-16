@@ -24,12 +24,12 @@ reset-files.bash
 *.tar.gz
 
 *.exe
-src/aureusxiv
-src/aureusxivd
-src/aureusxiv-cli
-src/aureusxiv-tx
-src/test/test_aureusxiv
-src/qt/test/test_aureusxiv-qt
+src/axiv
+src/axivd
+src/axiv-cli
+src/axiv-tx
+src/test/test_axiv
+src/qt/test/test_axiv-qt
 
 # autoreconf
 Makefile.in
@@ -55,8 +55,8 @@ confdefs.h
 conftest.cpp
 conftest.err
 libtool
-src/config/aureusxiv-config.h
-src/config/aureusxiv-config.h.in
+src/config/axiv-config.h
+src/config/axiv-config.h.in
 src/config/stamp-h1
 share/setup.nsi
 share/qt/Info.plist
@@ -83,7 +83,7 @@ src/qt/test/moc*.cpp
 *.o
 *.o-*
 *.patch
-.aureusxiv
+.axiv
 *.a
 *.pb.cc
 *.pb.h
@@ -102,13 +102,13 @@ src/qt/test/moc*.cpp
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
-aureusxiv-qt
-AureusXIV-Qt.app
+axiv-qt
+AXIV-Qt.app
 background.tiff*
 
 # Unit-tests
 Makefile.test
-aureusxiv-qt_test
+axiv-qt_test
 src/test/buildenv.py
 
 # Resources cpp
@@ -124,7 +124,7 @@ build
 #lcov
 *.gcno
 /*.info
-test_aureusxiv.coverage/
+test_axiv.coverage/
 total.coverage/
 coverage_percent.txt
 
@@ -150,6 +150,6 @@ libbitcoinconsensus.pc
 CMakeLists.txt
 cmake-build-debug
 
-aureusxiv-qt.pro
-src/config/aureusxiv-config.h
-src/config/aureusxiv-config.h.in
+axiv-qt.pro
+src/config/axiv-config.h
+src/config/axiv-config.h.in
