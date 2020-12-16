@@ -34,7 +34,7 @@
 #include <vector>
 
 extern CWallet* pwalletMain;
-//extern CzAureusXIVWallet* zwalletMain;
+//extern CzAXIVWallet* zwalletMain;
 
 /**
  * Settings

@@ -47,7 +47,7 @@ public:
         //ZeromintPercentage,  // int
         ZeromintPrefDenom,   // int
         HideZeroBalances,    // bool
-        AnonymizeAureusXIVAmount, //int
+        AnonymizeAXIVAmount, //int
         ShowFundamentalnodesTab,  // bool
 		ShowMasternodesTab,  // bool
         Listen,              // bool
@@ -100,7 +100,7 @@ signals:
     //void zeromintEnableChanged(bool);
     //void zeromintPercentageChanged(int);
     void preferredDenomChanged(int);
-    void anonymizeAureusXIVAmountChanged(int);
+    void anonymizeAXIVAmountChanged(int);
     void coinControlFeaturesChanged(bool);
     void hideZeroBalancesChanged(bool);
 };

@@ -6,7 +6,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/aureusxiv-config.h"
+#include "config/axiv-config.h"
 #endif
 
 #include "util.h"
@@ -105,7 +105,7 @@ std::string to_internal(const std::string&);
 
 using namespace std;
 
-// AureusXIV only features
+// AXIV only features
 // fundamentalnode
 bool fFundamentalNode = false;
 string strFundamentalNodePrivKey = "";
@@ -240,8 +240,8 @@ bool LogAcceptCategory(const char* category)
             const vector<string>& categories = mapMultiArgs["-debug"];
             ptrCategory.reset(new set<string>(categories.begin(), categories.end()));
             // thread_specific_ptr automatically deletes the set when the thread ends.
-            // "aureusxiv" is a composite category enabling all AureusXIV-related debug output
-            if (ptrCategory->count(string("aureusxiv"))) {
+            // "AXIV" is a composite category enabling all AXIV-related debug output
+            if (ptrCategory->count(string("AXIV"))) {
                 ptrCategory->insert(string("swiftx"));
                 ptrCategory->insert(string("fundamentalnode"));
                 ptrCategory->insert(string("fnpayments"));
@@ -405,7 +405,7 @@ static std::string FormatException(const std::exception* pex, const char* pszThr
     char pszModule[MAX_PATH] = "";
     GetModuleFileNameA(NULL, pszModule, sizeof(pszModule));
 #else
-    const char* pszModule = "aureusxiv";
+    const char* pszModule = "AXIV";
 #endif
     if (pex)
         return strprintf(
@@ -426,13 +426,13 @@ void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
 boost::filesystem::path GetDefaultDataDir()
 {
     namespace fs = boost::filesystem;
-// Windows < Vista: C:\Documents and Settings\Username\Application Data\AureusXIV
-// Windows >= Vista: C:\Users\Username\AppData\Roaming\AureusXIV
-// Mac: ~/Library/Application Support/AureusXIV
-// Unix: ~/.aureusxiv
+// Windows < Vista: C:\Documents and Settings\Username\Application Data\AXIV
+// Windows >= Vista: C:\Users\Username\AppData\Roaming\AXIV
+// Mac: ~/Library/Application Support/AXIV
+// Unix: ~/.AXIV
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "AureusXIV";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "AXIV";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -444,10 +444,10 @@ boost::filesystem::path GetDefaultDataDir()
     // Mac
     pathRet /= "Library/Application Support";
     TryCreateDirectory(pathRet);
-    return pathRet / "AureusXIV";
+    return pathRet / "AXIV";
 #else
     // Unix
-    return pathRet / ".aureusxiv";
+    return pathRet / ".AXIV";
 #endif
 #endif
 }
@@ -494,7 +494,7 @@ void ClearDatadirCache()
 
 boost::filesystem::path GetConfigFile()
 {
-    boost::filesystem::path pathConfigFile(GetArg("-conf", "aureusxiv.conf"));
+    boost::filesystem::path pathConfigFile(GetArg("-conf", "AXIV.conf"));
     if (!pathConfigFile.is_complete())
         pathConfigFile = GetDataDir(false) / pathConfigFile;
 
@@ -520,7 +520,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
 {
     boost::filesystem::ifstream streamConfig(GetConfigFile());
     if (!streamConfig.good()) {
-        // Create empty aureusxiv.conf if it does not exist
+        // Create empty AXIV.conf if it does not exist
         FILE* configFile = fopen(GetConfigFile().string().c_str(), "a");
         if (configFile != NULL)
             fclose(configFile);
@@ -531,7 +531,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
     setOptions.insert("*");
 
     for (boost::program_options::detail::config_file_iterator it(streamConfig, setOptions), end; it != end; ++it) {
-        // Don't overwrite existing settings so command line settings override aureusxiv.conf
+        // Don't overwrite existing settings so command line settings override AXIV.conf
         string strKey = string("-") + it->string_key;
         string strValue = it->value[0];
         InterpretNegativeSetting(strKey, strValue);
@@ -546,7 +546,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
 #ifndef WIN32
 boost::filesystem::path GetPidFile()
 {
-    boost::filesystem::path pathPidFile(GetArg("-pid", "aureusxivd.pid"));
+    boost::filesystem::path pathPidFile(GetArg("-pid", "AXIVd.pid"));
     if (!pathPidFile.is_complete()) pathPidFile = GetDataDir() / pathPidFile;
     return pathPidFile;
 }

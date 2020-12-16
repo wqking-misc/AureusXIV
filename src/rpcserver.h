@@ -128,7 +128,7 @@ public:
 };
 
 /**
- * AureusXIV RPC command dispatcher.
+ * AXIV RPC command dispatcher.
  */
 class CRPCTable
 {

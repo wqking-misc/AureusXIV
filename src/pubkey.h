@@ -6,8 +6,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef AUREUSXIV_PUBKEY_H
-#define AUREUSXIV_PUBKEY_H
+#ifndef AXIV_PUBKEY_H
+#define AXIV_PUBKEY_H
 
 #include "hash.h"
 #include "serialize.h"
@@ -270,4 +270,4 @@ public:
     ~ECCVerifyHandle();
 };
 
-#endif // AUREUSXIV_PUBKEY_H
+#endif // AXIV_PUBKEY_H

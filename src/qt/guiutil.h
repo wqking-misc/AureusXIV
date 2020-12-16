@@ -30,7 +30,7 @@ class QUrl;
 class QWidget;
 QT_END_NAMESPACE
 
-/** Utility functions used by the AureusXIV Qt UI.
+/** Utility functions used by the AXIV Qt UI.
  */
 namespace GUIUtil
 {
@@ -38,7 +38,7 @@ namespace GUIUtil
 QString dateTimeStr(const QDateTime& datetime);
 QString dateTimeStr(qint64 nTime);
 
-// Render AureusXIV addresses in monospace font
+// Render AXIV addresses in monospace font
 QFont bitcoinAddressFont();
 QFont primaryFont();
 QFont secondaryFont();
@@ -47,7 +47,7 @@ QFont secondaryFont();
 void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent);
 void setupAmountWidget(QLineEdit* widget, QWidget* parent);
 
-// Parse "aureusXIV:" URI into recipient object, return true on successful parsing
+// Parse "AXIV:" URI into recipient object, return true on successful parsing
 bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out);
 bool parseBitcoinURI(QString uri, SendCoinsRecipient* out);
 QString formatBitcoinURI(const SendCoinsRecipient& info);
@@ -113,7 +113,7 @@ bool isObscured(QWidget* w);
 // Open debug.log
 void openDebugLogfile();
 
-// Open aureusxiv.conf
+// Open AXIV.conf
 void openConfigfile();
 
 // Open masternode.conf

@@ -1,25 +1,25 @@
-# /etc/conf.d/aureusxivd: config file for /etc/init.d/aureusxivd
+# /etc/conf.d/axivd: config file for /etc/init.d/axivd
 
 # Config file location
-#BITCOIND_CONFIGFILE="/etc/aureusxiv/aureusxiv.conf"
+#BITCOIND_CONFIGFILE="/etc/axiv/axiv.conf"
 
 # What directory to write pidfile to?  (created and owned by $BITCOIND_USER)
-#BITCOIND_PIDDIR="/var/run/aureusxivd"
+#BITCOIND_PIDDIR="/var/run/axivd"
 
 # What filename to give the pidfile
-#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/aureusxivd.pid"
+#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/axivd.pid"
 
-# Where to write aureusxivd data (be mindful that the blockchain is large)
-#BITCOIND_DATADIR="/var/lib/aureusxivd"
+# Where to write axivd data (be mindful that the blockchain is large)
+#BITCOIND_DATADIR="/var/lib/axivd"
 
-# User and group to own aureusxivd process
-#BITCOIND_USER="aureusxiv"
-#BITCOIND_GROUP="aureusxiv"
+# User and group to own axivd process
+#BITCOIND_USER="axiv"
+#BITCOIND_GROUP="axiv"
 
-# Path to aureusxivd executable
-#BITCOIND_BIN="/usr/bin/aureusxivd"
+# Path to axivd executable
+#BITCOIND_BIN="/usr/bin/axivd"
 
-# Nice value to run aureusxivd under
+# Nice value to run axivd under
 #BITCOIND_NICE=0
 
 # Additional options (avoid -conf and -datadir, use flags above)
