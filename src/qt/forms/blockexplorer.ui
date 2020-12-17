@@ -168,7 +168,7 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
-  <include location="../aureusxiv.qrc"/>
+  <include location="../axiv.qrc"/>
  </resources>
  <connections/>
 </ui>

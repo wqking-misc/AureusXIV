@@ -14,7 +14,7 @@
 - (NSString *)__bundleIdentifier
 {
     if (self == [NSBundle mainBundle]) {
-        return @"io.aureusxiv.AureusXIV-Qt";
+        return @"io.axiv.AXIV-Qt";
     } else {
         return [self __bundleIdentifier];
     }
