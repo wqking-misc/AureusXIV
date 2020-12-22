@@ -37,30 +37,30 @@ MasternodeList::MasternodeList(QWidget* parent) : QWidget(parent),
 
     ui->startButton->setEnabled(false);
 
-    int columnAliasWidth = 100;
+    int columnAliasWidth = 60;
     int columnAddressWidth = 200;
-    int columnProtocolWidth = 60;
+    int columnProtocolWidth = 100;
     int columnStatusWidth = 80;
-    int columnActiveWidth = 130;
-    int columnLastSeenWidth = 130;
+    int columnActiveWidth = 100;
+    int columnLastSeenWidth = 160;
 
-    ui->tableWidgetMyMasternodes->setAlternatingRowColors(true);
     ui->tableWidgetMyMasternodes->setColumnWidth(0, columnAliasWidth);
     ui->tableWidgetMyMasternodes->setColumnWidth(1, columnAddressWidth);
     ui->tableWidgetMyMasternodes->setColumnWidth(2, columnProtocolWidth);
     ui->tableWidgetMyMasternodes->setColumnWidth(3, columnStatusWidth);
     ui->tableWidgetMyMasternodes->setColumnWidth(4, columnActiveWidth);
     ui->tableWidgetMyMasternodes->setColumnWidth(5, columnLastSeenWidth);
+    ui->tableWidgetMyMasternodes->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    ui->tableWidgetMyMasternodes->horizontalHeader()->setTextElideMode(Qt::ElideRight);
 
-    ui->tableWidgetMyMasternodes->setContextMenuPolicy(Qt::CustomContextMenu);
-
-    ui->tableWidgetMyFundamentalnodes->setAlternatingRowColors(true);
     ui->tableWidgetMyFundamentalnodes->setColumnWidth(0, columnAliasWidth);
     ui->tableWidgetMyFundamentalnodes->setColumnWidth(1, columnAddressWidth);
     ui->tableWidgetMyFundamentalnodes->setColumnWidth(2, columnProtocolWidth);
     ui->tableWidgetMyFundamentalnodes->setColumnWidth(3, columnStatusWidth);
     ui->tableWidgetMyFundamentalnodes->setColumnWidth(4, columnActiveWidth);
     ui->tableWidgetMyFundamentalnodes->setColumnWidth(5, columnLastSeenWidth);
+    ui->tableWidgetMyFundamentalnodes->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    ui->tableWidgetMyFundamentalnodes->horizontalHeader()->setTextElideMode(Qt::ElideRight);
 
     ui->tableWidgetMyFundamentalnodes->setContextMenuPolicy(Qt::CustomContextMenu);
 
