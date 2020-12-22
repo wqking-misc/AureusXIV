@@ -5,7 +5,7 @@ UNSIGNED=$1
 SIGNATURE=$2
 ARCH=x86_64
 ROOTDIR=dist
-BUNDLE=${ROOTDIR}/AureusXIV-Qt.app
+BUNDLE=${ROOTDIR}/AXIV-Qt.app
 TEMPDIR=signed.temp
 OUTDIR=signed-app
 

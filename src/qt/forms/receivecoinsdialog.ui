@@ -10,6 +10,11 @@
     <height>616</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Andale Mono</family>
+   </font>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0">
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_Master" stretch="0,1">
@@ -62,6 +67,7 @@
             </property>
             <property name="font">
              <font>
+              <family>Andale Mono</family>
               <pointsize>14</pointsize>
              </font>
             </property>
@@ -130,7 +136,7 @@
              <item row="6" column="0">
               <widget class="QLabel" name="label_3">
                <property name="toolTip">
-                <string>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the AureusXIV network.</string>
+                <string>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the AXIV network.</string>
                </property>
                <property name="text">
                 <string>&amp;Message:</string>
@@ -153,12 +159,18 @@
              <item row="6" column="2">
               <widget class="QLineEdit" name="reqMessage">
                <property name="toolTip">
-                <string>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the AureusXIV network.</string>
+                <string>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the AXIV network.</string>
                </property>
               </widget>
              </item>
              <item row="2" column="2">
               <widget class="QLabel" name="label_5">
+               <property name="font">
+                <font>
+                 <family>Andale Mono</family>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
                <property name="text">
                 <string>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</string>
                </property>
@@ -220,23 +232,29 @@
               <layout class="QHBoxLayout" name="horizontalLayout">
                <item>
                 <widget class="QPushButton" name="receiveButton">
-                 <property name="minimumSize">
-                  <size>
-                   <width>150</width>
-                   <height>0</height>
-                  </size>
+                <property name="font">
+                <font>
+                    <family>Andale Mono</family>
+                </font>
+                </property>
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
                  </property>
                  <property name="text">
                   <string>&amp;Request payment</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../aureusxiv.qrc">
-                   <normaloff>:/icons/receiving_addresses</normaloff>:/icons/receiving_addresses</iconset>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QPushButton" name="clearButton">
+                <property name="font">
+                <font>
+                    <family>Andale Mono</family>
+                </font>
+                </property>
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -248,10 +266,6 @@
                  </property>
                  <property name="text">
                   <string>Clear</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../aureusxiv.qrc">
-                   <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
                  </property>
                  <property name="autoDefault">
                   <bool>false</bool>
@@ -310,6 +324,7 @@
             <widget class="QLabel" name="label_6">
              <property name="font">
               <font>
+               <family>Andale Mono</family>
                <weight>75</weight>
                <bold>true</bold>
               </font>
@@ -333,11 +348,29 @@
                   </color>
                  </brush>
                 </colorrole>
+                <colorrole >
+                 <brush brushstyle="NoBrush">
+                  <color alpha="128">
+                   <red>51</red>
+                   <green>51</green>
+                   <blue>51</blue>
+                  </color>
+                 </brush>
+                </colorrole>
                </active>
                <inactive>
                 <colorrole role="Text">
                  <brush brushstyle="SolidPattern">
                   <color alpha="255">
+                   <red>51</red>
+                   <green>51</green>
+                   <blue>51</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole >
+                 <brush brushstyle="NoBrush">
+                  <color alpha="128">
                    <red>51</red>
                    <green>51</green>
                    <blue>51</blue>
@@ -355,7 +388,16 @@
                   </color>
                  </brush>
                 </colorrole>
-              </disabled>
+                <colorrole >
+                 <brush brushstyle="NoBrush">
+                  <color alpha="128">
+                   <red>51</red>
+                   <green>51</green>
+                   <blue>51</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+               </disabled>
               </palette>
              </property>
              <property name="contextMenuPolicy">
@@ -373,6 +415,11 @@
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <item>
               <widget class="QPushButton" name="showRequestButton">
+                 <property name="font">
+                <font>
+                    <family>Andale Mono</family>
+                </font>
+                </property>
                <property name="enabled">
                 <bool>false</bool>
                </property>
@@ -382,10 +429,6 @@
                <property name="text">
                 <string>Show</string>
                </property>
-               <property name="icon">
-                <iconset resource="../aureusxiv.qrc">
-                 <normaloff>:/icons/edit</normaloff>:/icons/edit</iconset>
-               </property>
                <property name="autoDefault">
                 <bool>false</bool>
                </property>
@@ -393,6 +436,11 @@
              </item>
              <item>
               <widget class="QPushButton" name="removeRequestButton">
+              <property name="font">
+                <font>
+                    <family>Andale Mono</family>
+                </font>
+                </property>
                <property name="enabled">
                 <bool>false</bool>
                </property>
@@ -401,10 +449,6 @@
                </property>
                <property name="text">
                 <string>Remove</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../aureusxiv.qrc">
-                 <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
                </property>
                <property name="autoDefault">
                 <bool>false</bool>
@@ -456,7 +500,7 @@
   <tabstop>removeRequestButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../aureusxiv.qrc"/>
+  <include location="../axiv.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -6,7 +6,7 @@
 #define BITCOIN_QT_BITCOINGUI_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/aureusxiv-config.h"
+#include "config/axiv-config.h"
 #endif
 
 #include "amount.h"
@@ -211,8 +211,6 @@ private slots:
     void gotoHistoryPage();
     /** Switch to Explorer Page */
     void gotoBlockExplorerPage();
-    /** Switch to fundamentalnode page */
-    void gotoFundamentalnodePage();
     /** Switch to masternode page */
     void gotoMasternodePage();
     /** Switch to privacy page */

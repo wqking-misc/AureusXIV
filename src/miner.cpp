@@ -38,7 +38,7 @@ using namespace std;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-// AureusXIVMiner
+// AXIVMiner
 //
 
 //
@@ -245,7 +245,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
 
                 int nConf = nHeight - coins->nHeight;
 
-                // zAureusXIV spends can have very large priority, use non-overflowing safe functions
+                // zAXIV spends can have very large priority, use non-overflowing safe functions
                 dPriority = double_safe_addition(dPriority, ((double)nValueIn * nConf));
 
             }
@@ -477,7 +477,7 @@ bool ProcessBlockFound(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
     {
         LOCK(cs_main);
         if (pblock->hashPrevBlock != chainActive.Tip()->GetBlockHash())
-            return error("AureusXIVMiner : generated block is stale");
+            return error("AXIVMiner : generated block is stale");
     }
 
     // Remove key from key pool
@@ -495,7 +495,7 @@ bool ProcessBlockFound(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
     // Process this block the same as if we had received it from another node
     CValidationState state;
     if (!ProcessNewBlock(state, NULL, pblock)) {
-        return error("AureusXIVMiner : ProcessNewBlock, block not accepted");
+        return error("AXIVMiner : ProcessNewBlock, block not accepted");
     }
 
     for (CNode* node : vNodes) {
@@ -513,9 +513,9 @@ int nMintableLastCheck = 0;
 
 void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
 {
-    LogPrintf("AureusXIVMiner started\n");
+    LogPrintf("AXIVMiner started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
-    RenameThread("aureusxiv-miner");
+    RenameThread("AXIV-miner");
 
     // Each thread has its own key and counter
     CReserveKey reservekey(pwallet);
@@ -593,7 +593,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
             continue;
         }
 
-        LogPrintf("Running AureusXIVMiner with %u transactions in block (%u bytes)\n", pblock->vtx.size(),
+        LogPrintf("Running AXIVMiner with %u transactions in block (%u bytes)\n", pblock->vtx.size(),
             ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
 
         //

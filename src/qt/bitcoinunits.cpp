@@ -67,11 +67,11 @@ QString BitcoinUnits::name(int unit)
     } else {
         switch (unit) {
         case AXIV:
-            return QString("tVIT");
+            return QString("tAXIV");
         case mAXIV:
-            return QString("mtVIT");
+            return QString("mtAXIV");
         case uAXIV:
-            return QString::fromUtf8("μtVIT");
+            return QString::fromUtf8("μtAXIV");
         default:
             return QString("???");
         }
@@ -94,11 +94,11 @@ QString BitcoinUnits::description(int unit)
     } else {
         switch (unit) {
         case AXIV:
-            return QString("TestVITs");
+            return QString("TestAXIVs");
         case mAXIV:
-            return QString("Milli-TestVIT (1 / 1" THIN_SP_UTF8 "000)");
+            return QString("Milli-TestAXIV (1 / 1" THIN_SP_UTF8 "000)");
         case uAXIV:
-            return QString("Micro-TestVIT (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            return QString("Micro-TestAXIV (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
         default:
             return QString("???");
         }

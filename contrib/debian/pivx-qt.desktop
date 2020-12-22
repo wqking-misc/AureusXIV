@@ -1,12 +1,12 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=AureusXIV
-Comment=AureusXIV P2P Cryptocurrency
-Comment[fr]=AureusXIV, monnaie virtuelle cryptographique pair à pair
-Comment[tr]=AureusXIV, eşten eşe kriptografik sanal para birimi
-Exec=aureusxiv-qt %u
+Name=AXIV
+Comment=AXIV P2P Cryptocurrency
+Comment[fr]=AXIV, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=AXIV, eşten eşe kriptografik sanal para birimi
+Exec=axiv-qt %u
 Terminal=false
 Type=Application
-Icon=aureusxiv128
-MimeType=x-scheme-handler/aureusxiv;
+Icon=axiv128
+MimeType=x-scheme-handler/axiv;
 Categories=Office;Finance;

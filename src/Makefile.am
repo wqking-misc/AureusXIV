@@ -71,15 +71,15 @@ bin_PROGRAMS =
 TESTS =
 
 if BUILD_BITCOIND
-  bin_PROGRAMS += aureusxivd
+  bin_PROGRAMS += axivd
 endif
 
 if BUILD_BITCOIN_UTILS
-  bin_PROGRAMS += aureusxiv-cli aureusxiv-tx
+  bin_PROGRAMS += axiv-cli axiv-tx
 endif
 
 .PHONY: FORCE
-# aureusxiv core #
+# axiv core #
 BITCOIN_CORE_H = \
   activefundamentalnode.h \
   activemasternode.h \
@@ -195,7 +195,7 @@ obj/build.h: FORCE
 	  $(abs_top_srcdir)
 libbitcoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
-# server: shared between aureusxivd and aureusxiv-qt
+# server: shared between axivd and axiv-qt
 libbitcoin_server_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS) $(BOOST_CPPFLAGS)
 libbitcoin_server_a_SOURCES = \
   activemasternode.cpp \
@@ -245,7 +245,7 @@ libbitcoin_zmq_a_SOURCES = \
   zmq/zmqpublishnotifier.cpp
 endif
 
-# wallet: shared between aureusxivd and aureusxiv-qt, but only linked
+# wallet: shared between axivd and axiv-qt, but only linked
 # when wallet enabled
 
 libbitcoin_wallet_a_CFLAGS = -fPIC
@@ -371,7 +371,7 @@ libbitcoin_util_a_SOURCES += compat/glibc_compat.cpp
 libbitcoin_util_a_SOURCES += compat/glibcxx_compat.cpp
 endif
 
-# cli: shared between aureusxiv-cli and aureusxiv-qt
+# cli: shared between axiv-cli and axiv-qt
 libbitcoin_cli_a_CPPFLAGS = $(BITCOIN_INCLUDES)
 libbitcoin_cli_a_SOURCES = \
   rpcclient.cpp \
@@ -381,7 +381,7 @@ nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
 # bitcoind binary #
-aureusxivd_LDADD = \
+axivd_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_COMMON) \
   $(LIBUNIVALUE) \
@@ -392,26 +392,26 @@ aureusxivd_LDADD = \
   $(LIBSECP256K1)
 
 if ENABLE_ZMQ
-aureusxivd_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
+axivd_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
 endif
 
 if ENABLE_WALLET
-aureusxivd_LDADD += libbitcoin_wallet.a
+axivd_LDADD += libbitcoin_wallet.a
 endif
-aureusxivd_SOURCES = aureusxivd.cpp
+axivd_SOURCES = axivd.cpp
 #
 
 if TARGET_WINDOWS
-aureusxivd_SOURCES += aureusxivd-res.rc
+axivd_SOURCES += axivd-res.rc
 endif
 
-aureusxivd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
-aureusxivd_CPPFLAGS = $(BITCOIN_INCLUDES)
-aureusxivd_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+axivd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
+axivd_CPPFLAGS = $(BITCOIN_INCLUDES)
+axivd_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 
-# aureusxiv-cli binary #
-aureusxiv_cli_LDADD = \
+# axiv-cli binary #
+axiv_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
@@ -420,14 +420,14 @@ aureusxiv_cli_LDADD = \
   $(CRYPTO_LIBS) \
   $(EVENT_LIBS)
 
-aureusxiv_cli_SOURCES = \
-  aureusxiv-cli.cpp
+axiv_cli_SOURCES = \
+  axiv-cli.cpp
 
-aureusxiv_cli_CPPFLAGS = $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+axiv_cli_CPPFLAGS = $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
 #
 
-# aureusxiv-tx binary #
-aureusxiv_tx_LDADD = \
+# axiv-tx binary #
+axiv_tx_LDADD = \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_UTIL) \
@@ -436,15 +436,15 @@ aureusxiv_tx_LDADD = \
   $(BOOST_LIBS) \
   $(CRYPTO_LIBS)
 
-aureusxiv_tx_SOURCES = aureusxiv-tx.cpp
-aureusxiv_tx_CPPFLAGS = $(BITCOIN_INCLUDES)
+axiv_tx_SOURCES = axiv-tx.cpp
+axiv_tx_CPPFLAGS = $(BITCOIN_INCLUDES)
 #
-aureusxiv_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+axiv_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-aureusxiv_cli_SOURCES += aureusxiv-cli-res.rc
+axiv_cli_SOURCES += axiv-cli-res.rc
 endif
-aureusxiv_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+axiv_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if BUILD_BITCOIN_LIBS
 include_HEADERS = script/bitcoinconsensus.h

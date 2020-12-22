@@ -1,12 +1,12 @@
-# bash programmable completion for aureusxivd(1) and aureusxiv-cli(1)
+# bash programmable completion for axivd(1) and axiv-cli(1)
 # Copyright (c) 2012,2014 Christian von Roques <roques@mti.ag>
 # Distributed under the MIT/X11 software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-have aureusxivd && {
+have axivd && {
 
-# call $aureusxivd for RPC
-_aureusxiv_rpc() {
+# call $axivd for RPC
+_axiv_rpc() {
     # determine already specified args necessary for RPC
     local rpcargs=()
     for i in ${COMP_LINE}; do
@@ -16,23 +16,23 @@ _aureusxiv_rpc() {
                 ;;
         esac
     done
-    $aureusxivd "${rpcargs[@]}" "$@"
+    $axivd "${rpcargs[@]}" "$@"
 }
 
-# Add aureusxiv accounts to COMPREPLY
-_aureusxiv_accounts() {
+# Add axiv accounts to COMPREPLY
+_axiv_accounts() {
     local accounts
-    accounts=$(_aureusxiv_rpc listaccounts | awk '/".*"/ { a=$1; gsub(/"/, "", a); print a}')
+    accounts=$(_axiv_rpc listaccounts | awk '/".*"/ { a=$1; gsub(/"/, "", a); print a}')
     COMPREPLY=( "${COMPREPLY[@]}" $( compgen -W "$accounts" -- "$cur" ) )
 }
 
-_aureusxivd() {
+_axivd() {
     local cur prev words=() cword
-    local aureusxivd
+    local axivd
 
-    # save and use original argument to invoke aureusxivd
-    # aureusxivd might not be in $PATH
-    aureusxivd="$1"
+    # save and use original argument to invoke axivd
+    # axivd might not be in $PATH
+    axivd="$1"
 
     COMPREPLY=()
     _get_comp_words_by_ref -n = cur prev words cword
@@ -53,7 +53,7 @@ _aureusxivd() {
     if ((cword > 3)); then
         case ${words[cword-3]} in
             addmultisigaddress)
-                _aureusxiv_accounts
+                _axiv_accounts
                 return 0
                 ;;
             getbalance|gettxout|importaddress|importprivkey|listreceivedbyaccount|listreceivedbyaddress|listsinceblock)
@@ -74,7 +74,7 @@ _aureusxivd() {
                 return 0
                 ;;
             move|setaccount)
-                _aureusxiv_accounts
+                _axiv_accounts
                 return 0
                 ;;
         esac
@@ -90,7 +90,7 @@ _aureusxivd() {
             return 0
             ;;
         getaccountaddress|getaddressesbyaccount|getbalance|getnewaddress|getreceivedbyaccount|listtransactions|move|sendfrom|sendmany)
-            _aureusxiv_accounts
+            _axiv_accounts
             return 0
             ;;
     esac
@@ -114,12 +114,12 @@ _aureusxivd() {
 
             # only parse --help if senseful
             if [[ -z "$cur" || "$cur" =~ ^- ]]; then
-                helpopts=$($aureusxivd --help 2>&1 | awk '$1 ~ /^-/ { sub(/=.*/, "="); print $1 }' )
+                helpopts=$($axivd --help 2>&1 | awk '$1 ~ /^-/ { sub(/=.*/, "="); print $1 }' )
             fi
 
             # only parse help if senseful
             if [[ -z "$cur" || "$cur" =~ ^[a-z] ]]; then
-                commands=$(_aureusxiv_rpc help 2>/dev/null | awk '$1 ~ /^[a-z]/ { print $1; }')
+                commands=$(_axiv_rpc help 2>/dev/null | awk '$1 ~ /^[a-z]/ { print $1; }')
             fi
 
             COMPREPLY=( $( compgen -W "$helpopts $commands" -- "$cur" ) )
@@ -133,7 +133,7 @@ _aureusxivd() {
     esac
 }
 
-complete -F _aureusxivd aureusxivd aureusxiv-cli
+complete -F _axivd axivd axiv-cli
 }
 
 # Local variables:

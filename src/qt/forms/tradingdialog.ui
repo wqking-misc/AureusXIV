@@ -442,10 +442,10 @@
       </rect>
      </property>
      <property name="text">
-      <string>Buy AureusXIV</string>
+      <string>Buy AXIV</string>
      </property>
      <property name="icon">
-      <iconset resource="../aureusxiv.qrc">
+      <iconset resource="../axiv.qrc">
        <normaloff>:/icons/bitcoin</normaloff>:/icons/bitcoin</iconset>
      </property>
     </widget>
@@ -512,7 +512,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>AureusXIV</string>
+      <string>AXIV</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_5">
@@ -1704,10 +1704,10 @@
       </rect>
      </property>
      <property name="text">
-      <string>AureusXIV</string>
+      <string>AXIV</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="UnitsInputVIT">
+    <widget class="QLineEdit" name="UnitsInputAXIV">
      <property name="geometry">
       <rect>
        <x>310</x>
@@ -1751,10 +1751,10 @@
       </rect>
      </property>
      <property name="text">
-      <string>Sell AureusXIV</string>
+      <string>Sell AXIV</string>
      </property>
      <property name="icon">
-      <iconset resource="../aureusxiv">
+      <iconset resource="../axiv">
        <normaloff>:/icons/bitcoin</normaloff>:/icons/bitcoin</iconset>
      </property>
     </widget>
@@ -1777,7 +1777,7 @@
          </font>
         </property>
         <property name="text">
-         <string>AureusXIV Available:</string>
+         <string>AXIV Available:</string>
         </property>
        </widget>
       </item>
@@ -2221,7 +2221,7 @@
          </font>
         </property>
         <property name="text">
-         <string>AureusXIV</string>
+         <string>AXIV</string>
         </property>
        </widget>
       </item>
@@ -2762,7 +2762,7 @@
       </font>
      </property>
      <property name="text">
-      <string>AureusXIV Balance:</string>
+      <string>AXIV Balance:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_12">
@@ -2813,7 +2813,7 @@
       </font>
      </property>
      <property name="text">
-      <string>AureusXIV Available:</string>
+      <string>AXIV Available:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_14">
@@ -2832,7 +2832,7 @@
       </font>
      </property>
      <property name="text">
-      <string>AureusXIV Pending:</string>
+      <string>AXIV Pending:</string>
      </property>
     </widget>
     <widget class="QLabel" name="VITPendingLabel">
@@ -2928,7 +2928,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Bittrex AureusXIV Deposit Address:</string>
+      <string>Bittrex AXIV Deposit Address:</string>
      </property>
     </widget>
     <widget class="QPushButton" name="GenDepositBTN">
@@ -2941,10 +2941,10 @@
       </rect>
      </property>
      <property name="text">
-      <string>Generate AureusXIV Deposit Address</string>
+      <string>Generate AXIV Deposit Address</string>
      </property>
      <property name="icon">
-      <iconset resource="../aureusxiv.qrc">
+      <iconset resource="../axiv.qrc">
        <normaloff>:/icons/bitcoin</normaloff>:/icons/bitcoin</iconset>
      </property>
     </widget>
@@ -3155,7 +3155,7 @@
        <string notr="true">border: 1px solid #61696c;margin-left:4px;</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="btnConvertAureusXIV">
+     <widget class="QPushButton" name="btnConvertAXIV">
       <property name="geometry">
        <rect>
         <x>260</x>
@@ -3206,7 +3206,7 @@
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap resource="../aureusxiv.qrc">:/icons/transaction_1</pixmap>
+       <pixmap resource="../axiv.qrc">:/icons/transaction_1</pixmap>
       </property>
       <property name="scaledContents">
        <bool>true</bool>
@@ -3253,7 +3253,7 @@
       <string>Update API Keys</string>
      </property>
      <property name="icon">
-      <iconset resource="../aureusxiv.qrc">
+      <iconset resource="../axiv.qrc">
        <normaloff>:/icons/bitcoin</normaloff>:/icons/bitcoin</iconset>
      </property>
     </widget>
@@ -3408,7 +3408,7 @@
   </widget>
  </widget>
  <resources>
-  <include location="../aureusxiv.qrc"/>
+  <include location="../axiv.qrc"/>
  </resources>
  <connections/>
 </ui>
