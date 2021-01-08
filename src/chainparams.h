@@ -76,10 +76,10 @@ public:
     int64_t Interval() const { return nTargetTimespan / nTargetSpacing; }
     int COINBASE_MATURITY() const { return nMaturity; }
     CAmount MaxMoneyOut() const { return nMaxMoneyOut; }
-    /** The fundamentalnode count that we will allow the see-saw reward payments to be off by */
-    int FundamentalnodeCountDrift() const { return nFundamentalnodeCountDrift; }
-	/** The masternode count that we will allow the see-saw reward payments to be off by */
-    int MasternodeCountDrift() const { return nMasternodeCountDrift; }
+
+    CAmount BudgetCycleBlocks() const { return nBudgetCycleBlocks; }
+    CAmount BudgetFeeConfirmations() const { return nBudgetFeeConfirmations; }
+    CAmount ProposalEstablishmentTime() const { return nProposalEstablishmentTime; }
     /** Make miner stop after a block is found. In RPC, don't return until nGenProcLimit blocks are generated */
     bool MineBlocksOnDemand() const { return fMineBlocksOnDemand; }
     /** In the future use NetworkIDString() for RPC fields */
@@ -128,8 +128,9 @@ protected:
     int64_t nTargetSpacing;
     int nLastPOWBlock;
     int nStartMasternodePayments;
-    int nFundamentalnodeCountDrift;
-	int nMasternodeCountDrift;
+    int nBudgetCycleBlocks;
+    int nBudgetFeeConfirmations;
+    int64_t nProposalEstablishmentTime;
     int nMaturity;
     int nModifierUpdateBlock;
     CAmount nMaxMoneyOut;
