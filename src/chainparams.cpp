@@ -110,8 +110,6 @@ public:
         nTargetTimespan = 1 * 45; // AXIV: 1 day
         nTargetSpacing = 1 * 45;  // AXIV: 1 minute
         nMaturity = 8;
-        nFundamentalnodeCountDrift = 20;
-        nMasternodeCountDrift = 20;
         nMaxMoneyOut = 21000000 * COIN;
 
         nBudgetCycleBlocks = 43200;       // approx. 1 every 30 days
@@ -295,8 +293,6 @@ public:
         nTargetSpacing = 1 * 45;  // AXIV: 1 minute
         nLastPOWBlock = 200;
         nMaturity = 15;
-        nFundamentalnodeCountDrift = 4;
-        nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 51197; //approx Mon, 17 Apr 2017 04:00:00 GMT
         nMaxMoneyOut = 43199500 * COIN;
         nBlockEnforceSerialRange = 1; //Enforce serial range starting this block
