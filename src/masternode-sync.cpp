@@ -188,7 +188,7 @@ std::string CMasternodeSync::GetSyncStatus()
 
 void CMasternodeSync::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
-    if (strCommand == "ssc") { //Sync status count
+    if (strCommand == "sscm") { //Sync status count
         int nItemID;
         int nCount;
         vRecv >> nItemID >> nCount;
