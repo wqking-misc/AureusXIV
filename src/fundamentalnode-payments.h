@@ -21,8 +21,8 @@ class CFundamentalnodeBlockPayees;
 
 extern CFundamentalnodePayments fundamentalnodePayments;
 
-#define MNPAYMENTS_SIGNATURES_REQUIRED 6
-#define MNPAYMENTS_SIGNATURES_TOTAL 10
+#define FNPAYMENTS_SIGNATURES_REQUIRED 6
+#define FNPAYMENTS_SIGNATURES_TOTAL 10
 
 void ProcessMessageFundamentalnodePayments(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
 bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight);
@@ -256,11 +256,11 @@ public:
 
     void Sync(CNode* node, int nCountNeeded);
     void CleanPaymentList();
-    int LastPayment(CFundamentalnode& mn);
+    int LastPayment(CFundamentalnode& fn);
 
     bool GetBlockPayee(int nBlockHeight, CScript& payee);
     bool IsTransactionValid(const CTransaction& txNew, int nBlockHeight);
-    bool IsScheduled(CFundamentalnode& mn, int nNotBlockHeight);
+    bool IsScheduled(CFundamentalnode& fn, int nNotBlockHeight);
 
     bool CanVote(COutPoint outFundamentalnode, int nBlockHeight)
     {
