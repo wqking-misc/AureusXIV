@@ -490,7 +490,7 @@ public:
     bool IsValid(std::string& strError, bool fCheckCollateral = true);
 
     bool IsEstablished();
-    bool IsPassing(const CBlockIndex* pindexPrev, int nBlockStartBudget, int nBlockEndBudget, int mnCount);
+    bool IsPassing(const CBlockIndex* pindexPrev, int nBlockStartBudget, int nBlockEndBudget, int fnCount);
 
     std::string GetName() { return strProposalName; }
     std::string GetURL() { return strURL; }

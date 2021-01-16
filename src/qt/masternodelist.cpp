@@ -122,7 +122,7 @@ void MasternodeList::StartAlias(std::string strAlias)
 
             if (fSuccess) {
                 strStatusHtml += "<br>Successfully started masternode.";
-                m_nodeman.UpdateMasternodeList(mnb);
+                mnodeman.UpdateMasternodeList(mnb);
                 mnb.Relay();
             } else {
                 strStatusHtml += "<br>Failed to start masternode.<br>Error: " + strError;
@@ -154,7 +154,7 @@ void MasternodeList::StartAll(std::string strCommand)
             continue;
 
         CTxIn txin = CTxIn(uint256S(mne.getTxHash()), uint32_t(nIndex));
-        CMasternode* pmn = m_nodeman.Find(txin);
+        CMasternode* pmn = mnodeman.Find(txin);
 
         if (strCommand == "start-missing" && pmn) continue;
 
@@ -162,7 +162,7 @@ void MasternodeList::StartAll(std::string strCommand)
 
         if (fSuccess) {
             nCountSuccessful++;
-            m_nodeman.UpdateMasternodeList(mnb);
+            mnodeman.UpdateMasternodeList(mnb);
             mnb.Relay();
         } else {
             nCountFailed++;
@@ -239,7 +239,7 @@ void MasternodeList::updateMyNodeList(bool fForce)
             continue;
 
         CTxIn txin = CTxIn(uint256S(mne.getTxHash()), uint32_t(nIndex));
-        CMasternode* pmn = m_nodeman.Find(txin);
+        CMasternode* pmn = mnodeman.Find(txin);
         updateMyMasternodeInfo(QString::fromStdString(mne.getAlias()), QString::fromStdString(mne.getIp()), pmn);
     }
     ui->tableWidgetMyMasternodes->setSortingEnabled(true);
@@ -466,7 +466,7 @@ void MasternodeList::StartAliasFundamentalNode(std::string strAlias)
 
             if (fSuccess) {
                 strStatusHtml += "<br>Successfully started fundamentalnode.";
-                mnodeman.UpdateFundamentalnodeList(mnb);
+                fnodeman.UpdateFundamentalnodeList(mnb);
                 mnb.Relay();
             } else {
                 strStatusHtml += "<br>Failed to start fundamentalnode.<br>Error: " + strError;
@@ -498,7 +498,7 @@ void MasternodeList::StartAllFundamentalNode(std::string strCommand)
             continue;
 
         CTxIn txin = CTxIn(uint256S(mne.getTxHash()), uint32_t(nIndex));
-        CFundamentalnode* pmn = mnodeman.Find(txin);
+        CFundamentalnode* pmn = fnodeman.Find(txin);
 
         if (strCommand == "start-missing" && pmn) continue;
 
@@ -506,7 +506,7 @@ void MasternodeList::StartAllFundamentalNode(std::string strCommand)
 
         if (fSuccess) {
             nCountSuccessful++;
-            mnodeman.UpdateFundamentalnodeList(mnb);
+            fnodeman.UpdateFundamentalnodeList(mnb);
             mnb.Relay();
         } else {
             nCountFailed++;
@@ -583,7 +583,7 @@ void MasternodeList::updateMyNodeListFundamentalNode(bool fForce)
             continue;
 
         CTxIn txin = CTxIn(uint256S(mne.getTxHash()), uint32_t(nIndex));
-        CFundamentalnode* pmn = mnodeman.Find(txin);
+        CFundamentalnode* pmn = fnodeman.Find(txin);
         updateMyFundamentalNodeInfo(QString::fromStdString(mne.getAlias()), QString::fromStdString(mne.getIp()), pmn);
     }
     ui->tableWidgetMyFundamentalnodes->setSortingEnabled(true);

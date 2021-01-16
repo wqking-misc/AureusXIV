@@ -7,7 +7,7 @@
 #include "hash.h"
 #include "main.h" // For strMessageMagic
 #include "messagesigner.h"
-#include "masternodeman.h"  // For GetPublicKey (of MN from its vin)
+#include "fundamentalnodeman.h"  // For GetPublicKey (of FN from its vin)
 #include "tinyformat.h"
 #include "utilstrencodings.h"
 
@@ -134,9 +134,9 @@ bool CSignedMessage::CheckSignature() const
 const CPubKey CSignedMessage::GetPublicKey(std::string& strErrorRet) const
 {
     const CTxIn vin = GetVin();
-    CMasternode* pmn = m_nodeman.Find(vin);
-    if(pmn) {
-        return pmn->pubKeyMasternode;
+    CFundamentalnode* pfn = fnodeman.Find(vin);
+    if(pfn) {
+        return pfn->pubKeyFundamentalnode;
     }
     strErrorRet = strprintf("Unable to find masternode vin %s", vin.prevout.hash.GetHex());
     return CPubKey();

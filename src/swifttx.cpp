@@ -267,7 +267,7 @@ void DoConsensusVote(CTransaction& tx, int64_t nBlockHeight)
         LogPrint("swiftx", "%s: Active Fundamentalnode not initialized.", __func__);
     return;
 
-    int n = mnodeman.GetFundamentalnodeRank(*(activeFundamentalnode.vin), nBlockHeight, MIN_SWIFTTX_PROTO_VERSION);
+    int n = fnodeman.GetFundamentalnodeRank(*(activeFundamentalnode.vin), nBlockHeight, MIN_SWIFTTX_PROTO_VERSION);
 
     if (n == -1) {
         LogPrint("swiftx", "%s : Unknown Fundamentalnode\n", __func__);
@@ -307,16 +307,16 @@ void DoConsensusVote(CTransaction& tx, int64_t nBlockHeight)
 //received a consensus vote
 bool ProcessConsensusVote(CNode* pnode, CConsensusVote& ctx)
 {
-    int n = mnodeman.GetFundamentalnodeRank(ctx.vinFundamentalnode, ctx.nBlockHeight, MIN_SWIFTTX_PROTO_VERSION);
+    int n = fnodeman.GetFundamentalnodeRank(ctx.vinFundamentalnode, ctx.nBlockHeight, MIN_SWIFTTX_PROTO_VERSION);
 
-    CFundamentalnode* pmn = mnodeman.Find(ctx.vinFundamentalnode);
+    CFundamentalnode* pmn = fnodeman.Find(ctx.vinFundamentalnode);
     if (pmn != NULL)
         LogPrint("swiftx", "%s : Fundamentalnode ADDR %s %d\n", __func__, pmn->addr.ToString().c_str(), n);
 
     if (n == -1) {
         //can be caused by past versions trying to vote with an invalid protocol
         LogPrint("swiftx", "%s : Unknown Fundamentalnode\n", __func__);
-        mnodeman.AskForMN(pnode, ctx.vinFundamentalnode);
+        fnodeman.AskForFN(pnode, ctx.vinFundamentalnode);
         return false;
     }
 
@@ -328,7 +328,7 @@ bool ProcessConsensusVote(CNode* pnode, CConsensusVote& ctx)
 
     if (!ctx.CheckSignature()) {
         // don't ban, it could just be a non-synced fundamentalnode
-        mnodeman.AskForMN(pnode, ctx.vinFundamentalnode);
+        fnodeman.AskForFN(pnode, ctx.vinFundamentalnode);
         return error("%s : Signature invalid\n", __func__);
     }
 
@@ -499,7 +499,7 @@ std::string CConsensusVote::GetStrMessage() const
 bool CTransactionLock::SignaturesValid()
 {
     for (CConsensusVote vote : vecConsensusVotes) {
-        int n = mnodeman.GetFundamentalnodeRank(vote.vinFundamentalnode, vote.nBlockHeight, MIN_SWIFTTX_PROTO_VERSION);
+        int n = fnodeman.GetFundamentalnodeRank(vote.vinFundamentalnode, vote.nBlockHeight, MIN_SWIFTTX_PROTO_VERSION);
 
         if (n == -1) {
             return error("%s : Unknown Fundamentalnode", __func__);
