@@ -24,6 +24,7 @@
 #include "merkleblock.h"
 #include "messagesigner.h"
 #include "net.h"
+#include "obfuscation.h"
 #include "pow.h"
 #include "spork.h"
 #include "sporkdb.h"
@@ -1194,7 +1195,10 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
         unsigned int nSize = entry.GetTxSize();
 
         // Don't accept it if it can't get into a block
-        if (!ignoreFees) {
+        // but prioritise dstx and don't check fees for it
+        if (mapObfuscationBroadcastTxes.count(hash)) {
+            mempool.PrioritiseTransaction(hash, hash.ToString(), 1000, 0.1 * COIN);
+        } else if (!ignoreFees) {
             CAmount txMinFee = GetMinRelayFee(tx, nSize, true);
             if (fLimitFree && nFees < txMinFee)
                 return state.DoS(0, error("AcceptToMemoryPool : not enough fees %s, %d < %d",
@@ -3954,6 +3958,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
 
     if (!fLiteMode) {
         if (fundamentalnodeSync.RequestedFundamentalnodeAssets > FUNDAMENTALNODE_SYNC_LIST) {
+            obfuScationPool.NewBlock();
             fundamentalnodePayments.ProcessBlock(GetHeight() + 10);
             budget.NewBlock();
         }
@@ -4648,6 +4653,8 @@ bool static AlreadyHave(const CInv& inv)
         return txInMap || mapOrphanTransactions.count(inv.hash) ||
                pcoinsTip->HaveCoins(inv.hash);
     }
+    case MSG_DSTX:
+        return mapObfuscationBroadcastTxes.count(inv.hash);
     case MSG_BLOCK:
         return mapBlockIndex.count(inv.hash);
     case MSG_TXLOCK_REQUEST:
@@ -4695,6 +4702,11 @@ bool static AlreadyHave(const CInv& inv)
         return false;
     case MSG_FUNDAMENTALNODE_PING:
         return fnodeman.mapSeenFundamentalnodePing.count(inv.hash);
+    case MSG_MASTERNODE_WINNER:
+        if (masternodePayments.mapMasternodePayeeVotes.count(inv.hash)) {
+            masternodeSync.AddedMasternodeWinner(inv.hash);
+            return true;
+        }
     case MSG_MASTERNODE_ANNOUNCE:
         if (mnodeman.mapSeenMasternodeBroadcast.count(inv.hash)) {
             masternodeSync.AddedMasternodeList(inv.hash);
@@ -4833,21 +4845,12 @@ void static ProcessGetData(CNode* pfrom)
                         pushed = true;
                     }
                 }
-                if (!pushed && inv.type == MSG_FUNDAMENTALNODE_WINNER) {
-                    if (fundamentalnodePayments.mapFundamentalnodePayeeVotes.count(inv.hash)) {
-                        CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
-                        ss.reserve(1000);
-                        ss << fundamentalnodePayments.mapFundamentalnodePayeeVotes[inv.hash];
-                        pfrom->PushMessage("fnw", ss);
-                        pushed = true;
-                    }
-                }
                 if (!pushed && inv.type == MSG_BUDGET_VOTE) {
                     if (budget.mapSeenFundamentalnodeBudgetVotes.count(inv.hash)) {
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                         ss.reserve(1000);
                         ss << budget.mapSeenFundamentalnodeBudgetVotes[inv.hash];
-                        pfrom->PushMessage("fvote", ss);
+                        pfrom->PushMessage("mvote", ss);
                         pushed = true;
                     }
                 }
@@ -4857,7 +4860,7 @@ void static ProcessGetData(CNode* pfrom)
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                         ss.reserve(1000);
                         ss << budget.mapSeenFundamentalnodeBudgetProposals[inv.hash];
-                        pfrom->PushMessage("fprop", ss);
+                        pfrom->PushMessage("mprop", ss);
                         pushed = true;
                     }
                 }
@@ -4902,6 +4905,26 @@ void static ProcessGetData(CNode* pfrom)
                     }
                 }
 
+                if (!pushed && inv.type == MSG_FUNDAMENTALNODE_WINNER) {
+                    if (fundamentalnodePayments.mapFundamentalnodePayeeVotes.count(inv.hash)) {
+                        CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
+                        ss.reserve(1000);
+                        ss << fundamentalnodePayments.mapFundamentalnodePayeeVotes[inv.hash];
+                        pfrom->PushMessage("fnw", ss);
+                        pushed = true;
+                    }
+                }
+
+                if (!pushed && inv.type == MSG_MASTERNODE_WINNER) {
+                    if (masternodePayments.mapMasternodePayeeVotes.count(inv.hash)) {
+                        CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
+                        ss.reserve(1000);
+                        ss << masternodePayments.mapMasternodePayeeVotes[inv.hash];
+                        pfrom->PushMessage("mnw", ss);
+                        pushed = true;
+                    }
+                }
+
                 if (!pushed && inv.type == MSG_MASTERNODE_ANNOUNCE) {
                     if (mnodeman.mapSeenMasternodeBroadcast.count(inv.hash)) {
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
@@ -4922,7 +4945,16 @@ void static ProcessGetData(CNode* pfrom)
                     }
                 }
 
+                if (!pushed && inv.type == MSG_DSTX) {
+                    if (mapObfuscationBroadcastTxes.count(inv.hash)) {
+                        CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
+                        ss.reserve(1000);
+                        ss << mapObfuscationBroadcastTxes[inv.hash].tx << mapObfuscationBroadcastTxes[inv.hash].vin << mapObfuscationBroadcastTxes[inv.hash].vchSig << mapObfuscationBroadcastTxes[inv.hash].sigTime;
 
+                        pfrom->PushMessage("dstx", ss);
+                        pushed = true;
+                    }
+                }
 
                 if (!pushed) {
                     vNotFound.push_back(inv);
@@ -5302,7 +5334,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
     }
 
 
-    else if (strCommand == "tx") {
+    else if (strCommand == "tx" || strCommand == "dstx") {
         vector<uint256> vWorkQueue;
         vector<uint256> vEraseQueue;
         CTransaction tx;
@@ -5312,7 +5344,47 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         CTxIn vin;
         vector<unsigned char> vchSig;
 
-        vRecv >> tx;
+        int64_t sigTime;
+
+        if (strCommand == "tx") {
+            vRecv >> tx;
+        } else if (strCommand == "dstx") {
+            //these allow fundamentalnodes to publish a limited amount of free transactions
+            vRecv >> tx >> vin >> vchSig >> sigTime;
+
+            CFundamentalnode* pmn = fnodeman.Find(vin);
+            if (pmn != NULL) {
+                if (!pmn->allowFreeTx) {
+                    //multiple peers can send us a valid fundamentalnode transaction
+                    if (fDebug) LogPrintf("dstx: Fundamentalnode sending too many transactions %s\n", tx.GetHash().ToString());
+                    return true;
+                }
+
+                std::string strMessage = tx.GetHash().ToString() + boost::lexical_cast<std::string>(sigTime);
+
+                std::string errorMessage = "";
+                if (!CMessageSigner::VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
+                    LogPrintf("dstx: Got bad fundamentalnode address signature %s \n", vin.ToString());
+                    //pfrom->Misbehaving(20);
+                    return false;
+                }
+
+                LogPrintf("dstx: Got Fundamentalnode transaction %s\n", tx.GetHash().ToString());
+
+                ignoreFees = true;
+                pmn->allowFreeTx = false;
+
+                if (!mapObfuscationBroadcastTxes.count(tx.GetHash())) {
+                    CObfuscationBroadcastTx dstx;
+                    dstx.tx = tx;
+                    dstx.vin = vin;
+                    dstx.vchSig = vchSig;
+                    dstx.sigTime = sigTime;
+
+                    mapObfuscationBroadcastTxes.insert(make_pair(tx.GetHash(), dstx));
+                }
+            }
+        }
 
         CInv inv(MSG_TX, tx.GetHash());
         pfrom->AddInventoryKnown(inv);
@@ -5392,6 +5464,11 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             // as a gateway for nodes hidden behind it).
 
             RelayTransaction(tx);
+        }
+
+        if (strCommand == "dstx") {
+            CInv inv(MSG_DSTX, tx.GetHash());
+            RelayInv(inv);
         }
 
         int nDoS = 0;

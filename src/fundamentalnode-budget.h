@@ -1,5 +1,5 @@
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2015-2019 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,7 +11,6 @@
 #include "key.h"
 #include "main.h"
 #include "fundamentalnode.h"
-#include "messagesigner.h"
 #include "net.h"
 #include "sync.h"
 #include "util.h"
@@ -34,12 +33,12 @@ enum class TrxValidationStatus {
     InValid,         /** Transaction verification failed */
     Valid,           /** Transaction successfully verified */
     DoublePayment,   /** Transaction successfully verified, but includes a double-budget-payment */
-    VoteThreshold    /** If not enough masternodes have voted on a finalized budget */
+    VoteThreshold    /** If not enough fundamentalnodes have voted on a finalized budget */
 };
 
 static const CAmount PROPOSAL_FEE_TX = (50 * COIN);
 static const CAmount BUDGET_FEE_TX_OLD = (50 * COIN);
-static const CAmount BUDGET_FEE_TX = (50 * COIN);
+static const CAmount BUDGET_FEE_TX = (5 * COIN);
 static const int64_t BUDGET_VOTE_UPDATE_MIN = 60 * 60;
 static std::map<uint256, int> mapPayment_History;
 
@@ -290,7 +289,7 @@ public:
     {
         payee = CScript();
         nAmount = 0;
-        nProposalHash = uint256();
+        nProposalHash = 0;
     }
 
     ADD_SERIALIZE_METHODS;
@@ -328,7 +327,7 @@ public:
     CFinalizedBudget();
     CFinalizedBudget(const CFinalizedBudget& other);
 
-    void CleanAndRemove();
+    void CleanAndRemove(bool fSignatureCheck);
     bool AddOrUpdateVote(CFinalizedBudgetVote& vote, std::string& strError);
     double GetScore();
     bool HasMinimumRequiredSupport();
@@ -510,7 +509,7 @@ public:
     void SetAllotted(CAmount nAllotedIn) { nAlloted = nAllotedIn; }
     CAmount GetAllotted() { return nAlloted; }
 
-    void CleanAndRemove();
+    void CleanAndRemove(bool fSignatureCheck);
 
     uint256 GetHash() const
     {
@@ -520,7 +519,7 @@ public:
         ss << nBlockStart;
         ss << nBlockEnd;
         ss << nAmount;
-        ss << std::vector<unsigned char>(address.begin(), address.end());
+        ss << address;
         uint256 h1 = ss.GetHash();
 
         return h1;

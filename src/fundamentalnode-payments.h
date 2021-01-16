@@ -1,5 +1,5 @@
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2015-2019 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -161,7 +161,6 @@ class CFundamentalnodePaymentWinner : public CSignedMessage
 {
 public:
     CTxIn vinFundamentalnode;
-
     int nBlockHeight;
     CScript payee;
 
@@ -216,7 +215,7 @@ public:
         std::string ret = "";
         ret += vinFundamentalnode.ToString();
         ret += ", " + std::to_string(nBlockHeight);
-        ret += ", " + HexStr(payee);
+        ret += ", " + payee.ToString();
         ret += ", " + std::to_string((int)vchSig.size());
         return ret;
     }
@@ -236,7 +235,7 @@ private:
 public:
     std::map<uint256, CFundamentalnodePaymentWinner> mapFundamentalnodePayeeVotes;
     std::map<int, CFundamentalnodeBlockPayees> mapFundamentalnodeBlocks;
-    std::map<COutPoint, int> mapFundamentalnodesLastVote; //prevout, nBlockHeight
+    std::map<uint256, int> mapFundamentalnodesLastVote; //prevout.hash + prevout.n, nBlockHeight
 
     CFundamentalnodePayments()
     {
@@ -266,14 +265,14 @@ public:
     {
         LOCK(cs_mapFundamentalnodePayeeVotes);
 
-        if (mapFundamentalnodesLastVote.count(outFundamentalnode)) {
-            if (mapFundamentalnodesLastVote[outFundamentalnode] == nBlockHeight) {
+        if (mapFundamentalnodesLastVote.count(outFundamentalnode.hash + outFundamentalnode.n)) {
+            if (mapFundamentalnodesLastVote[outFundamentalnode.hash + outFundamentalnode.n] == nBlockHeight) {
                 return false;
             }
         }
 
         //record this fundamentalnode voted
-        mapFundamentalnodesLastVote[outFundamentalnode] = nBlockHeight;
+        mapFundamentalnodesLastVote[outFundamentalnode.hash + outFundamentalnode.n] = nBlockHeight;
         return true;
     }
 
