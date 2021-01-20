@@ -25,7 +25,7 @@
 #include <QSettings>
 #include <QTimer>
 
-#define DECORATION_SIZE 48
+#define DECORATION_SIZE 46
 #define ICON_OFFSET 16
 #define NUM_ITEMS 9
 
