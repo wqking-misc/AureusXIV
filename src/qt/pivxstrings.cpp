@@ -225,10 +225,10 @@ QT_TRANSLATE_NOOP("AXIV-core", ""
 QT_TRANSLATE_NOOP("AXIV-core", ""
 "You must specify a masternodeprivkey in the configuration. Please see "
 "documentation for help."),
-QT_TRANSLATE_NOOP("AXIV-core", "(51472 could be used only on mainnet)"),
+QT_TRANSLATE_NOOP("AXIV-core", "(10135 could be used only on mainnet)"),
 QT_TRANSLATE_NOOP("AXIV-core", "(default: %s)"),
 QT_TRANSLATE_NOOP("AXIV-core", "(default: 1)"),
-QT_TRANSLATE_NOOP("AXIV-core", "(must be 51472 for mainnet)"),
+QT_TRANSLATE_NOOP("AXIV-core", "(must be 10135 for mainnet)"),
 QT_TRANSLATE_NOOP("AXIV-core", "<category> can be:"),
 QT_TRANSLATE_NOOP("AXIV-core", "Accept command line and JSON-RPC commands"),
 QT_TRANSLATE_NOOP("AXIV-core", "Accept connections from outside (default: 1 if no -proxy or -connect)"),

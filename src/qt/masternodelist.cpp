@@ -402,11 +402,11 @@ void MasternodeList::on_startAllButtonFundamentalNode_clicked()
 
         if (!ctx.isValid()) return; // Unlock wallet was cancelled
 
-        StartAll();
+        StartAllFundamentalNode();
         return;
     }
 
-    StartAll();
+    StartAllFundamentalNode();
 }
 
 void MasternodeList::on_startMissingButtonFundamentalNode_clicked()
@@ -433,11 +433,11 @@ void MasternodeList::on_startMissingButtonFundamentalNode_clicked()
 
         if (!ctx.isValid()) return; // Unlock wallet was cancelled
 
-        StartAll("start-missing");
+        StartAllFundamentalNode("start-missing");
         return;
     }
 
-    StartAll("start-missing");
+    StartAllFundamentalNode("start-missing");
 }
 
 void MasternodeList::on_tableWidgetMyFundamentalnodes_itemSelectionChanged()

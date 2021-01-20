@@ -1,7 +1,5 @@
 // Copyright (c) 2009-2012 The Bitcoin developers
-// Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
-// Copyright (c) 2018 The VITAE developers
+// Copyright (c) 2015-2019 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,17 +8,41 @@
 #include "init.h"
 #include "main.h"
 #include "fundamentalnode-payments.h"
-#include "fundamentalnode-sync.h"
 #include "fundamentalnodeconfig.h"
 #include "fundamentalnodeman.h"
-#include "netbase.h"
 #include "rpcserver.h"
 #include "utilmoneystr.h"
-#include "spork.h"
 
 #include <univalue.h>
 
 #include <boost/tokenizer.hpp>
+#include <fstream>
+
+UniValue getpoolinfo(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw std::runtime_error(
+                "getpoolinfo\n"
+                "\nReturns anonymous pool-related information\n"
+
+                "\nResult:\n"
+                "{\n"
+                "  \"current\": \"addr\",    (string) PIVX address of current fundamentalnode\n"
+                "  \"state\": xxxx,        (string) unknown\n"
+                "  \"entries\": xxxx,      (numeric) Number of entries\n"
+                "  \"accepted\": xxxx,     (numeric) Number of entries accepted\n"
+                "}\n"
+
+                "\nExamples:\n" +
+                HelpExampleCli("getpoolinfo", "") + HelpExampleRpc("getpoolinfo", ""));
+
+    UniValue obj(UniValue::VOBJ);
+    obj.push_back(Pair("current_fundamentalnode", fnodeman.GetCurrentFundamentalNode()->addr.ToString()));
+    obj.push_back(Pair("state", obfuScationPool.GetState()));
+    obj.push_back(Pair("entries", obfuScationPool.GetEntriesCount()));
+    obj.push_back(Pair("entries_accepted", obfuScationPool.GetCountEntriesAccepted()));
+    return obj;
+}
 
 UniValue listfundamentalnodes(const UniValue& params, bool fHelp)
 {
@@ -76,14 +98,13 @@ UniValue listfundamentalnodes(const UniValue& params, bool fHelp)
         if (fn != NULL) {
             if (strFilter != "" && strTxHash.find(strFilter) == std::string::npos &&
                 fn->Status().find(strFilter) == std::string::npos &&
-                CBitcoinAddress(fn->pubKeyCollateralAddress.GetID()).ToString().find(strFilter) == string::npos) continue;
+                CBitcoinAddress(fn->pubKeyCollateralAddress.GetID()).ToString().find(strFilter) == std::string::npos) continue;
 
             std::string strStatus = fn->Status();
             std::string strHost;
             int port;
             SplitHostPort(fn->addr.ToString(), port, strHost);
-            CNetAddr node;
-            LookupHost(strHost.c_str(), node, false);
+            CNetAddr node = CNetAddr(strHost, false);
             std::string strNetwork = GetNetworkName(node.GetNetwork());
 
             obj.push_back(Pair("rank", (strStatus == "ENABLED" ? s.first : 0)));
@@ -105,6 +126,32 @@ UniValue listfundamentalnodes(const UniValue& params, bool fHelp)
     return ret;
 }
 
+UniValue fundamentalnodeconnect(const UniValue& params, bool fHelp)
+{
+    if (fHelp || (params.size() != 1))
+        throw std::runtime_error(
+                "fundamentalnodeconnect \"address\"\n"
+                "\nAttempts to connect to specified fundamentalnode address\n"
+
+                "\nArguments:\n"
+                "1. \"address\"     (string, required) IP or net address to connect to\n"
+
+                "\nExamples:\n" +
+                HelpExampleCli("fundamentalnodeconnect", "\"192.168.0.6:10135\"") + HelpExampleRpc("fundamentalnodeconnect", "\"192.168.0.6:10135\""));
+
+    std::string strAddress = params[0].get_str();
+
+    CService addr = CService(strAddress);
+
+    CNode* pnode = ConnectNode((CAddress)addr, NULL, false);
+    if (pnode) {
+        pnode->Release();
+        return NullUniValue;
+    } else {
+        throw std::runtime_error("error connecting\n");
+    }
+}
+
 UniValue getfundamentalnodecount (const UniValue& params, bool fHelp)
 {
     if (fHelp || (params.size() > 0))
@@ -116,6 +163,7 @@ UniValue getfundamentalnodecount (const UniValue& params, bool fHelp)
                 "{\n"
                 "  \"total\": n,        (numeric) Total fundamentalnodes\n"
                 "  \"stable\": n,       (numeric) Stable count\n"
+                "  \"obfcompat\": n,    (numeric) Obfuscation Compatible\n"
                 "  \"enabled\": n,      (numeric) Enabled fundamentalnodes\n"
                 "  \"inqueue\": n       (numeric) Fundamentalnodes in queue\n"
                 "}\n"
@@ -134,6 +182,7 @@ UniValue getfundamentalnodecount (const UniValue& params, bool fHelp)
 
     obj.push_back(Pair("total", fnodeman.size()));
     obj.push_back(Pair("stable", fnodeman.stable_size()));
+    obj.push_back(Pair("obfcompat", fnodeman.CountEnabled(ActiveProtocol())));
     obj.push_back(Pair("enabled", fnodeman.CountEnabled()));
     obj.push_back(Pair("inqueue", nCount));
     obj.push_back(Pair("ipv4", ipv4));
@@ -148,25 +197,24 @@ UniValue fundamentalnodecurrent (const UniValue& params, bool fHelp)
     if (fHelp || (params.size() != 0))
         throw std::runtime_error(
                 "fundamentalnodecurrent\n"
-                "\nGet current fundamentalnode winner (scheduled to be paid next).\n"
+                "\nGet current fundamentalnode winner\n"
 
                 "\nResult:\n"
                 "{\n"
                 "  \"protocol\": xxxx,        (numeric) Protocol version\n"
                 "  \"txhash\": \"xxxx\",      (string) Collateral transaction hash\n"
                 "  \"pubkey\": \"xxxx\",      (string) FN Public key\n"
-                "  \"lastseen\": xxx,         (numeric) Time since epoch of last seen\n"
-                "  \"activeseconds\": xxx,    (numeric) Seconds FN has been active\n"
+                "  \"lastseen\": xxx,       (numeric) Time since epoch of last seen\n"
+                "  \"activeseconds\": xxx,  (numeric) Seconds FN has been active\n"
                 "}\n"
 
                 "\nExamples:\n" +
                 HelpExampleCli("fundamentalnodecurrent", "") + HelpExampleRpc("fundamentalnodecurrent", ""));
 
-    const int nHeight = WITH_LOCK(cs_main, return chainActive.Height() + 1);
-    int nCount = 0;
-    CFundamentalnode* winner = fnodeman.GetNextFundamentalnodeInQueueForPayment(nHeight, true, nCount);
+    CFundamentalnode* winner = fnodeman.GetCurrentFundamentalNode(1);
     if (winner) {
         UniValue obj(UniValue::VOBJ);
+
         obj.push_back(Pair("protocol", (int64_t)winner->protocolVersion));
         obj.push_back(Pair("txhash", winner->vin.prevout.hash.ToString()));
         obj.push_back(Pair("pubkey", CBitcoinAddress(winner->pubKeyCollateralAddress.GetID()).ToString()));
@@ -178,6 +226,31 @@ UniValue fundamentalnodecurrent (const UniValue& params, bool fHelp)
     throw std::runtime_error("unknown");
 }
 
+UniValue fundamentalnodedebug (const UniValue& params, bool fHelp)
+{
+    if (fHelp || (params.size() != 0))
+        throw std::runtime_error(
+                "fundamentalnodedebug\n"
+                "\nPrint fundamentalnode status\n"
+
+                "\nResult:\n"
+                "\"status\"     (string) Fundamentalnode status message\n"
+
+                "\nExamples:\n" +
+                HelpExampleCli("fundamentalnodedebug", "") + HelpExampleRpc("fundamentalnodedebug", ""));
+
+    if (activeFundamentalnode.status != ACTIVE_FUNDAMENTALNODE_INITIAL || !fundamentalnodeSync.IsSynced())
+        return activeFundamentalnode.GetStatus();
+
+    CTxIn vin = CTxIn();
+    CPubKey pubkey;
+    CKey key;
+    if (!activeFundamentalnode.GetFundamentalNodeVin(vin, pubkey, key))
+        throw std::runtime_error("Missing fundamentalnode input, please look at the documentation for instructions on fundamentalnode creation\n");
+    else
+        return activeFundamentalnode.GetStatus();
+}
+
 bool StartFundamentalnodeEntry(UniValue& statusObjRet, CFundamentalnodeBroadcast& fnbRet, bool& fSuccessRet, const CFundamentalnodeConfig::CFundamentalnodeEntry& fne, std::string& errorMessage, std::string strCommand = "")
 {
     int nIndex;
@@ -185,14 +258,14 @@ bool StartFundamentalnodeEntry(UniValue& statusObjRet, CFundamentalnodeBroadcast
         return false;
     }
 
-    CTxIn vin = CTxIn(uint256S(fne.getTxHash()), uint32_t(nIndex));
+    CTxIn vin = CTxIn(uint256(fne.getTxHash()), uint32_t(nIndex));
     CFundamentalnode* pfn = fnodeman.Find(vin);
     if (pfn != NULL) {
         if (strCommand == "missing") return false;
         if (strCommand == "disabled" && pfn->IsEnabled()) return false;
     }
 
-    fSuccessRet = CFundamentalnodeBroadcast::Create(fne.getIp(), fne.getPrivKey(), fne.getTxHash(), fne.getOutputIndex(), errorMessage, fnbRet);
+    fSuccessRet = activeFundamentalnode.CreateBroadcast(fne.getIp(), fne.getPrivKey(), fne.getTxHash(), fne.getOutputIndex(), errorMessage, fnbRet);
 
     statusObjRet.push_back(Pair("alias", fne.getAlias()));
     statusObjRet.push_back(Pair("result", fSuccessRet ? "success" : "failed"));
@@ -289,13 +362,14 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
     if (strCommand == "local") {
         if (!fFundamentalNode) throw std::runtime_error("you must set fundamentalnode=1 in the configuration\n");
 
-        if (activeFundamentalnode.GetStatus() != ACTIVE_FUNDAMENTALNODE_STARTED) {
-            activeFundamentalnode.ResetStatus();
+        if (activeFundamentalnode.status != ACTIVE_FUNDAMENTALNODE_STARTED) {
+            activeFundamentalnode.status = ACTIVE_FUNDAMENTALNODE_INITIAL; // TODO: consider better way
+            activeFundamentalnode.ManageStatus();
             if (fLock)
                 pwalletMain->Lock();
         }
 
-        return activeFundamentalnode.GetStatusMessage();
+        return activeFundamentalnode.GetStatus();
     }
 
     if (strCommand == "all" || strCommand == "many" || strCommand == "missing" || strCommand == "disabled") {
@@ -359,7 +433,7 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
 
         if(!found) {
             statusObj.push_back(Pair("success", false));
-            statusObj.push_back(Pair("error_message", "Could not find alias in config. Verify with listfundamentalnodeconf."));
+            statusObj.push_back(Pair("error_message", "Could not find alias in config. Verify with list-conf."));
         }
 
         return statusObj;
@@ -369,10 +443,6 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
 
 UniValue createfundamentalnodekey (const UniValue& params, bool fHelp)
 {
-    if(sporkManager.GetSporkValue(SPORK_14_DISABLE_NEW_FUNDAMENTALNODE) > 0) {
-        throw runtime_error("Fundamental node creation is disabled.");
-    }
-
     if (fHelp || (params.size() != 0))
         throw std::runtime_error(
                 "createfundamentalnodekey\n"
@@ -462,7 +532,7 @@ UniValue listfundamentalnodeconf (const UniValue& params, bool fHelp)
         int nIndex;
         if(!fne.castOutputIndex(nIndex))
             continue;
-        CTxIn vin = CTxIn(uint256S(fne.getTxHash()), uint32_t(nIndex));
+        CTxIn vin = CTxIn(uint256(fne.getTxHash()), uint32_t(nIndex));
         CFundamentalnode* pfn = fnodeman.Find(vin);
 
         std::string strStatus = pfn ? pfn->Status() : "MISSING";
@@ -495,7 +565,7 @@ UniValue getfundamentalnodestatus (const UniValue& params, bool fHelp)
                 "\nResult:\n"
                 "{\n"
                 "  \"txhash\": \"xxxx\",      (string) Collateral transaction hash\n"
-                "  \"outputidx\": n,          (numeric) Collateral transaction output index number\n"
+                "  \"outputidx\": n,        (numeric) Collateral transaction output index number\n"
                 "  \"netaddr\": \"xxxx\",     (string) Fundamentalnode network address\n"
                 "  \"addr\": \"xxxx\",        (string) PIVX address for fundamentalnode payments\n"
                 "  \"status\": \"xxxx\",      (string) Fundamentalnode status\n"
@@ -505,26 +575,22 @@ UniValue getfundamentalnodestatus (const UniValue& params, bool fHelp)
                 "\nExamples:\n" +
                 HelpExampleCli("getfundamentalnodestatus", "") + HelpExampleRpc("getfundamentalnodestatus", ""));
 
-    if (!fFundamentalNode)
-        throw JSONRPCError(RPC_MISC_ERROR, _("This is not a fundamentalnode."));
+    if (!fFundamentalNode) throw std::runtime_error("This is not a fundamentalnode");
 
-    if (activeFundamentalnode.vin == boost::none)
-        throw JSONRPCError(RPC_MISC_ERROR, _("Active Fundamentalnode not initialized."));
-
-    CFundamentalnode* pfn = fnodeman.Find(*(activeFundamentalnode.vin));
+    CFundamentalnode* pfn = fnodeman.Find(activeFundamentalnode.vin);
 
     if (pfn) {
         UniValue fnObj(UniValue::VOBJ);
-        fnObj.push_back(Pair("txhash", activeFundamentalnode.vin->prevout.hash.ToString()));
-        fnObj.push_back(Pair("outputidx", (uint64_t)activeFundamentalnode.vin->prevout.n));
+        fnObj.push_back(Pair("txhash", activeFundamentalnode.vin.prevout.hash.ToString()));
+        fnObj.push_back(Pair("outputidx", (uint64_t)activeFundamentalnode.vin.prevout.n));
         fnObj.push_back(Pair("netaddr", activeFundamentalnode.service.ToString()));
         fnObj.push_back(Pair("addr", CBitcoinAddress(pfn->pubKeyCollateralAddress.GetID()).ToString()));
-        fnObj.push_back(Pair("status", activeFundamentalnode.GetStatus()));
-        fnObj.push_back(Pair("message", activeFundamentalnode.GetStatusMessage()));
+        fnObj.push_back(Pair("status", activeFundamentalnode.status));
+        fnObj.push_back(Pair("message", activeFundamentalnode.GetStatus()));
         return fnObj;
     }
     throw std::runtime_error("Fundamentalnode not found in the list of available fundamentalnodes. Current status: "
-                             + activeFundamentalnode.GetStatusMessage());
+                             + activeFundamentalnode.GetStatus());
 }
 
 UniValue getfundamentalnodewinners (const UniValue& params, bool fHelp)
@@ -661,7 +727,7 @@ UniValue getfundamentalnodescores (const UniValue& params, bool fHelp)
 
     std::vector<CFundamentalnode> vFundamentalnodes = fnodeman.GetFullFundamentalnodeVector();
     for (int nHeight = chainActive.Tip()->nHeight - nLast; nHeight < chainActive.Tip()->nHeight + 20; nHeight++) {
-        uint256 nHigh;
+        uint256 nHigh = 0;
         CFundamentalnode* pBestFundamentalnode = NULL;
         for (CFundamentalnode& fn : vFundamentalnodes) {
             uint256 n = fn.CalculateScore(1, nHeight - 100);
@@ -762,7 +828,7 @@ UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
 
         if(!found) {
             statusObj.push_back(Pair("success", false));
-            statusObj.push_back(Pair("error_message", "Could not find alias in config. Verify with listfundamentalnodeconf."));
+            statusObj.push_back(Pair("error_message", "Could not find alias in config. Verify with list-conf."));
         }
 
         return statusObj;

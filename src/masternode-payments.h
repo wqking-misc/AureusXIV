@@ -1,5 +1,5 @@
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2015-2019 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -213,7 +213,7 @@ public:
         std::string ret = "";
         ret += vinMasternode.ToString();
         ret += ", " + std::to_string(nBlockHeight);
-        ret += ", " + HexStr(payee);
+        ret += ", " + payee.ToString();
         ret += ", " + std::to_string((int)vchSig.size());
         return ret;
     }
@@ -233,7 +233,7 @@ private:
 public:
     std::map<uint256, CMasternodePaymentWinner> mapMasternodePayeeVotes;
     std::map<int, CMasternodeBlockPayees> mapMasternodeBlocks;
-    std::map<COutPoint, int> mapMasternodesLastVote; //prevout, nBlockHeight
+    std::map<uint256, int> mapMasternodesLastVote; //prevout.hash + prevout.n, nBlockHeight
 
     CMasternodePayments()
     {
@@ -263,14 +263,14 @@ public:
     {
         LOCK(cs_mapMasternodePayeeVotes);
 
-        if (mapMasternodesLastVote.count(outMasternode)) {
-            if (mapMasternodesLastVote[outMasternode] == nBlockHeight) {
+        if (mapMasternodesLastVote.count(outMasternode.hash + outMasternode.n)) {
+            if (mapMasternodesLastVote[outMasternode.hash + outMasternode.n] == nBlockHeight) {
                 return false;
             }
         }
 
         //record this masternode voted
-        mapMasternodesLastVote[outMasternode] = nBlockHeight;
+        mapMasternodesLastVote[outMasternode.hash + outMasternode.n] = nBlockHeight;
         return true;
     }
 

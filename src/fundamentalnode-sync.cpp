@@ -1,5 +1,5 @@
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2015-2019 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -280,8 +280,8 @@ void CFundamentalnodeSync::Process()
     if (RequestedFundamentalnodeAssets == FUNDAMENTALNODE_SYNC_INITIAL) GetNextAsset();
 
     // sporks synced but blockchain is not, wait until we're almost at a recent block to continue
-    if (Params().NetworkID() != CBaseChainParams::REGTEST && !IsBlockchainSynced() &&
-        RequestedFundamentalnodeAssets > FUNDAMENTALNODE_SYNC_SPORKS) return;
+    if (Params().NetworkID() != CBaseChainParams::REGTEST &&
+        !IsBlockchainSynced() && RequestedFundamentalnodeAssets > FUNDAMENTALNODE_SYNC_SPORKS) return;
 
     TRY_LOCK(cs_vNodes, lockRecv);
     if (!lockRecv) return;
@@ -295,7 +295,7 @@ void CFundamentalnodeSync::Process()
             } else if (RequestedFundamentalnodeAttempt < 6) {
                 int nFnCount = fnodeman.CountEnabled();
                 pnode->PushMessage("fnget", nFnCount); //sync payees
-                uint256 n;
+                uint256 n = 0;
                 pnode->PushMessage("fnvs", n); //sync fundamentalnode votes
             } else {
                 RequestedFundamentalnodeAssets = FUNDAMENTALNODE_SYNC_FINISHED;
@@ -385,8 +385,10 @@ void CFundamentalnodeSync::Process()
 
         if (pnode->nVersion >= ActiveProtocol()) {
             if (RequestedFundamentalnodeAssets == FUNDAMENTALNODE_SYNC_BUDGET) {
+
                 // We'll start rejecting votes if we accidentally get set as synced too soon
                 if (lastBudgetItem > 0 && lastBudgetItem < GetTime() - FUNDAMENTALNODE_SYNC_TIMEOUT * 2 && RequestedFundamentalnodeAttempt >= FUNDAMENTALNODE_SYNC_THRESHOLD) {
+
                     // Hasn't received a new item in the last five seconds, so we'll move to the
                     GetNextAsset();
 
@@ -410,7 +412,7 @@ void CFundamentalnodeSync::Process()
 
                 if (RequestedFundamentalnodeAttempt >= FUNDAMENTALNODE_SYNC_THRESHOLD * 3) return;
 
-                uint256 n;
+                uint256 n = 0;
                 pnode->PushMessage("fnvs", n); //sync fundamentalnode votes
                 RequestedFundamentalnodeAttempt++;
 

@@ -1,5 +1,5 @@
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2015-2019 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -23,8 +23,8 @@
 #define FUNDAMENTALNODE_REMOVAL_SECONDS (130 * 60)
 #define FUNDAMENTALNODE_CHECK_SECONDS 5
 
-static const CAmount FUNDAMENTALNODE_AMOUNT = 10000* COIN;
-static const CAmount FN_MAGIC_AMOUNT = 0.1234 *COIN;
+static const int64_t FN_MAGIC_AMOUNT = 0.1234;
+static const int64_t FUNDAMENTALNODE_AMOUNT = 10000;
 
 class CFundamentalnode;
 class CFundamentalnodeBroadcast;
@@ -32,6 +32,7 @@ class CFundamentalnodePing;
 extern std::map<int64_t, uint256> mapFundamentalnodeCacheBlockHashes;
 
 bool GetFundamentalnodeBlockHash(uint256& hash, int nBlockHeight);
+
 
 //
 // The Fundamentalnode Ping Class : Contains a different serialize method for sending pings from fundamentalnodes throughout the network
@@ -104,7 +105,7 @@ public:
 };
 
 //
-// The Fundamentalnode Class. It contains the input of the 10000 PIV, signature to prove
+// The Fundamentalnode Class. For managing the Obfuscation process. It contains the input of the 10000 PIV, signature to prove
 // it's the one who own that ip address and code for calculating the payment election.
 //
 class CFundamentalnode : public CSignedMessage
@@ -119,6 +120,7 @@ public:
         FUNDAMENTALNODE_PRE_ENABLED,
         FUNDAMENTALNODE_ENABLED,
         FUNDAMENTALNODE_EXPIRED,
+        FUNDAMENTALNODE_OUTPOINT_SPENT,
         FUNDAMENTALNODE_REMOVE,
         FUNDAMENTALNODE_WATCHDOG_EXPIRED,
         FUNDAMENTALNODE_POSE_BAN,
@@ -145,6 +147,9 @@ public:
     int nScanningErrorCount;
     int nLastScanningErrorBlockHeight;
     CFundamentalnodePing lastPing;
+
+    int64_t nLastDsee;  // temporary, do not save. Remove after migration to v12
+    int64_t nLastDseep; // temporary, do not save. Remove after migration to v12
 
     CFundamentalnode();
     CFundamentalnode(const CFundamentalnode& other);
@@ -226,6 +231,13 @@ public:
 
     bool UpdateFromNewBroadcast(CFundamentalnodeBroadcast& fnb);
 
+    inline uint64_t SliceHash(uint256& hash, int slice)
+    {
+        uint64_t n = 0;
+        memcpy(&n, &hash + slice * 64, 64);
+        return n;
+    }
+
     void Check(bool forceCheck = false);
 
     bool IsBroadcastedWithin(int seconds)
@@ -262,7 +274,7 @@ public:
 
         return cacheInputAge + (chainActive.Tip()->nHeight - cacheInputAgeBlock);
     }
-    
+
     std::string GetStatus();
 
     std::string Status()
@@ -282,7 +294,7 @@ public:
     int64_t GetLastPaid();
     bool IsValidNetAddr();
 
-    /// Is the input associated with collateral public key? (and there is 10000 PIV - checking if valid masternode)
+    /// Is the input associated with collateral public key? (and there is 10000 PIV - checking if valid fundamentalnode)
     bool IsInputAssociatedWithPubkey() const;
 };
 
@@ -331,7 +343,7 @@ public:
     /// Create Fundamentalnode broadcast, needs to be relayed manually after that
     static bool Create(CTxIn vin, CService service, CKey keyCollateralAddressNew, CPubKey pubKeyCollateralAddressNew, CKey keyFundamentalnodeNew, CPubKey pubKeyFundamentalnodeNew, std::string& strErrorRet, CFundamentalnodeBroadcast& fnbRet);
     static bool Create(std::string strService, std::string strKey, std::string strTxHash, std::string strOutputIndex, std::string& strErrorRet, CFundamentalnodeBroadcast& fnbRet, bool fOffline = false);
-    static bool CheckDefaultPort(CService service, std::string& strErrorRet, const std::string& strContext);
+    static bool CheckDefaultPort(std::string strService, std::string& strErrorRet, std::string strContext);
 };
 
 #endif

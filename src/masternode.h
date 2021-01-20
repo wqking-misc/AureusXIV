@@ -1,5 +1,5 @@
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2015-2019 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -23,7 +23,7 @@
 #define MASTERNODE_REMOVAL_SECONDS (130 * 60)
 #define MASTERNODE_CHECK_SECONDS 5
 
-static const int64_t MASTERNODEAMOUNT = 20000 ;
+static const int64_t MASTERNODEAMOUNT = 20000;
 
 class CMasternode;
 class CMasternodeBroadcast;
@@ -104,7 +104,7 @@ public:
 };
 
 //
-// The Masternode Class. It contains the input of the 10000 PIV, signature to prove
+// The Masternode Class. For managing the Obfuscation process. It contains the input of the 10000 PIV, signature to prove
 // it's the one who own that ip address and code for calculating the payment election.
 //
 class CMasternode : public CSignedMessage
@@ -119,6 +119,7 @@ public:
         MASTERNODE_PRE_ENABLED,
         MASTERNODE_ENABLED,
         MASTERNODE_EXPIRED,
+        MASTERNODE_OUTPOINT_SPENT,
         MASTERNODE_REMOVE,
         MASTERNODE_WATCHDOG_EXPIRED,
         MASTERNODE_POSE_BAN,
@@ -145,6 +146,9 @@ public:
     int nScanningErrorCount;
     int nLastScanningErrorBlockHeight;
     CMasternodePing lastPing;
+
+    int64_t nLastDsee;  // temporary, do not save. Remove after migration to v12
+    int64_t nLastDseep; // temporary, do not save. Remove after migration to v12
 
     CMasternode();
     CMasternode(const CMasternode& other);
@@ -225,6 +229,13 @@ public:
     int64_t SecondsSincePayment();
 
     bool UpdateFromNewBroadcast(CMasternodeBroadcast& mnb);
+
+    inline uint64_t SliceHash(uint256& hash, int slice)
+    {
+        uint64_t n = 0;
+        memcpy(&n, &hash + slice * 64, 64);
+        return n;
+    }
 
     void Check(bool forceCheck = false);
 
@@ -331,7 +342,7 @@ public:
     /// Create Masternode broadcast, needs to be relayed manually after that
     static bool Create(CTxIn vin, CService service, CKey keyCollateralAddressNew, CPubKey pubKeyCollateralAddressNew, CKey keyMasternodeNew, CPubKey pubKeyMasternodeNew, std::string& strErrorRet, CMasternodeBroadcast& mnbRet);
     static bool Create(std::string strService, std::string strKey, std::string strTxHash, std::string strOutputIndex, std::string& strErrorRet, CMasternodeBroadcast& mnbRet, bool fOffline = false);
-    static bool CheckDefaultPort(CService service, std::string& strErrorRet, const std::string& strContext);
+    static bool CheckDefaultPort(std::string strService, std::string& strErrorRet, std::string strContext);
 };
 
 #endif
