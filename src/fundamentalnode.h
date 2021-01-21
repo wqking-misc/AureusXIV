@@ -142,7 +142,6 @@ public:
     bool unitTest;
     bool allowFreeTx;
     int protocolVersion;
-    int nActiveState;
     int64_t nLastDsq; //the dsq count from the last dsq broadcast of this node
     int nScanningErrorCount;
     int nLastScanningErrorBlockHeight;
@@ -275,21 +274,7 @@ public:
         return cacheInputAge + (chainActive.Tip()->nHeight - cacheInputAgeBlock);
     }
 
-    std::string GetStatus();
-
-    std::string Status()
-    {
-        std::string strStatus = "ACTIVE";
-
-        if (activeState == CFundamentalnode::FUNDAMENTALNODE_ENABLED) strStatus = "ENABLED";
-        if (activeState == CFundamentalnode::FUNDAMENTALNODE_EXPIRED) strStatus = "EXPIRED";
-        if (activeState == CFundamentalnode::FUNDAMENTALNODE_VIN_SPENT) strStatus = "VIN_SPENT";
-        if (activeState == CFundamentalnode::FUNDAMENTALNODE_REMOVE) strStatus = "REMOVE";
-        if (activeState == CFundamentalnode::FUNDAMENTALNODE_POS_ERROR) strStatus = "POS_ERROR";
-        if (activeState == CFundamentalnode::FUNDAMENTALNODE_MISSING) strStatus = "MISSING";
-
-        return strStatus;
-    }
+    std::string Status();
 
     int64_t GetLastPaid();
     bool IsValidNetAddr();
