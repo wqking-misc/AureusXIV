@@ -1719,7 +1719,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     }
 
     if (fFundamentalNode) {
-        LogPrintf("IS FUNDAMNENTAL NODE\n");
+        LogPrintf("IS FUNDAMENTAL NODE\n");
         strFundamentalNodeAddr = GetArg("-fundamentalnodeaddr", "");
 
         LogPrintf(" addr %s\n", strFundamentalNodeAddr.c_str());

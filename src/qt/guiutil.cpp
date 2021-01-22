@@ -984,7 +984,7 @@ QString formatServicesStr(quint64 mask)
                 strList.append(QObject::tr("NETWORK"));
                 break;
             case NODE_BLOOM:
-            case NODE_BLOOM_WITHOUT_MN:
+            case NODE_BLOOM_WITHOUT_FN:
                 strList.append(QObject::tr("BLOOM"));
                 break;
             default:

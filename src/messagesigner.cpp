@@ -7,7 +7,7 @@
 #include "hash.h"
 #include "main.h" // For strMessageMagic
 #include "messagesigner.h"
-#include "fundamentalnodeman.h"  // For GetPublicKey (of MN from its vin)
+#include "fundamentalnodeman.h"  // For GetPublicKey (of FN from its vin)
 #include "tinyformat.h"
 #include "utilstrencodings.h"
 

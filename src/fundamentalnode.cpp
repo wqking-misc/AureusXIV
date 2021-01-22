@@ -542,7 +542,7 @@ bool CFundamentalnodeBroadcast::CheckAndUpdate(int& nDos)
     if (!CheckSignature())
     {
         // don't ban for old fundamentalnodes, their sigs could be broken because of the bug
-        nDos = protocolVersion < MIN_PEER_MNANNOUNCE ? 0 : 100;
+        nDos = protocolVersion < MIN_PEER_FNANNOUNCE ? 0 : 100;
         return error("%s : Got bad Fundamentalnode address signature", __func__);
     }
 
