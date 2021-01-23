@@ -286,7 +286,7 @@ public:
         nMinerThreads = 0;
         nTargetTimespan = 1 * 45; // AXIV: 1 day
         nTargetSpacing = 1 * 45;  // AXIV: 1 minute
-        nLastPOWBlock = 100000;
+        nLastPOWBlock = 400;
         nMaturity = 15;
         nModifierUpdateBlock = 100500; //approx Mon, 17 Apr 2017 04:00:00 GMT
         nMaxMoneyOut = 43199500 * COIN;
