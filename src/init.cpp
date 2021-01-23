@@ -1613,10 +1613,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
             }
         }
         fVerifyingBlocks = false;
-
-        //Inititalize zAXIVWallet
-        uiInterface.InitMessage(_("Syncing zAXIV wallet..."));
-
+        
     }  // (!fDisableWallet)
 #else  // ENABLE_WALLET
     LogPrintf("No wallet compiled in!\n");
