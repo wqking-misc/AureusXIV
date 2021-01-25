@@ -165,12 +165,6 @@
              </item>
              <item row="2" column="2">
               <widget class="QLabel" name="label_5">
-               <property name="font">
-                <font>
-                 <family>Andale Mono</family>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
                <property name="text">
                 <string>Use this form to request payments. All fields are &lt;b&gt;optional&lt;/b&gt;.</string>
                </property>
@@ -232,29 +226,23 @@
               <layout class="QHBoxLayout" name="horizontalLayout">
                <item>
                 <widget class="QPushButton" name="receiveButton">
-                <property name="font">
-                <font>
-                    <family>Andale Mono</family>
-                </font>
-                </property>
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
+                 <property name="minimumSize">
+                  <size>
+                   <width>150</width>
+                   <height>0</height>
+                  </size>
                  </property>
                  <property name="text">
                   <string>&amp;Request payment</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../aureusxiv.qrc">
+                   <normaloff>:/icons/receiving_addresses</normaloff>:/icons/receiving_addresses</iconset>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QPushButton" name="clearButton">
-                <property name="font">
-                <font>
-                    <family>Andale Mono</family>
-                </font>
-                </property>
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -266,6 +254,10 @@
                  </property>
                  <property name="text">
                   <string>Clear</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../aureusxiv.qrc">
+                   <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
                  </property>
                  <property name="autoDefault">
                   <bool>false</bool>
@@ -348,29 +340,11 @@
                   </color>
                  </brush>
                 </colorrole>
-                <colorrole >
-                 <brush brushstyle="NoBrush">
-                  <color alpha="128">
-                   <red>51</red>
-                   <green>51</green>
-                   <blue>51</blue>
-                  </color>
-                 </brush>
-                </colorrole>
                </active>
                <inactive>
                 <colorrole role="Text">
                  <brush brushstyle="SolidPattern">
                   <color alpha="255">
-                   <red>51</red>
-                   <green>51</green>
-                   <blue>51</blue>
-                  </color>
-                 </brush>
-                </colorrole>
-                <colorrole >
-                 <brush brushstyle="NoBrush">
-                  <color alpha="128">
                    <red>51</red>
                    <green>51</green>
                    <blue>51</blue>
@@ -388,16 +362,7 @@
                   </color>
                  </brush>
                 </colorrole>
-                <colorrole >
-                 <brush brushstyle="NoBrush">
-                  <color alpha="128">
-                   <red>51</red>
-                   <green>51</green>
-                   <blue>51</blue>
-                  </color>
-                 </brush>
-                </colorrole>
-               </disabled>
+              </disabled>
               </palette>
              </property>
              <property name="contextMenuPolicy">
@@ -415,11 +380,6 @@
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <item>
               <widget class="QPushButton" name="showRequestButton">
-                 <property name="font">
-                <font>
-                    <family>Andale Mono</family>
-                </font>
-                </property>
                <property name="enabled">
                 <bool>false</bool>
                </property>
@@ -429,6 +389,10 @@
                <property name="text">
                 <string>Show</string>
                </property>
+               <property name="icon">
+                <iconset resource="../aureusxiv.qrc">
+                 <normaloff>:/icons/edit</normaloff>:/icons/edit</iconset>
+               </property>
                <property name="autoDefault">
                 <bool>false</bool>
                </property>
@@ -436,11 +400,6 @@
              </item>
              <item>
               <widget class="QPushButton" name="removeRequestButton">
-              <property name="font">
-                <font>
-                    <family>Andale Mono</family>
-                </font>
-                </property>
                <property name="enabled">
                 <bool>false</bool>
                </property>
@@ -449,6 +408,10 @@
                </property>
                <property name="text">
                 <string>Remove</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../aureusxiv.qrc">
+                 <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
                </property>
                <property name="autoDefault">
                 <bool>false</bool>

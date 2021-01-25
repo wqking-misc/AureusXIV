@@ -6,6 +6,7 @@
 #define BITCOIN_QT_WALLETVIEW_H
 
 #include "amount.h"
+#include "fundamentalnodelist.h"
 #include "askpassphrasedialog.h"
 #include "masternodelist.h"
 
@@ -66,6 +67,7 @@ private:
     ReceiveCoinsDialog* receiveCoinsPage;
     SendCoinsDialog* sendCoinsPage;
     BlockExplorer* explorerWindow;
+    FundamentalnodeList* fundamentalnodeListPage;
     MasternodeList* masternodeListPage;
 
     TransactionView* transactionView;
@@ -78,6 +80,8 @@ public slots:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
+    /** Switch to fundamentalnode page */
+    void gotoFundamentalnodePage();
     /** Switch to masternode page */
     void gotoMasternodePage();
     /** Switch to explorer page */

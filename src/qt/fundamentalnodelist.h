@@ -1,12 +1,7 @@
-// Copyright (c) 2014-2016 The Dash Developers
-// Copyright (c) 2016-2018 The PIVX developers
-// Distributed under the MIT software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+#ifndef FUNDAMENTALNODELIST_H
+#define FUNDAMENTALNODELIST_H
 
-#ifndef MASTERNODELIST_H
-#define MASTERNODELIST_H
-
-#include "masternode.h"
+#include "fundamentalnode.h"
 #include "platformstyle.h"
 #include "sync.h"
 #include "util.h"
@@ -15,13 +10,13 @@
 #include <QTimer>
 #include <QWidget>
 
-#define MY_MASTERNODELIST_UPDATE_SECONDS 60
-#define MASTERNODELIST_UPDATE_SECONDS 15
-#define MASTERNODELIST_FILTER_COOLDOWN_SECONDS 3
+#define MY_FUNDAMENTALNODELIST_UPDATE_SECONDS 60
+#define FUNDAMENTALNODELIST_UPDATE_SECONDS 15
+#define FUNDAMENTALNODELIST_FILTER_COOLDOWN_SECONDS 3
 
 namespace Ui
 {
-    class MasternodeList;
+class FundamentalnodeList;
 }
 
 class ClientModel;
@@ -31,14 +26,14 @@ QT_BEGIN_NAMESPACE
 class QModelIndex;
 QT_END_NAMESPACE
 
-/** Masternode Manager page widget */
-class MasternodeList : public QWidget
+/** fundamentalnode Manager page widget */
+class FundamentalnodeList : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit MasternodeList(QWidget* parent = 0);
-    ~MasternodeList();
+    explicit FundamentalnodeList(QWidget* parent = 0);
+    ~FundamentalnodeList();
 
     void setClientModel(ClientModel* clientModel);
     void setWalletModel(WalletModel* walletModel);
@@ -51,25 +46,25 @@ private:
     bool fFilterUpdated;
 
 public Q_SLOTS:
-            void updateMyMasternodeInfo(QString strAlias, QString strAddr, CMasternode* pmn);
+    void updateMyFundamentalnodeInfo(QString strAlias, QString strAddr, CFundamentalnode* pmn);
     void updateMyNodeList(bool fForce = false);
 
-    Q_SIGNALS:
+Q_SIGNALS:
 
 private:
     QTimer* timer;
-    Ui::MasternodeList* ui;
+    Ui::FundamentalnodeList* ui;
     ClientModel* clientModel;
     WalletModel* walletModel;
     CCriticalSection cs_mnlistupdate;
     QString strCurrentFilter;
 
 private Q_SLOTS:
-            void showContextMenu(const QPoint&);
+    void showContextMenu(const QPoint&);
     void on_startButton_clicked();
     void on_startAllButton_clicked();
     void on_startMissingButton_clicked();
-    void on_tableWidgetMyMasternodes_itemSelectionChanged();
+    void on_tableWidgetMyFundamentalnodes_itemSelectionChanged();
     void on_UpdateButton_clicked();
 };
-#endif // MASTERNODELIST_H
+#endif // FUNDAMENTALNODELIST_H

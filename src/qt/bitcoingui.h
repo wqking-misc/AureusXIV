@@ -211,6 +211,8 @@ private slots:
     void gotoHistoryPage();
     /** Switch to Explorer Page */
     void gotoBlockExplorerPage();
+    /** Switch to fundamentalnode page */
+    void gotoFundamentalnodePage();
     /** Switch to masternode page */
     void gotoMasternodePage();
     /** Switch to privacy page */

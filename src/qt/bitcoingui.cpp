@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The AureusXIV developers
+// Copyright (c) 2015-2017 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -30,6 +30,7 @@
 #endif
 
 #include "init.h"
+#include "fundamentalnodelist.h"
 #include "fundamentalnode-sync.h"
 #include "masternodelist.h"
 #include "ui_interface.h"
@@ -84,6 +85,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
                                                                             appMenuBar(0),
                                                                             overviewAction(0),
                                                                             historyAction(0),
+                                                                            fundamentalnodeAction(0),
                                                                             masternodeAction(0),
                                                                             quitAction(0),
                                                                             sendCoinsAction(0),
@@ -306,7 +308,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     QActionGroup* tabGroup = new QActionGroup(this);
     // tabGroup.setFont(QFont(font, 28 * Andale-Mono));
     overviewAction = new QAction(QIcon(":/icons/send"), tr("&Overview"), this);
-    overviewAction->setStatusTip(tr("Send coins to a AureusXIV addresses"));
+    overviewAction->setStatusTip(tr("Send coins to a VITAE addresses"));
     overviewAction->setToolTip(overviewAction->statusTip());
     overviewAction->setCheckable(true);
     overviewAction->setFont(GUIUtil::primaryFont());
@@ -335,8 +337,8 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(sendCoinsAction);
 
-    receiveCoinsAction = new QAction(QIcon(":/icons/send"), tr("&Receive"), this);
-    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and AureusXIV: URIs)"));
+    receiveCoinsAction = new QAction(QIcon(":/icons/receiving_addresses"), tr("&Receive"), this);
+    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and aureusxiv: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
     receiveCoinsAction->setFont(GUIUtil::primaryFont());
@@ -362,6 +364,21 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #ifdef ENABLE_WALLET
 
     QSettings settings;
+    if (settings.value("fShowFundamentalnodesTab").toBool()) {
+        fundamentalnodeAction = new QAction(QIcon(":/icons/send"), tr("&Fundamentalnodes"), this);
+        fundamentalnodeAction->setStatusTip(tr("Browse fundamentalnodes"));
+        fundamentalnodeAction->setToolTip(fundamentalnodeAction->statusTip());
+        fundamentalnodeAction->setCheckable(true);
+        fundamentalnodeAction->setFont(GUIUtil::primaryFont());
+#ifdef Q_OS_MAC
+        fundamentalnodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
+#else
+        fundamentalnodeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+#endif
+        tabGroup->addAction(fundamentalnodeAction);
+        connect(fundamentalnodeAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+        connect(fundamentalnodeAction, SIGNAL(triggered()), this, SLOT(gotoFundamentalnodePage()));
+    }
 
     if (settings.value("fShowMasternodesTab").toBool()) {
         masternodeAction = new QAction(QIcon(":/icons/send"), tr("&Nodes"), this);
@@ -607,7 +624,9 @@ void BitcoinGUI::createToolBars()
        toolbar->addAction(spacer);
        toolbar->widgetForAction(spacer)->setObjectName("ToolbarSpacer");
        toolbar->addWidget(label);
- 
+        QAction* spacer2 = new QAction(this);
+       toolbar->addAction(spacer2);
+       toolbar->widgetForAction(spacer2)->setObjectName("ToolbarSpacer2");
        //toolbar->addWidget(syncLabel);
        //toolbar->setStyleSheet("text-align:left;");
 
@@ -623,6 +642,9 @@ void BitcoinGUI::createToolBars()
         toolbar->addAction(receiveCoinsAction);
         toolbar->addAction(historyAction);
         QSettings settings;
+        if (settings.value("fShowFundamentalnodesTab").toBool()) {
+            toolbar->addAction(fundamentalnodeAction);
+        }
         if (settings.value("fShowMasternodesTab").toBool()) {
             toolbar->addAction(masternodeAction);
         }
@@ -726,6 +748,9 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     receiveCoinsAction->setEnabled(enabled);
     historyAction->setEnabled(enabled);
     QSettings settings;
+    if (settings.value("fShowFundamentalnodesTab").toBool()) {
+        fundamentalnodeAction->setEnabled(enabled);
+    }
     if (settings.value("fShowMasternodesTab").toBool()) {
         masternodeAction->setEnabled(enabled);
     }
@@ -859,6 +884,15 @@ void BitcoinGUI::gotoHistoryPage()
 {
     historyAction->setChecked(true);
     if (walletFrame) walletFrame->gotoHistoryPage();
+}
+
+void BitcoinGUI::gotoFundamentalnodePage()
+{
+    QSettings settings;
+    if (settings.value("fShowFundamentalnodesTab").toBool()) {
+        fundamentalnodeAction->setChecked(true);
+        if (walletFrame) walletFrame->gotoFundamentalnodePage();
+    }
 }
 
 void BitcoinGUI::gotoMasternodePage()
