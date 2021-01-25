@@ -19,8 +19,7 @@ bool CMessageSigner::GetKeysFromSecret(const std::string& strSecret, CKey& keyRe
     if (!fGood)
         return false;
 
-    keyRet = vchSecret.GetKey();
-    pubkeyRet = keyRet.GetPubKey();
+    pubkeyRet = vchSecret.GetKey().GetPubKey();
     return true;
 }
 
