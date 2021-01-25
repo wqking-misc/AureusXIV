@@ -63,7 +63,7 @@
     </qresource>
     <qresource prefix="/images">
         <file alias="about">res/images/about.png</file>
-        <file alias="aureusxiv_logo_horizontal">res/images/aureusxiv_logo_horizontal.png</file>
+        <file alias="aureusxiv_logo_horizontal">res/images/vitae_logo_horizontal.png</file>
         <file alias="downArrow">res/images/downArrow.svg</file>
         <file alias="upArrow">res/images/upArrow.svg</file>
         <file alias="downArrow_small">res/images/downArrow_small_dark.png</file>
