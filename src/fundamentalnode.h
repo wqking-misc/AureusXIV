@@ -16,8 +16,8 @@
 #include "util.h"
 
 #define FUNDAMENTALNODE_MIN_CONFIRMATIONS 15
-#define FUNDAMENTALNODE_MIN_FNP_SECONDS (10 * 60)
-#define FUNDAMENTALNODE_MIN_FNB_SECONDS (5 * 60)
+#define FUNDAMENTALNODE_MIN_MNP_SECONDS (10 * 60)
+#define FUNDAMENTALNODE_MIN_MNB_SECONDS (5 * 60)
 #define FUNDAMENTALNODE_PING_SECONDS (5 * 60)
 #define FUNDAMENTALNODE_EXPIRATION_SECONDS (120 * 60)
 #define FUNDAMENTALNODE_REMOVAL_SECONDS (130 * 60)
@@ -42,7 +42,7 @@ class CFundamentalnodePing : public CSignedMessage
 public:
     CTxIn vin;
     uint256 blockHash;
-    int64_t sigTime; //fnb message times
+    int64_t sigTime; //mnb message times
 
     CFundamentalnodePing();
     CFundamentalnodePing(CTxIn& newVin);
@@ -134,7 +134,7 @@ public:
     CPubKey pubKeyCollateralAddress1;
     CPubKey pubKeyFundamentalnode1;
     int activeState;
-    int64_t sigTime; //fnb message time
+    int64_t sigTime; //mnb message time
     int cacheInputAge;
     int cacheInputAgeBlock;
     bool unitTest;
@@ -224,7 +224,7 @@ public:
 
     int64_t SecondsSincePayment();
 
-    bool UpdateFromNewBroadcast(CFundamentalnodeBroadcast& fnb);
+    bool UpdateFromNewBroadcast(CFundamentalnodeBroadcast& mnb);
 
     void Check(bool forceCheck = false);
 
@@ -296,7 +296,7 @@ class CFundamentalnodeBroadcast : public CFundamentalnode
 public:
     CFundamentalnodeBroadcast();
     CFundamentalnodeBroadcast(CService newAddr, CTxIn newVin, CPubKey newPubkey, CPubKey newPubkey2, int protocolVersionIn);
-    CFundamentalnodeBroadcast(const CFundamentalnode& fn);
+    CFundamentalnodeBroadcast(const CFundamentalnode& mn);
 
     bool CheckAndUpdate(int& nDoS);
     bool CheckInputsAndAdd(int& nDos);
@@ -329,8 +329,8 @@ public:
     }
 
     /// Create Fundamentalnode broadcast, needs to be relayed manually after that
-    static bool Create(CTxIn vin, CService service, CKey keyCollateralAddressNew, CPubKey pubKeyCollateralAddressNew, CKey keyFundamentalnodeNew, CPubKey pubKeyFundamentalnodeNew, std::string& strErrorRet, CFundamentalnodeBroadcast& fnbRet);
-    static bool Create(std::string strService, std::string strKey, std::string strTxHash, std::string strOutputIndex, std::string& strErrorRet, CFundamentalnodeBroadcast& fnbRet, bool fOffline = false);
+    static bool Create(CTxIn vin, CService service, CKey keyCollateralAddressNew, CPubKey pubKeyCollateralAddressNew, CKey keyFundamentalnodeNew, CPubKey pubKeyFundamentalnodeNew, std::string& strErrorRet, CFundamentalnodeBroadcast& mnbRet);
+    static bool Create(std::string strService, std::string strKey, std::string strTxHash, std::string strOutputIndex, std::string& strErrorRet, CFundamentalnodeBroadcast& mnbRet, bool fOffline = false);
     static bool CheckDefaultPort(CService service, std::string& strErrorRet, const std::string& strContext);
 };
 

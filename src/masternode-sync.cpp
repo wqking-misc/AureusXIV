@@ -28,6 +28,11 @@ bool CMasternodeSync::IsSynced()
     return RequestedMasternodeAssets == MASTERNODE_SYNC_FINISHED;
 }
 
+bool CMasternodeSync::IsSporkListSynced()
+{
+    return RequestedMasternodeAssets > MASTERNODE_SYNC_SPORKS;
+}
+
 bool CMasternodeSync::IsMasternodeListSynced()
 {
     return RequestedMasternodeAssets > MASTERNODE_SYNC_LIST;
@@ -36,6 +41,7 @@ bool CMasternodeSync::IsMasternodeListSynced()
 bool CMasternodeSync::NotCompleted()
 {
     return (!IsSynced() && (
+            !IsSporkListSynced() ||
             sporkManager.IsSporkActive(SPORK_9_MASTERNODE_PAYMENT_ENFORCEMENT) ||
             sporkManager.IsSporkActive(SPORK_10_FUNDAMENTALNODE_BUDGET_ENFORCEMENT) ||
             sporkManager.IsSporkActive(SPORK_11_ENABLE_SUPERBLOCKS)));
@@ -99,7 +105,7 @@ void CMasternodeSync::Reset()
 
 void CMasternodeSync::AddedMasternodeList(uint256 hash)
 {
-    if (mnodeman.mapSeenMasternodeBroadcast.count(hash)) {
+    if (m_nodeman.mapSeenMasternodeBroadcast.count(hash)) {
         if (mapSeenSyncMNB[hash] < MASTERNODE_SYNC_THRESHOLD) {
             lastMasternodeList = GetTime();
             mapSeenSyncMNB[hash]++;
@@ -139,6 +145,10 @@ void CMasternodeSync::GetNextAsset()
     case (MASTERNODE_SYNC_INITIAL):
     case (MASTERNODE_SYNC_FAILED): // should never be used here actually, use Reset() instead
         ClearFulfilledRequest();
+        RequestedMasternodeAssets = MASTERNODE_SYNC_SPORKS;
+        break;
+    case (MASTERNODE_SYNC_SPORKS):
+        RequestedMasternodeAssets = MASTERNODE_SYNC_LIST;
         break;
     case (MASTERNODE_SYNC_LIST):
         RequestedMasternodeAssets = MASTERNODE_SYNC_MNW;
@@ -160,6 +170,8 @@ std::string CMasternodeSync::GetSyncStatus()
     switch (masternodeSync.RequestedMasternodeAssets) {
     case MASTERNODE_SYNC_INITIAL:
         return _("MNs synchronization pending...");
+    case MASTERNODE_SYNC_SPORKS:
+        return _("Synchronizing sporks...");
     case MASTERNODE_SYNC_LIST:
         return _("Synchronizing masternodes...");
     case MASTERNODE_SYNC_MNW:
@@ -217,6 +229,7 @@ void CMasternodeSync::ClearFulfilledRequest()
     if (!lockRecv) return;
 
     for (CNode* pnode : vNodes) {
+        pnode->ClearFulfilledRequest("getspork");
         pnode->ClearFulfilledRequest("mnsync");
         pnode->ClearFulfilledRequest("mnwsync");
         pnode->ClearFulfilledRequest("busync");
@@ -233,7 +246,7 @@ void CMasternodeSync::Process()
         /*
             Resync if we lose all masternodes from sleep/wake or failure to sync originally
         */
-        if (mnodeman.CountEnabled() == 0) {
+        if (m_nodeman.CountEnabled() == 0) {
             Reset();
         } else
             return;
@@ -250,15 +263,21 @@ void CMasternodeSync::Process()
 
     if (RequestedMasternodeAssets == MASTERNODE_SYNC_INITIAL) GetNextAsset();
 
+    // sporks synced but blockchain is not, wait until we're almost at a recent block to continue
+    if (Params().NetworkID() != CBaseChainParams::REGTEST && !IsBlockchainSynced() &&
+        RequestedMasternodeAssets > MASTERNODE_SYNC_SPORKS) return;
+
     TRY_LOCK(cs_vNodes, lockRecv);
     if (!lockRecv) return;
 
     for (CNode* pnode : vNodes) {
         if (Params().NetworkID() != CBaseChainParams::REGTEST) {
             if (RequestedMasternodeAttempt <= 2) {
-                mnodeman.DsegUpdate(pnode);
+                pnode->PushMessage("getsporks"); //get current network sporks
             } else if (RequestedMasternodeAttempt < 4) {
-                int nMnCount = mnodeman.CountEnabled();
+                m_nodeman.DsegUpdate(pnode);
+            } else if (RequestedMasternodeAttempt < 6) {
+                int nMnCount = m_nodeman.CountEnabled();
                 pnode->PushMessage("mnget", nMnCount); //sync payees
                 uint256 n;
                 pnode->PushMessage("mnvs", n); //sync masternode votes
@@ -266,6 +285,18 @@ void CMasternodeSync::Process()
                 RequestedMasternodeAssets = MASTERNODE_SYNC_FINISHED;
             }
             RequestedMasternodeAttempt++;
+            return;
+        }
+
+        //set to synced
+        if (RequestedMasternodeAssets == MASTERNODE_SYNC_SPORKS) {
+            if (pnode->HasFulfilledRequest("getspork")) continue;
+            pnode->FulfilledRequest("getspork");
+
+            pnode->PushMessage("getsporks"); //get current network sporks
+            if (RequestedMasternodeAttempt >= 2) GetNextAsset();
+            RequestedMasternodeAttempt++;
+
             return;
         }
 
@@ -297,7 +328,7 @@ void CMasternodeSync::Process()
 
                 if (RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD * 3) return;
 
-                mnodeman.DsegUpdate(pnode);
+                m_nodeman.DsegUpdate(pnode);
                 RequestedMasternodeAttempt++;
                 return;
             }
@@ -328,7 +359,7 @@ void CMasternodeSync::Process()
 
                 if (RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD * 3) return;
 
-                int nMnCount = mnodeman.CountEnabled();
+                int nMnCount = m_nodeman.CountEnabled();
                 pnode->PushMessage("mnget", nMnCount); //sync payees
                 RequestedMasternodeAttempt++;
 

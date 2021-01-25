@@ -36,7 +36,7 @@ void CActiveFundamentalnode::ManageStatus()
 
     if (status == ACTIVE_FUNDAMENTALNODE_INITIAL) {
         CFundamentalnode* pmn;
-        pmn = fnodeman.Find(pubKeyFundamentalnode);
+        pmn = mnodeman.Find(pubKeyFundamentalnode);
         if (pmn != nullptr) {
             pmn->Check();
             if (pmn->IsEnabled() && pmn->protocolVersion == PROTOCOL_VERSION)
@@ -138,29 +138,29 @@ bool CActiveFundamentalnode::SendFundamentalnodePing(std::string& errorMessage)
 
     LogPrintf("CActiveFundamentalnode::SendFundamentalnodePing() - Relay Fundamentalnode Ping vin = %s\n", vin->ToString());
 
-    CFundamentalnodePing fnp(*vin);
-    if (!fnp.Sign(keyFundamentalnode, pubKeyFundamentalnode)) {
+    CFundamentalnodePing mnp(*vin);
+    if (!mnp.Sign(keyFundamentalnode, pubKeyFundamentalnode)) {
         errorMessage = "Couldn't sign Fundamentalnode Ping";
         return false;
     }
 
     // Update lastPing for our fundamentalnode in Fundamentalnode list
-    CFundamentalnode* pmn = fnodeman.Find(*vin);
+    CFundamentalnode* pmn = mnodeman.Find(*vin);
     if (pmn != NULL) {
-        if (pmn->IsPingedWithin(FUNDAMENTALNODE_PING_SECONDS, fnp.sigTime)) {
+        if (pmn->IsPingedWithin(FUNDAMENTALNODE_PING_SECONDS, mnp.sigTime)) {
             errorMessage = "Too early to send Fundamentalnode Ping";
             return false;
         }
 
-        pmn->lastPing = fnp;
-        fnodeman.mapSeenFundamentalnodePing.insert(std::make_pair(fnp.GetHash(), fnp));
+        pmn->lastPing = mnp;
+        mnodeman.mapSeenFundamentalnodePing.insert(std::make_pair(mnp.GetHash(), mnp));
 
-        //fnodeman.mapSeenFundamentalnodeBroadcast.lastPing is probably outdated, so we'll update it
-        CFundamentalnodeBroadcast fnb(*pmn);
-        uint256 hash = fnb.GetHash();
-        if (fnodeman.mapSeenFundamentalnodeBroadcast.count(hash)) fnodeman.mapSeenFundamentalnodeBroadcast[hash].lastPing = fnp;
+        //mnodeman.mapSeenFundamentalnodeBroadcast.lastPing is probably outdated, so we'll update it
+        CFundamentalnodeBroadcast mnb(*pmn);
+        uint256 hash = mnb.GetHash();
+        if (mnodeman.mapSeenFundamentalnodeBroadcast.count(hash)) mnodeman.mapSeenFundamentalnodeBroadcast[hash].lastPing = mnp;
 
-        fnp.Relay();
+        mnp.Relay();
         return true;
 
     } else {
@@ -220,7 +220,7 @@ bool CActiveFundamentalnode::EnableHotColdFundamentalNode(CTxIn& newVin, CServic
 
     status = ACTIVE_FUNDAMENTALNODE_STARTED;
 
-    //The values below are needed for signing fnping messages going forward
+    //The values below are needed for signing mnping messages going forward
     vin = newVin;
     service = newService;
 

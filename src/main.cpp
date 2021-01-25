@@ -4688,21 +4688,21 @@ bool static AlreadyHave(const CInv& inv)
         }
         return false;
     case MSG_FUNDAMENTALNODE_ANNOUNCE:
-        if (fnodeman.mapSeenFundamentalnodeBroadcast.count(inv.hash)) {
+        if (mnodeman.mapSeenFundamentalnodeBroadcast.count(inv.hash)) {
             fundamentalnodeSync.AddedFundamentalnodeList(inv.hash);
             return true;
         }
         return false;
     case MSG_FUNDAMENTALNODE_PING:
-        return fnodeman.mapSeenFundamentalnodePing.count(inv.hash);
+        return mnodeman.mapSeenFundamentalnodePing.count(inv.hash);
     case MSG_MASTERNODE_ANNOUNCE:
-        if (mnodeman.mapSeenMasternodeBroadcast.count(inv.hash)) {
+        if (m_nodeman.mapSeenMasternodeBroadcast.count(inv.hash)) {
             masternodeSync.AddedMasternodeList(inv.hash);
             return true;
         }
         return false;
     case MSG_MASTERNODE_PING:
-        return mnodeman.mapSeenMasternodePing.count(inv.hash);
+        return m_nodeman.mapSeenMasternodePing.count(inv.hash);
     }
     // Don't know what it is, just say we already got one
     return true;
@@ -4883,40 +4883,40 @@ void static ProcessGetData(CNode* pfrom)
                 }
 
                 if (!pushed && inv.type == MSG_FUNDAMENTALNODE_ANNOUNCE) {
-                    if (fnodeman.mapSeenFundamentalnodeBroadcast.count(inv.hash)) {
+                    if (mnodeman.mapSeenFundamentalnodeBroadcast.count(inv.hash)) {
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                         ss.reserve(1000);
-                        ss << fnodeman.mapSeenFundamentalnodeBroadcast[inv.hash];
+                        ss << mnodeman.mapSeenFundamentalnodeBroadcast[inv.hash];
                         pfrom->PushMessage("fnb", ss);
                         pushed = true;
                     }
                 }
 
                 if (!pushed && inv.type == MSG_FUNDAMENTALNODE_PING) {
-                    if (fnodeman.mapSeenFundamentalnodePing.count(inv.hash)) {
+                    if (mnodeman.mapSeenFundamentalnodePing.count(inv.hash)) {
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                         ss.reserve(1000);
-                        ss << fnodeman.mapSeenFundamentalnodePing[inv.hash];
+                        ss << mnodeman.mapSeenFundamentalnodePing[inv.hash];
                         pfrom->PushMessage("fnp", ss);
                         pushed = true;
                     }
                 }
 
                 if (!pushed && inv.type == MSG_MASTERNODE_ANNOUNCE) {
-                    if (mnodeman.mapSeenMasternodeBroadcast.count(inv.hash)) {
+                    if (m_nodeman.mapSeenMasternodeBroadcast.count(inv.hash)) {
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                         ss.reserve(1000);
-                        ss << mnodeman.mapSeenMasternodeBroadcast[inv.hash];
+                        ss << m_nodeman.mapSeenMasternodeBroadcast[inv.hash];
                         pfrom->PushMessage("mnb", ss);
                         pushed = true;
                     }
                 }
 
                 if (!pushed && inv.type == MSG_MASTERNODE_PING) {
-                    if (mnodeman.mapSeenMasternodePing.count(inv.hash)) {
+                    if (m_nodeman.mapSeenMasternodePing.count(inv.hash)) {
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                         ss.reserve(1000);
-                        ss << mnodeman.mapSeenMasternodePing[inv.hash];
+                        ss << m_nodeman.mapSeenMasternodePing[inv.hash];
                         pfrom->PushMessage("mnp", ss);
                         pushed = true;
                     }
@@ -5731,7 +5731,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         }
     } else {
         //probably one the extensions
-        fnodeman.ProcessMessage(pfrom, strCommand, vRecv);
+        mnodeman.ProcessMessage(pfrom, strCommand, vRecv);
         budget.ProcessMessage(pfrom, strCommand, vRecv);
         fundamentalnodePayments.ProcessMessageFundamentalnodePayments(pfrom, strCommand, vRecv);
         ProcessMessageSwiftTX(pfrom, strCommand, vRecv);
@@ -5739,7 +5739,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         fundamentalnodeSync.ProcessMessage(pfrom, strCommand, vRecv);
 
         //probably one the extensions
-        mnodeman.ProcessMessage(pfrom, strCommand, vRecv);
+        m_nodeman.ProcessMessage(pfrom, strCommand, vRecv);
         masternodePayments.ProcessMessageMasternodePayments(pfrom, strCommand, vRecv);
         masternodeSync.ProcessMessage(pfrom, strCommand, vRecv);
         ///TODO: ends

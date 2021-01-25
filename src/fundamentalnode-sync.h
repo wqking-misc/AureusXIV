@@ -11,7 +11,7 @@
 #define FUNDAMENTALNODE_SYNC_INITIAL 0
 #define FUNDAMENTALNODE_SYNC_SPORKS 1
 #define FUNDAMENTALNODE_SYNC_LIST 2
-#define FUNDAMENTALNODE_SYNC_FNW 3
+#define FUNDAMENTALNODE_SYNC_MNW 3
 #define FUNDAMENTALNODE_SYNC_BUDGET 4
 #define FUNDAMENTALNODE_SYNC_BUDGET_PROP 10
 #define FUNDAMENTALNODE_SYNC_BUDGET_FIN 11
@@ -31,8 +31,8 @@ extern CFundamentalnodeSync fundamentalnodeSync;
 class CFundamentalnodeSync
 {
 public:
-    std::map<uint256, int> mapSeenSyncFNB;
-    std::map<uint256, int> mapSeenSyncFNW;
+    std::map<uint256, int> mapSeenSyncMNB;
+    std::map<uint256, int> mapSeenSyncMNW;
     std::map<uint256, int> mapSeenSyncBudget;
 
     int64_t lastFundamentalnodeList;

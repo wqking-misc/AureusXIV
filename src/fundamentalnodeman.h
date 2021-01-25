@@ -22,18 +22,18 @@
 class CFundamentalnodeMan;
 class CActiveFundamentalnode;
 
-extern CFundamentalnodeMan fnodeman;
+extern CFundamentalnodeMan mnodeman;
 extern CActiveFundamentalnode activeFundamentalnode;
 extern std::string strFundamentalNodePrivKey;
 
 void DumpFundamentalnodes();
 
-/** Access to the FN database (fncache.dat)
+/** Access to the MN database (mncache.dat)
  */
 class CFundamentalnodeDB
 {
 private:
-    boost::filesystem::path pathFN;
+    boost::filesystem::path pathMN;
     std::string strMagicMessage;
 
 public:
@@ -48,8 +48,8 @@ public:
     };
 
     CFundamentalnodeDB();
-    bool Write(const CFundamentalnodeMan& fnodemanToSave);
-    ReadResult Read(CFundamentalnodeMan& fnodemanToLoad, bool fDryRun = false);
+    bool Write(const CFundamentalnodeMan& mnodemanToSave);
+    ReadResult Read(CFundamentalnodeMan& mnodemanToLoad, bool fDryRun = false);
 };
 
 class CFundamentalnodeMan
@@ -61,7 +61,7 @@ private:
     // critical section to protect the inner data structures specifically on messaging
     mutable CCriticalSection cs_process_message;
 
-    // map to hold all FNs
+    // map to hold all MNs
     std::vector<CFundamentalnode> vFundamentalnodes;
     // who's asked for the Fundamentalnode list and the last time
     std::map<CNetAddr, int64_t> mAskedUsForFundamentalnodeList;
@@ -100,10 +100,10 @@ public:
     CFundamentalnodeMan(CFundamentalnodeMan& other);
 
     /// Add an entry
-    bool Add(CFundamentalnode& fn);
+    bool Add(CFundamentalnode& mn);
 
-    /// Ask (source) node for fnb
-    void AskForFN(CNode* pnode, CTxIn& vin);
+    /// Ask (source) node for mnb
+    void AskForMN(CNode* pnode, CTxIn& vin);
 
     /// Check all Fundamentalnodes
     void Check();
@@ -156,7 +156,7 @@ public:
     int GetEstimatedMasternodes(int nBlock);
 
     /// Update fundamentalnode list and maps using provided CFundamentalnodeBroadcast
-    void UpdateFundamentalnodeList(CFundamentalnodeBroadcast fnb);
+    void UpdateFundamentalnodeList(CFundamentalnodeBroadcast mnb);
 };
 
 void ThreadCheckFundamentalnodes();

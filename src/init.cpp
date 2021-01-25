@@ -1650,7 +1650,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     uiInterface.InitMessage(_("Loading fundamentalnode cache..."));
 
     CFundamentalnodeDB mndb;
-    CFundamentalnodeDB::ReadResult readResult = mndb.Read(fnodeman);
+    CFundamentalnodeDB::ReadResult readResult = mndb.Read(mnodeman);
     if (readResult == CFundamentalnodeDB::FileError)
         LogPrintf("Missing fundamentalnode cache file - fncache.dat, will try to recreate\n");
     else if (readResult != CFundamentalnodeDB::Ok) {
@@ -1664,7 +1664,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 	uiInterface.InitMessage(_("Loading masternode cache..."));
 
     CMasternodeDB mn_db;
-    CMasternodeDB::ReadResult read_Result = mn_db.Read(mnodeman);
+    CMasternodeDB::ReadResult read_Result = mn_db.Read(m_nodeman);
     if (readResult == CMasternodeDB::FileError)
         LogPrintf("Missing fundamentalnode cache file - mncache.dat, will try to recreate\n");
     else if (readResult != CMasternodeDB::Ok) {
@@ -1697,13 +1697,13 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
     uiInterface.InitMessage(_("Loading fundamentalnode payment cache..."));
 
-    CFundamentalnodePaymentDB fnpayments;
-    CFundamentalnodePaymentDB::ReadResult readResult3 = fnpayments.Read(fundamentalnodePayments);
+    CFundamentalnodePaymentDB mnpayments;
+    CFundamentalnodePaymentDB::ReadResult readResult3 = mnpayments.Read(fundamentalnodePayments);
 
     if (readResult3 == CFundamentalnodePaymentDB::FileError)
-        LogPrintf("Missing fundamentalnode payment cache - fnpayments.dat, will try to recreate\n");
+        LogPrintf("Missing fundamentalnode payment cache - mnpayments.dat, will try to recreate\n");
     else if (readResult3 != CFundamentalnodePaymentDB::Ok) {
-        LogPrintf("Error reading fnpayments.dat: ");
+        LogPrintf("Error reading mnpayments.dat: ");
         if (readResult3 == CFundamentalnodePaymentDB::IncorrectFormat)
             LogPrintf("magic is ok but data has invalid format, will try to recreate\n");
         else
@@ -1790,7 +1790,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     uiInterface.InitMessage(_("Loading masternode cache..."));
 
         CMasternodeDB mn_db;
-        CMasternodeDB::ReadResult readResult4 = mn_db.Read(mnodeman);
+        CMasternodeDB::ReadResult readResult4 = mn_db.Read(m_nodeman);
         if (readResult4 == CMasternodeDB::FileError)
             LogPrintf("Missing Masternode cache file - mncache.dat, will try to recreate\n");
         else if (readResult4 != CMasternodeDB::Ok)
@@ -1885,7 +1885,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     LogPrintf("nSwiftTXDepth %d\n", nSwiftTXDepth);
     LogPrintf("Budget Mode %s\n", strBudgetMode.c_str());
 
-    threadGroup.create_thread(boost::bind(&ThreadCheckFundamentalnodes));
     threadGroup.create_thread(boost::bind(&ThreadCheckMasternodes));
 
     // ********************************************************* Step 11: start node

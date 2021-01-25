@@ -9,6 +9,7 @@
 #include <atomic>
 
 #define MASTERNODE_SYNC_INITIAL 0
+#define MASTERNODE_SYNC_SPORKS 1
 #define MASTERNODE_SYNC_LIST 2
 #define MASTERNODE_SYNC_MNW 3
 #define MASTERNODE_SYNC_BUDGET 4
@@ -75,6 +76,7 @@ public:
     void Process();
     bool IsSynced();
     bool NotCompleted();
+    bool IsSporkListSynced();
     bool IsMasternodeListSynced();
     bool IsBlockchainSynced();
     void ClearFulfilledRequest();

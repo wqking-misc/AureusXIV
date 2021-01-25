@@ -303,7 +303,7 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
                 break;
             }
 
-            CFundamentalnode* pmn = fnodeman.Find(*(activeFundamentalnode.vin));
+            CFundamentalnode* pmn = mnodeman.Find(*(activeFundamentalnode.vin));
             if (pmn == NULL) {
                 failed++;
                 statusObj.push_back(Pair("node", "local"));
@@ -369,7 +369,7 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
                 continue;
             }
 
-            CFundamentalnode* pmn = fnodeman.Find(pubKeyFundamentalnode);
+            CFundamentalnode* pmn = mnodeman.Find(pubKeyFundamentalnode);
             if (pmn == NULL) {
                 failed++;
                 statusObj.push_back(Pair("node", mne.getAlias()));
@@ -442,7 +442,7 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
                 continue;
             }
 
-            CFundamentalnode* pmn = fnodeman.Find(pubKeyFundamentalnode);
+            CFundamentalnode* pmn = mnodeman.Find(pubKeyFundamentalnode);
             if(pmn == NULL)
             {
                 failed++;
@@ -728,7 +728,7 @@ UniValue fnbudgetrawvote(const UniValue& params, bool fHelp)
     if (fInvalid)
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Malformed base64 encoding");
 
-    CFundamentalnode* pmn = fnodeman.Find(vin);
+    CFundamentalnode* pmn = mnodeman.Find(vin);
     if (pmn == NULL) {
         return "Failure to find fundamentalnode in list : " + vin.ToString();
     }
@@ -802,7 +802,7 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
                 continue;
             }
 
-            CFundamentalnode* pmn = fnodeman.Find(pubKeyFundamentalnode);
+            CFundamentalnode* pmn = mnodeman.Find(pubKeyFundamentalnode);
             if (pmn == NULL) {
                 failed++;
                 statusObj.push_back(Pair("result", "failed"));
@@ -861,7 +861,7 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
         if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode))
             return "Error upon calling GetKeysFromSecret";
 
-        CFundamentalnode* pmn = fnodeman.Find(*(activeFundamentalnode.vin));
+        CFundamentalnode* pmn = mnodeman.Find(*(activeFundamentalnode.vin));
         if (pmn == NULL) {
             return "Failure to find fundamentalnode in list : " + activeFundamentalnode.vin->ToString();
         }
