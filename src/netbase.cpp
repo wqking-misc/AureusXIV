@@ -7,7 +7,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifdef HAVE_CONFIG_H
-#include "config/aureusxiv-config.h"
+#include "config/vitae-config.h"
 #endif
 
 #include "netbase.h"
@@ -201,16 +201,6 @@ bool LookupHost(const char* pszName, std::vector<CNetAddr>& vIP, unsigned int nM
     return LookupIntern(strHost.c_str(), vIP, nMaxSolutions, fAllowLookup);
 }
 
-bool LookupHost(const char* pszName, CNetAddr& addr, bool fAllowLookup)
-{
-    std::vector<CNetAddr> vIP;
-    LookupHost(pszName, vIP, 1, fAllowLookup);
-    if (vIP.empty())
-        return false;
-    addr = vIP.front();
-    return true;
-}
-
 bool Lookup(const char* pszName, std::vector<CService>& vAddr, int portDefault, bool fAllowLookup, unsigned int nMaxSolutions)
 {
     if (pszName[0] == 0)
@@ -239,14 +229,9 @@ bool Lookup(const char* pszName, CService& addr, int portDefault, bool fAllowLoo
     return true;
 }
 
-CService LookupNumeric(const char* pszName, int portDefault)
+bool LookupNumeric(const char* pszName, CService& addr, int portDefault)
 {
-    CService addr;
-    // "1.2:345" will fail to resolve the ip, but will still set the port.
-    // If the ip fails to resolve, re-init the result.
-    if (!Lookup(pszName, addr, portDefault, false))
-        addr = CService();
-    return addr;
+    return Lookup(pszName, addr, portDefault, false);
 }
 
 struct timeval MillisToTimeval(int64_t nTimeout)

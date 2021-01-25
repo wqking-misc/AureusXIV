@@ -71,15 +71,15 @@ bin_PROGRAMS =
 TESTS =
 
 if BUILD_BITCOIND
-  bin_PROGRAMS += aureusxivd
+  bin_PROGRAMS += vitaed
 endif
 
 if BUILD_BITCOIN_UTILS
-  bin_PROGRAMS += aureusxiv-cli aureusxiv-tx
+  bin_PROGRAMS += vitae-cli vitae-tx
 endif
 
 .PHONY: FORCE
-# aureusxiv core #
+# vitae core #
 BITCOIN_CORE_H = \
   activefundamentalnode.h \
   activemasternode.h \
@@ -108,8 +108,9 @@ BITCOIN_CORE_H = \
   primitives/transaction.h \
   core_io.h \
   crypter.h \
+  obfuscation.h \
+  obfuscation-relay.h \
   db.h \
-  fs.h \
   hash.h \
   httprpc.h \
   httpserver.h \
@@ -127,6 +128,9 @@ BITCOIN_CORE_H = \
   masternode.h \
   masternode-sync.h \
   masternode-payments.h \
+  masternode-budget.h \
+  masternodeman.h \
+  masternode-pos.h \
   masternodeman.h \
   masternodeconfig.h \
   fundamentalnode.h \
@@ -136,7 +140,6 @@ BITCOIN_CORE_H = \
   fundamentalnodeman.h \
   fundamentalnodeconfig.h \
   merkleblock.h \
-  messagesigner.h \
   miner.h \
   mruset.h \
   netbase.h \
@@ -160,8 +163,8 @@ BITCOIN_CORE_H = \
   script/script_error.h \
   serialize.h \
   spork.h \
+  mn-spork.h \
   sporkdb.h \
-  sporkid.h \
   stakeinput.h \
   streams.h \
   sync.h \
@@ -195,7 +198,7 @@ obj/build.h: FORCE
 	  $(abs_top_srcdir)
 libbitcoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
-# server: shared between aureusxivd and aureusxiv-qt
+# server: shared between vitaed and vitae-qt
 libbitcoin_server_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS) $(BOOST_CPPFLAGS)
 libbitcoin_server_a_SOURCES = \
   activemasternode.cpp \
@@ -218,7 +221,6 @@ libbitcoin_server_a_SOURCES = \
   rest.cpp \
   rpcblockchain.cpp \
   rpcfundamentalnode.cpp \
-  rpcmasternode.cpp \
   rpcfundamentalnode-budget.cpp \
   rpcmining.cpp \
   rpcmisc.cpp \
@@ -245,7 +247,7 @@ libbitcoin_zmq_a_SOURCES = \
   zmq/zmqpublishnotifier.cpp
 endif
 
-# wallet: shared between aureusxivd and aureusxiv-qt, but only linked
+# wallet: shared between vitaed and vitae-qt, but only linked
 # when wallet enabled
 
 libbitcoin_wallet_a_CFLAGS = -fPIC
@@ -254,6 +256,9 @@ libbitcoin_wallet_a_SOURCES = \
   activefundamentalnode.cpp \
   activemasternode.cpp \
   bip38.cpp \
+  obfuscation.cpp \
+  bitpool.cpp \
+  obfuscation-relay.cpp \
   db.cpp \
   crypter.cpp \
   swifttx.cpp \
@@ -263,13 +268,6 @@ libbitcoin_wallet_a_SOURCES = \
   fundamentalnode-sync.cpp \
   fundamentalnodeconfig.cpp \
   fundamentalnodeman.cpp \
-  masternode.cpp \
-  masternode-payments.cpp \
-  masternode-sync.cpp \
-  masternodeconfig.cpp \
-  masternodeman.cpp \
-  messagesigner.cpp \
-  mintpool.cpp \
   rpcdump.cpp \
   rpcwallet.cpp \
   kernel.cpp \
@@ -315,8 +313,10 @@ crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/sph_skein.h \
   crypto/sph_types.h
 
+# common: shared between vitaed, and vitae-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(BITCOIN_INCLUDES)
 libbitcoin_common_a_SOURCES = \
+  activemasternode.cpp \
   allocators.cpp \
   amount.cpp \
   base58.cpp \
@@ -326,6 +326,10 @@ libbitcoin_common_a_SOURCES = \
   compressor.cpp \
   primitives/block.cpp \
   primitives/transaction.cpp \
+  masternode.cpp \
+  masternode-pos.cpp \
+  masternodeman.cpp \
+  masternodeconfig.cpp \
   core_read.cpp \
   core_write.cpp \
   hash.cpp \
@@ -342,6 +346,7 @@ libbitcoin_common_a_SOURCES = \
   script/standard.cpp \
   script/script_error.cpp \
   spork.cpp \
+  mn-spork.cpp \
   sporkdb.cpp \
   $(BITCOIN_CORE_H)
 
@@ -356,7 +361,6 @@ libbitcoin_util_a_SOURCES = \
   compat/glibcxx_sanity.cpp \
   chainparamsbase.cpp \
   clientversion.cpp \
-  fs.cpp \
   random.cpp \
   rpcprotocol.cpp \
   sync.cpp \
@@ -372,7 +376,7 @@ libbitcoin_util_a_SOURCES += compat/glibc_compat.cpp
 libbitcoin_util_a_SOURCES += compat/glibcxx_compat.cpp
 endif
 
-# cli: shared between aureusxiv-cli and aureusxiv-qt
+# cli: shared between vitae-cli and vitae-qt
 libbitcoin_cli_a_CPPFLAGS = $(BITCOIN_INCLUDES)
 libbitcoin_cli_a_SOURCES = \
   rpcclient.cpp \
@@ -382,7 +386,7 @@ nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
 # bitcoind binary #
-aureusxivd_LDADD = \
+vitaed_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_COMMON) \
   $(LIBUNIVALUE) \
@@ -393,26 +397,26 @@ aureusxivd_LDADD = \
   $(LIBSECP256K1)
 
 if ENABLE_ZMQ
-aureusxivd_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
+vitaed_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
 endif
 
 if ENABLE_WALLET
-aureusxivd_LDADD += libbitcoin_wallet.a
+vitaed_LDADD += libbitcoin_wallet.a
 endif
-aureusxivd_SOURCES = aureusxivd.cpp
+vitaed_SOURCES = vitaed.cpp
 #
 
 if TARGET_WINDOWS
-aureusxivd_SOURCES += aureusxivd-res.rc
+vitaed_SOURCES += vitaed-res.rc
 endif
 
-aureusxivd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
-aureusxivd_CPPFLAGS = $(BITCOIN_INCLUDES)
-aureusxivd_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+vitaed_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
+vitaed_CPPFLAGS = $(BITCOIN_INCLUDES)
+vitaed_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 
-# aureusxiv-cli binary #
-aureusxiv_cli_LDADD = \
+# vitae-cli binary #
+vitae_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
@@ -421,14 +425,14 @@ aureusxiv_cli_LDADD = \
   $(CRYPTO_LIBS) \
   $(EVENT_LIBS)
 
-aureusxiv_cli_SOURCES = \
-  aureusxiv-cli.cpp
+vitae_cli_SOURCES = \
+  vitae-cli.cpp
 
-aureusxiv_cli_CPPFLAGS = $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+vitae_cli_CPPFLAGS = $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
 #
 
-# aureusxiv-tx binary #
-aureusxiv_tx_LDADD = \
+# vitae-tx binary #
+vitae_tx_LDADD = \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_UTIL) \
@@ -437,15 +441,15 @@ aureusxiv_tx_LDADD = \
   $(BOOST_LIBS) \
   $(CRYPTO_LIBS)
 
-aureusxiv_tx_SOURCES = aureusxiv-tx.cpp
-aureusxiv_tx_CPPFLAGS = $(BITCOIN_INCLUDES)
+vitae_tx_SOURCES = vitae-tx.cpp
+vitae_tx_CPPFLAGS = $(BITCOIN_INCLUDES)
 #
-aureusxiv_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+vitae_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-aureusxiv_cli_SOURCES += aureusxiv-cli-res.rc
+vitae_cli_SOURCES += vitae-cli-res.rc
 endif
-aureusxiv_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+vitae_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if BUILD_BITCOIN_LIBS
 include_HEADERS = script/bitcoinconsensus.h

@@ -3,7 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/aureusxiv-config.h"
+#include "config/vitae-config.h"
 #endif
 
 #include "optionsdialog.h"
@@ -11,6 +11,7 @@
 
 #include "bitcoinunits.h"
 #include "guiutil.h"
+#include "obfuscation.h"
 #include "optionsmodel.h"
 
 #include "main.h" // for MAX_SCRIPTCHECK_THREADS
@@ -271,6 +272,7 @@ void OptionsDialog::on_resetButton_clicked()
 void OptionsDialog::on_okButton_clicked()
 {
     mapper->submit();
+    obfuScationPool.cachedNumBlocks = std::numeric_limits<int>::max();
     pwalletMain->MarkDirty();
     accept();
 }
@@ -302,11 +304,10 @@ void OptionsDialog::clearStatusLabel()
 void OptionsDialog::doProxyIpChecks(QValidatedLineEdit* pUiProxyIp, QLineEdit* pUiProxyPort)
 {
     const std::string strAddrProxy = pUiProxyIp->text().toStdString();
-    const int nProxyPort = pUiProxyPort->text().toInt();
-    CService addrProxy(LookupNumeric(strAddrProxy.c_str(), nProxyPort));
+    CService addrProxy;
 
     // Check for a valid IPv4 / IPv6 address
-    if (!(fProxyIpValid = addrProxy.IsValid())) {
+    if (!(fProxyIpValid = LookupNumeric(strAddrProxy.c_str(), addrProxy))) {
         disableOkButton();
         pUiProxyIp->setValid(false);
         ui->statusLabel->setStyleSheet("QLabel { color: red; }");

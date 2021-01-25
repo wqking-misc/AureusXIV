@@ -1,26 +1,25 @@
+// Copyright (c) 2014-2015 The Dash Developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "activefundamentalnode.h"
-#include "base58.h"
-#include "chainparams.h"
 #include "db.h"
 #include "init.h"
 #include "main.h"
 #include "fundamentalnode-budget.h"
 #include "fundamentalnode-payments.h"
-#include "fundamentalnode-sync.h"
 #include "fundamentalnodeconfig.h"
 #include "fundamentalnodeman.h"
-#include "messagesigner.h"
 #include "rpcserver.h"
 #include "utilmoneystr.h"
 
 #include <univalue.h>
 
 #include <fstream>
+using namespace std;
 
 void budgetToJSON(CBudgetProposal* pbudgetProposal, UniValue& bObj)
 {
@@ -51,95 +50,181 @@ void budgetToJSON(CBudgetProposal* pbudgetProposal, UniValue& bObj)
     bObj.push_back(Pair("fValid", pbudgetProposal->fValid));
 }
 
-void checkBudgetInputs(const UniValue& params, std::string &strProposalName, std::string &strURL,
-                       int &nPaymentCount, int &nBlockStart, CAmount &nAmount)
+// This command is retained for backwards compatibility, but is depreciated.
+// Future removal of this command is planned to keep things clean.
+UniValue fnbudget(const UniValue& params, bool fHelp)
 {
-    strProposalName = SanitizeString(params[0].get_str());
-    if (strProposalName.size() > 20)
-        throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid proposal name, limit of 20 characters.");
+    string strCommand;
+    if (params.size() >= 1)
+        strCommand = params[0].get_str();
 
-    strURL = SanitizeString(params[1].get_str());
-    std::string strErr;
-    if (!validateURL(strURL, strErr))
-        throw JSONRPCError(RPC_INVALID_PARAMETER, strErr);
+    if (fHelp ||
+        (strCommand != "vote-alias" && strCommand != "vote-many" && strCommand != "prepare" && strCommand != "submit" && strCommand != "vote" && strCommand != "getvotes" && strCommand != "getinfo" && strCommand != "show" && strCommand != "projection" && strCommand != "check" && strCommand != "nextblock"))
+        throw runtime_error(
+            "fnbudget \"command\"... ( \"passphrase\" )\n"
+            "\nVote or show current budgets\n"
+            "This command is depreciated, please see individual command documentation for future reference\n\n"
 
-    nPaymentCount = params[2].get_int();
-    if (nPaymentCount < 1)
-        throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid payment count, must be more than zero.");
+            "\nAvailable commands:\n"
+            "  prepare            - Prepare proposal for network by signing and creating tx\n"
+            "  submit             - Submit proposal for network\n"
+            "  vote-many          - Vote on a VITAE initiative\n"
+            "  vote-alias         - Vote on a VITAE initiative\n"
+            "  vote               - Vote on a VITAE initiative/budget\n"
+            "  getvotes           - Show current fundamentalnode budgets\n"
+            "  getinfo            - Show current fundamentalnode budgets\n"
+            "  show               - Show all budgets\n"
+            "  projection         - Show the projection of which proposals will be paid the next cycle\n"
+            "  check              - Scan proposals and remove invalid\n"
+            "  nextblock          - Get next superblock for budget system\n");
 
-    CBlockIndex* pindexPrev = chainActive.Tip();
-    if (!pindexPrev)
-        throw JSONRPCError(RPC_IN_WARMUP, "Try again after active chain is loaded");
+    if (strCommand == "nextblock") {
+        UniValue newParams(UniValue::VARR);
+        // forward params but skip command
+        for (unsigned int i = 1; i < params.size(); i++) {
+            newParams.push_back(params[i]);
+        }
+        return getnextsuperblock(newParams, fHelp);
+    }
 
-    // Start must be in the next budget cycle or later
-    const int budgetCycleBlocks = Params().BudgetCycleBlocks();
-    int pHeight = pindexPrev->nHeight;
+    if (strCommand == "prepare") {
+        UniValue newParams(UniValue::VARR);
+        // forward params but skip command
+        for (unsigned int i = 1; i < params.size(); i++) {
+            newParams.push_back(params[i]);
+        }
+        return preparebudget(newParams, fHelp);
+    }
 
-    int nBlockMin = pHeight - (pHeight % budgetCycleBlocks) + budgetCycleBlocks;
+    if (strCommand == "submit") {
+        UniValue newParams(UniValue::VARR);
+        // forward params but skip command
+        for (unsigned int i = 1; i < params.size(); i++) {
+            newParams.push_back(params[i]);
+        }
+        return submitbudget(newParams, fHelp);
+    }
 
-    nBlockStart = params[3].get_int();
-    if ((nBlockStart < nBlockMin) || ((nBlockStart % budgetCycleBlocks) != 0))
-        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid block start - must be a budget cycle block. Next valid block: %d", nBlockMin));
+    if (strCommand == "vote" || strCommand == "vote-many" || strCommand == "vote-alias") {
+        if (strCommand == "vote-alias")
+            throw runtime_error(
+                "vote-alias is not supported with this command\n"
+                "Please use fnbudgetvote instead.\n"
+            );
+        return fnbudgetvote(params, fHelp);
+    }
 
-    nAmount = AmountFromValue(params[5]);
-    if (nAmount < 10 * COIN)
-        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid amount - Payment of %s is less than minimum 10 PIV allowed", FormatMoney(nAmount)));
+    if (strCommand == "projection") {
+        UniValue newParams(UniValue::VARR);
+        // forward params but skip command
+        for (unsigned int i = 1; i < params.size(); i++) {
+            newParams.push_back(params[i]);
+        }
+        return getbudgetprojection(newParams, fHelp);
+    }
 
-    if (nAmount > budget.GetTotalBudget(nBlockStart))
-        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid amount - Payment of %s more than max of %s", FormatMoney(nAmount), FormatMoney(budget.GetTotalBudget(nBlockStart))));
+    if (strCommand == "show" || strCommand == "getinfo") {
+        UniValue newParams(UniValue::VARR);
+        // forward params but skip command
+        for (unsigned int i = 1; i < params.size(); i++) {
+            newParams.push_back(params[i]);
+        }
+        return getbudgetinfo(newParams, fHelp);
+    }
+
+    if (strCommand == "getvotes") {
+        UniValue newParams(UniValue::VARR);
+        // forward params but skip command
+        for (unsigned int i = 1; i < params.size(); i++) {
+            newParams.push_back(params[i]);
+        }
+        return getbudgetvotes(newParams, fHelp);
+    }
+
+    if (strCommand == "check") {
+        UniValue newParams(UniValue::VARR);
+        // forward params but skip command
+        for (unsigned int i = 1; i < params.size(); i++) {
+            newParams.push_back(params[i]);
+        }
+        return checkbudgets(newParams, fHelp);
+    }
+
+    return NullUniValue;
 }
 
 UniValue preparebudget(const UniValue& params, bool fHelp)
 {
+    int nBlockMin = 0;
+    CBlockIndex* pindexPrev = chainActive.Tip();
+
     if (fHelp || params.size() != 6)
-        throw std::runtime_error(
-                "preparebudget \"proposal-name\" \"url\" payment-count block-start \"pivx-address\" monthy-payment\n"
-                "\nPrepare proposal for network by signing and creating tx\n"
+        throw runtime_error(
+            "preparebudget \"proposal-name\" \"url\" payment-count block-start \"vitae-address\" monthy-payment\n"
+            "\nPrepare proposal for network by signing and creating tx\n"
 
-                "\nArguments:\n"
-                "1. \"proposal-name\":  (string, required) Desired proposal name (20 character limit)\n"
-                "2. \"url\":            (string, required) URL of proposal details (64 character limit)\n"
-                "3. payment-count:    (numeric, required) Total number of monthly payments\n"
-                "4. block-start:      (numeric, required) Starting super block height\n"
-                "5. \"pivx-address\":   (string, required) PIVX address to send payments to\n"
-                "6. monthly-payment:  (numeric, required) Monthly payment amount\n"
+            "\nArguments:\n"
+            "1. \"proposal-name\":  (string, required) Desired proposal name (20 character limit)\n"
+            "2. \"url\":            (string, required) URL of proposal details (64 character limit)\n"
+            "3. payment-count:    (numeric, required) Total number of monthly payments\n"
+            "4. block-start:      (numeric, required) Starting super block height\n"
+            "5. \"vitae-address\":   (string, required) VITAE address to send payments to\n"
+            "6. monthly-payment:  (numeric, required) Monthly payment amount\n"
 
-                "\nResult:\n"
-                "\"xxxx\"       (string) proposal fee hash (if successful) or error message (if failed)\n"
+            "\nResult:\n"
+            "\"xxxx\"       (string) proposal fee hash (if successful) or error message (if failed)\n"
+            "\nExamples:\n" +
+            HelpExampleCli("preparebudget", "\"test-proposal\" \"https://forum.vitae.org/t/test-proposal\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500") +
+            HelpExampleRpc("preparebudget", "\"test-proposal\" \"https://forum.vitae.org/t/test-proposal\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500"));
 
-                "\nExamples:\n" +
-                HelpExampleCli("preparebudget", "\"test-proposal\" \"https://forum.pivx.org/t/test-proposal\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500") +
-                HelpExampleRpc("preparebudget", "\"test-proposal\" \"https://forum.pivx.org/t/test-proposal\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500"));
+    if (pwalletMain->IsLocked())
+        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
 
-    if (!pwalletMain) {
-        throw JSONRPCError(RPC_IN_WARMUP, "Try again after active chain is loaded");
+    std::string strProposalName = SanitizeString(params[0].get_str());
+    if (strProposalName.size() > 20)
+        throw runtime_error("Invalid proposal name, limit of 20 characters.");
+
+    std::string strURL = SanitizeString(params[1].get_str());
+    if (strURL.size() > 64)
+        throw runtime_error("Invalid url, limit of 64 characters.");
+
+    int nPaymentCount = params[2].get_int();
+    if (nPaymentCount < 1)
+        throw runtime_error("Invalid payment count, must be more than zero.");
+
+    // Start must be in the next budget cycle
+    if (pindexPrev != NULL) nBlockMin = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
+
+    int nBlockStart = params[3].get_int();
+    if (nBlockStart % GetBudgetPaymentCycleBlocks() != 0) {
+        int nNext = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
+        throw runtime_error(strprintf("Invalid block start - must be a budget cycle block. Next valid block: %d", nNext));
     }
 
-    LOCK2(cs_main, pwalletMain->cs_wallet);
+    int nBlockEnd = nBlockStart + GetBudgetPaymentCycleBlocks() * nPaymentCount; // End must be AFTER current cycle
 
-    EnsureWalletIsUnlocked();
+    if (nBlockStart < nBlockMin)
+        throw runtime_error("Invalid block start, must be more than current height.");
 
-    std::string strProposalName;
-    std::string strURL;
-    int nPaymentCount;
-    int nBlockStart;
-    CAmount nAmount;
-
-    checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, nAmount);
+    if (nBlockEnd < pindexPrev->nHeight)
+        throw runtime_error("Invalid ending block, starting block + (payment_cycle*payments) must be more than current height.");
 
     CBitcoinAddress address(params[4].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid AureusXIV address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VITAE address");
 
-    // Parse PIVX address
+    // Parse VITAE address
     CScript scriptPubKey = GetScriptForDestination(address.Get());
+    CAmount nAmount = AmountFromValue(params[5]);
+
+    //*************************************************************************
 
     // create transaction 15 minutes into the future, to allow for confirmation time
-    CBudgetProposalBroadcast budgetProposalBroadcast(strProposalName, strURL, nPaymentCount, scriptPubKey, nAmount, nBlockStart, uint256());
+    CBudgetProposalBroadcast budgetProposalBroadcast(strProposalName, strURL, nPaymentCount, scriptPubKey, nAmount, nBlockStart, 0);
 
     std::string strError = "";
     if (!budgetProposalBroadcast.IsValid(strError, false))
-        throw std::runtime_error("Proposal is not valid - " + budgetProposalBroadcast.GetHash().ToString() + " - " + strError);
+        throw runtime_error("Proposal is not valid - " + budgetProposalBroadcast.GetHash().ToString() + " - " + strError);
 
     bool useIX = false; //true;
     // if (params.size() > 7) {
@@ -149,8 +234,8 @@ UniValue preparebudget(const UniValue& params, bool fHelp)
     // }
 
     CWalletTx wtx;
-    if (!pwalletMain->GetBudgetSystemCollateralTX(wtx, budgetProposalBroadcast.GetHash(), useIX)) { // 50 PIV collateral for proposal
-        throw std::runtime_error("Error making collateral transaction for proposal. Please check your wallet balance.");
+    if (!pwalletMain->GetBudgetSystemCollateralTX(wtx, budgetProposalBroadcast.GetHash(), useIX)) {
+        throw runtime_error("Error making collateral transaction for proposal. Please check your wallet balance.");
     }
 
     // make our change address
@@ -163,42 +248,68 @@ UniValue preparebudget(const UniValue& params, bool fHelp)
 
 UniValue submitbudget(const UniValue& params, bool fHelp)
 {
+    int nBlockMin = 0;
+    CBlockIndex* pindexPrev = chainActive.Tip();
+
     if (fHelp || params.size() != 7)
-        throw std::runtime_error(
-                "submitbudget \"proposal-name\" \"url\" payment-count block-start \"pivx-address\" monthly-payment \"fee-tx\"\n"
-                "\nSubmit proposal to the network\n"
+        throw runtime_error(
+            "submitbudget \"proposal-name\" \"url\" payment-count block-start \"vitae-address\" monthy-payment \"fee-tx\"\n"
+            "\nSubmit proposal to the network\n"
 
-                "\nArguments:\n"
-                "1. \"proposal-name\":  (string, required) Desired proposal name (20 character limit)\n"
-                "2. \"url\":            (string, required) URL of proposal details (64 character limit)\n"
-                "3. payment-count:    (numeric, required) Total number of monthly payments\n"
-                "4. block-start:      (numeric, required) Starting super block height\n"
-                "5. \"pivx-address\":   (string, required) PIVX address to send payments to\n"
-                "6. monthly-payment:  (numeric, required) Monthly payment amount\n"
-                "7. \"fee-tx\":         (string, required) Transaction hash from preparebudget command\n"
+            "\nArguments:\n"
+            "1. \"proposal-name\":  (string, required) Desired proposal name (20 character limit)\n"
+            "2. \"url\":            (string, required) URL of proposal details (64 character limit)\n"
+            "3. payment-count:    (numeric, required) Total number of monthly payments\n"
+            "4. block-start:      (numeric, required) Starting super block height\n"
+            "5. \"vitae-address\":   (string, required) VITAE address to send payments to\n"
+            "6. monthly-payment:  (numeric, required) Monthly payment amount\n"
+            "7. \"fee-tx\":         (string, required) Transaction hash from preparebudget command\n"
 
-                "\nResult:\n"
-                "\"xxxx\"       (string) proposal hash (if successful) or error message (if failed)\n"
+            "\nResult:\n"
+            "\"xxxx\"       (string) proposal hash (if successful) or error message (if failed)\n"
+            "\nExamples:\n" +
+            HelpExampleCli("submitbudget", "\"test-proposal\" \"https://forum.vitae.org/t/test-proposal\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500") +
+            HelpExampleRpc("submitbudget", "\"test-proposal\" \"https://forum.vitae.org/t/test-proposal\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500"));
 
-                "\nExamples:\n" +
-                HelpExampleCli("submitbudget", "\"test-proposal\" \"https://forum.pivx.org/t/test-proposal\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500") +
-                HelpExampleRpc("submitbudget", "\"test-proposal\" \"https://forum.pivx.org/t/test-proposal\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500"));
+    // Check these inputs the same way we check the vote commands:
+    // **********************************************************
 
-    std::string strProposalName;
-    std::string strURL;
-    int nPaymentCount;
-    int nBlockStart;
-    CAmount nAmount;
+    std::string strProposalName = SanitizeString(params[0].get_str());
+    if (strProposalName.size() > 20)
+        throw runtime_error("Invalid proposal name, limit of 20 characters.");
 
-    checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, nAmount);
+    std::string strURL = SanitizeString(params[1].get_str());
+    if (strURL.size() > 64)
+        throw runtime_error("Invalid url, limit of 64 characters.");
+
+    int nPaymentCount = params[2].get_int();
+    if (nPaymentCount < 1)
+        throw runtime_error("Invalid payment count, must be more than zero.");
+
+    // Start must be in the next budget cycle
+    if (pindexPrev != NULL) nBlockMin = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
+
+    int nBlockStart = params[3].get_int();
+    if (nBlockStart % GetBudgetPaymentCycleBlocks() != 0) {
+        int nNext = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
+        throw runtime_error(strprintf("Invalid block start - must be a budget cycle block. Next valid block: %d", nNext));
+    }
+
+    int nBlockEnd = nBlockStart + (GetBudgetPaymentCycleBlocks() * nPaymentCount); // End must be AFTER current cycle
+
+    if (nBlockStart < nBlockMin)
+        throw runtime_error("Invalid block start, must be more than current height.");
+
+    if (nBlockEnd < pindexPrev->nHeight)
+        throw runtime_error("Invalid ending block, starting block + (payment_cycle*payments) must be more than current height.");
 
     CBitcoinAddress address(params[4].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid AureusXIV address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VITAE address");
 
-    // Parse PIVX address
+    // Parse VITAE address
     CScript scriptPubKey = GetScriptForDestination(address.Get());
-
+    CAmount nAmount = AmountFromValue(params[5]);
     uint256 hash = ParseHashV(params[6], "parameter 1");
 
     //create the proposal incase we're the first to make it
@@ -207,23 +318,23 @@ UniValue submitbudget(const UniValue& params, bool fHelp)
     std::string strError = "";
     int nConf = 0;
     if (!IsBudgetCollateralValid(hash, budgetProposalBroadcast.GetHash(), strError, budgetProposalBroadcast.nTime, nConf)) {
-        throw std::runtime_error("Proposal FeeTX is not valid - " + hash.ToString() + " - " + strError);
+        throw runtime_error("Proposal FeeTX is not valid - " + hash.ToString() + " - " + strError);
     }
 
     if (!fundamentalnodeSync.IsBlockchainSynced()) {
-        throw std::runtime_error("Must wait for client to sync with fundamentalnode network. Try again in a minute or so.");
+        throw runtime_error("Must wait for client to sync with fundamentalnode network. Try again in a minute or so.");
     }
 
     // if(!budgetProposalBroadcast.IsValid(strError)){
     //     return "Proposal is not valid - " + budgetProposalBroadcast.GetHash().ToString() + " - " + strError;
     // }
 
-    budget.mapSeenFundamentalnodeBudgetProposals.insert(std::make_pair(budgetProposalBroadcast.GetHash(), budgetProposalBroadcast));
+    budget.mapSeenFundamentalnodeBudgetProposals.insert(make_pair(budgetProposalBroadcast.GetHash(), budgetProposalBroadcast));
     budgetProposalBroadcast.Relay();
     if(budget.AddProposal(budgetProposalBroadcast)) {
         return budgetProposalBroadcast.GetHash().ToString();
     }
-    throw std::runtime_error("Invalid proposal, see debug.log for details.");
+    throw runtime_error("Invalid proposal, see debug.log for details.");
 }
 
 UniValue fnbudgetvote(const UniValue& params, bool fHelp)
@@ -240,32 +351,32 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
 
     if (fHelp || (params.size() == 3 && (strCommand != "local" && strCommand != "many")) || (params.size() == 4 && strCommand != "alias") ||
         params.size() > 4 || params.size() < 3)
-        throw std::runtime_error(
-                "fnbudgetvote \"local|many|alias\" \"votehash\" \"yes|no\" ( \"alias\" )\n"
-                "\nVote on a budget proposal\n"
+        throw runtime_error(
+            "fnbudgetvote \"local|many|alias\" \"votehash\" \"yes|no\" ( \"alias\" )\n"
+            "\nVote on a budget proposal\n"
 
-                "\nArguments:\n"
-                "1. \"mode\"      (string, required) The voting mode. 'local' for voting directly from a fundamentalnode, 'many' for voting with a MN controller and casting the same vote for each MN, 'alias' for voting with a MN controller and casting a vote for a single MN\n"
-                "2. \"votehash\"  (string, required) The vote hash for the proposal\n"
-                "3. \"votecast\"  (string, required) Your vote. 'yes' to vote for the proposal, 'no' to vote against\n"
-                "4. \"alias\"     (string, required for 'alias' mode) The MN alias to cast a vote for.\n"
+            "\nArguments:\n"
+            "1. \"mode\"      (string, required) The voting mode. 'local' for voting directly from a fundamentalnode, 'many' for voting with a MN controller and casting the same vote for each MN, 'alias' for voting with a MN controller and casting a vote for a single MN\n"
+            "2. \"votehash\"  (string, required) The vote hash for the proposal\n"
+            "3. \"votecast\"  (string, required) Your vote. 'yes' to vote for the proposal, 'no' to vote against\n"
+            "4. \"alias\"     (string, required for 'alias' mode) The FN alias to cast a vote for.\n"
 
-                "\nResult:\n"
-                "{\n"
-                "  \"overall\": \"xxxx\",      (string) The overall status message for the vote cast\n"
-                "  \"detail\": [\n"
-                "    {\n"
-                "      \"node\": \"xxxx\",      (string) 'local' or the MN alias\n"
-                "      \"result\": \"xxxx\",    (string) Either 'Success' or 'Failed'\n"
-                "      \"error\": \"xxxx\",     (string) Error message, if vote failed\n"
-                "    }\n"
-                "    ,...\n"
-                "  ]\n"
-                "}\n"
+            "\nResult:\n"
+            "{\n"
+            "  \"overall\": \"xxxx\",      (string) The overall status message for the vote cast\n"
+            "  \"detail\": [\n"
+            "    {\n"
+            "      \"node\": \"xxxx\",      (string) 'local' or the FN alias\n"
+            "      \"result\": \"xxxx\",    (string) Either 'Success' or 'Failed'\n"
+            "      \"error\": \"xxxx\",     (string) Error message, if vote failed\n"
+            "    }\n"
+            "    ,...\n"
+            "  ]\n"
+            "}\n"
 
-                "\nExamples:\n" +
-                HelpExampleCli("fnbudgetvote", "\"local\" \"ed2f83cedee59a91406f5f47ec4d60bf5a7f9ee6293913c82976bd2d3a658041\" \"yes\"") +
-                HelpExampleRpc("fnbudgetvote", "\"local\" \"ed2f83cedee59a91406f5f47ec4d60bf5a7f9ee6293913c82976bd2d3a658041\" \"yes\""));
+            "\nExamples:\n" +
+            HelpExampleCli("fnbudgetvote", "\"local\" \"ed2f83cedee59a91406f5f47ec4d60bf5a7f9ee6293913c82976bd2d3a658041\" \"yes\"") +
+            HelpExampleRpc("fnbudgetvote", "\"local\" \"ed2f83cedee59a91406f5f47ec4d60bf5a7f9ee6293913c82976bd2d3a658041\" \"yes\""));
 
     uint256 hash = ParseHashV(params[1], "parameter 1");
     std::string strVote = params[2].get_str();
@@ -281,39 +392,33 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
     UniValue resultsObj(UniValue::VARR);
 
     if (strCommand == "local") {
-        // local node must be a masternode
-        if (!fFundamentalNode)
-            throw JSONRPCError(RPC_MISC_ERROR, _("This is not a fundamentalnode. 'local' option disabled."));
-
-        if (activeFundamentalnode.vin == boost::none)
-            throw JSONRPCError(RPC_MISC_ERROR, _("Active Fundamentalnode not initialized."));
-
         CPubKey pubKeyFundamentalnode;
         CKey keyFundamentalnode;
+        std::string errorMessage;
 
         UniValue statusObj(UniValue::VOBJ);
 
         while (true) {
-            if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode)) {
+            if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, errorMessage, keyFundamentalnode, pubKeyFundamentalnode)) {
                 failed++;
                 statusObj.push_back(Pair("node", "local"));
                 statusObj.push_back(Pair("result", "failed"));
-                statusObj.push_back(Pair("error", "Fundamentalnode signing error, GetKeysFromSecret failed."));
+                statusObj.push_back(Pair("error", "Fundamentalnode signing error, could not set key correctly: " + errorMessage));
                 resultsObj.push_back(statusObj);
                 break;
             }
 
-            CFundamentalnode* pmn = mnodeman.Find(*(activeFundamentalnode.vin));
+            CFundamentalnode* pmn = mnodeman.Find(activeFundamentalnode.vin);
             if (pmn == NULL) {
                 failed++;
                 statusObj.push_back(Pair("node", "local"));
                 statusObj.push_back(Pair("result", "failed"));
-                statusObj.push_back(Pair("error", "Failure to find fundamentalnode in list : " + activeFundamentalnode.vin->ToString()));
+                statusObj.push_back(Pair("error", "Failure to find fundamentalnode in list : " + activeFundamentalnode.vin.ToString()));
                 resultsObj.push_back(statusObj);
                 break;
             }
 
-            CBudgetVote vote(*(activeFundamentalnode.vin), hash, nVote);
+            CBudgetVote vote(activeFundamentalnode.vin, hash, nVote);
             if (!vote.Sign(keyFundamentalnode, pubKeyFundamentalnode)) {
                 failed++;
                 statusObj.push_back(Pair("node", "local"));
@@ -326,7 +431,7 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
             std::string strError = "";
             if (budget.UpdateProposal(vote, NULL, strError)) {
                 success++;
-                budget.mapSeenFundamentalnodeBudgetVotes.insert(std::make_pair(vote.GetHash(), vote));
+                budget.mapSeenFundamentalnodeBudgetVotes.insert(make_pair(vote.GetHash(), vote));
                 vote.Relay();
                 statusObj.push_back(Pair("node", "local"));
                 statusObj.push_back(Pair("result", "success"));
@@ -349,7 +454,8 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
     }
 
     if (strCommand == "many") {
-        for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
+        BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+            std::string errorMessage;
             std::vector<unsigned char> vchFundamentalNodeSignature;
             std::string strFundamentalNodeSignMessage;
 
@@ -360,11 +466,11 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
 
             UniValue statusObj(UniValue::VOBJ);
 
-            if (!CMessageSigner::GetKeysFromSecret(mne.getPrivKey(), keyFundamentalnode, pubKeyFundamentalnode)) {
+            if (!obfuScationSigner.SetKey(mne.getPrivKey(), errorMessage, keyFundamentalnode, pubKeyFundamentalnode)) {
                 failed++;
                 statusObj.push_back(Pair("node", mne.getAlias()));
                 statusObj.push_back(Pair("result", "failed"));
-                statusObj.push_back(Pair("error", "Fundamentalnode signing error, could not set key correctly."));
+                statusObj.push_back(Pair("error", "Fundamentalnode signing error, could not set key correctly: " + errorMessage));
                 resultsObj.push_back(statusObj);
                 continue;
             }
@@ -391,7 +497,7 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
 
             std::string strError = "";
             if (budget.UpdateProposal(vote, NULL, strError)) {
-                budget.mapSeenFundamentalnodeBudgetVotes.insert(std::make_pair(vote.GetHash(), vote));
+                budget.mapSeenFundamentalnodeBudgetVotes.insert(make_pair(vote.GetHash(), vote));
                 vote.Relay();
                 success++;
                 statusObj.push_back(Pair("node", mne.getAlias()));
@@ -419,10 +525,11 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
         std::vector<CFundamentalnodeConfig::CFundamentalnodeEntry> mnEntries;
         mnEntries = fundamentalnodeConfig.getEntries();
 
-        for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
+        BOOST_FOREACH(CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
 
             if( strAlias != mne.getAlias()) continue;
 
+            std::string errorMessage;
             std::vector<unsigned char> vchFundamentalNodeSignature;
             std::string strFundamentalNodeSignMessage;
 
@@ -433,11 +540,11 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
 
             UniValue statusObj(UniValue::VOBJ);
 
-            if(!CMessageSigner::GetKeysFromSecret(mne.getPrivKey(), keyFundamentalnode, pubKeyFundamentalnode)){
+            if(!obfuScationSigner.SetKey(mne.getPrivKey(), errorMessage, keyFundamentalnode, pubKeyFundamentalnode)){
                 failed++;
                 statusObj.push_back(Pair("node", mne.getAlias()));
                 statusObj.push_back(Pair("result", "failed"));
-                statusObj.push_back(Pair("error", "Fundamentalnode signing error, could not set key correctly."));
+                statusObj.push_back(Pair("error", "Fundamentalnode signing error, could not set key correctly: " + errorMessage));
                 resultsObj.push_back(statusObj);
                 continue;
             }
@@ -465,7 +572,7 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
 
             std::string strError = "";
             if(budget.UpdateProposal(vote, NULL, strError)) {
-                budget.mapSeenFundamentalnodeBudgetVotes.insert(std::make_pair(vote.GetHash(), vote));
+                budget.mapSeenFundamentalnodeBudgetVotes.insert(make_pair(vote.GetHash(), vote));
                 vote.Relay();
                 success++;
                 statusObj.push_back(Pair("node", mne.getAlias()));
@@ -494,27 +601,26 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
 UniValue getbudgetvotes(const UniValue& params, bool fHelp)
 {
     if (params.size() != 1)
-        throw std::runtime_error(
-                "getbudgetvotes \"proposal-name\"\n"
-                "\nPrint vote information for a budget proposal\n"
+        throw runtime_error(
+            "getbudgetvotes \"proposal-name\"\n"
+            "\nPrint vote information for a budget proposal\n"
 
-                "\nArguments:\n"
-                "1. \"proposal-name\":      (string, required) Name of the proposal\n"
+            "\nArguments:\n"
+            "1. \"proposal-name\":      (string, required) Name of the proposal\n"
 
-                "\nResult:\n"
-                "[\n"
-                "  {\n"
-                "    \"mnId\": \"xxxx\",        (string) Hash of the fundamentalnode's collateral transaction\n"
-                "    \"nHash\": \"xxxx\",       (string) Hash of the vote\n"
-                "    \"Vote\": \"YES|NO\",      (string) Vote cast ('YES' or 'NO')\n"
-                "    \"nTime\": xxxx,         (numeric) Time in seconds since epoch the vote was cast\n"
-                "    \"fValid\": true|false,  (boolean) 'true' if the vote is valid, 'false' otherwise\n"
-                "  }\n"
-                "  ,...\n"
-                "]\n"
-
-                "\nExamples:\n" +
-                HelpExampleCli("getbudgetvotes", "\"test-proposal\"") + HelpExampleRpc("getbudgetvotes", "\"test-proposal\""));
+            "\nResult:\n"
+            "[\n"
+            "  {\n"
+            "    \"mnId\": \"xxxx\",        (string) Hash of the fundamentalnode's collateral transaction\n"
+            "    \"nHash\": \"xxxx\",       (string) Hash of the vote\n"
+            "    \"Vote\": \"YES|NO\",      (string) Vote cast ('YES' or 'NO')\n"
+            "    \"nTime\": xxxx,         (numeric) Time in seconds since epoch the vote was cast\n"
+            "    \"fValid\": true|false,  (boolean) 'true' if the vote is valid, 'false' otherwise\n"
+            "  }\n"
+            "  ,...\n"
+            "]\n"
+            "\nExamples:\n" +
+            HelpExampleCli("getbudgetvotes", "\"test-proposal\"") + HelpExampleRpc("getbudgetvotes", "\"test-proposal\""));
 
     std::string strProposalName = SanitizeString(params[0].get_str());
 
@@ -522,7 +628,7 @@ UniValue getbudgetvotes(const UniValue& params, bool fHelp)
 
     CBudgetProposal* pbudgetProposal = budget.FindProposal(strProposalName);
 
-    if (pbudgetProposal == NULL) throw std::runtime_error("Unknown proposal name");
+    if (pbudgetProposal == NULL) throw runtime_error("Unknown proposal name");
 
     std::map<uint256, CBudgetVote>::iterator it = pbudgetProposal->mapVotes.begin();
     while (it != pbudgetProposal->mapVotes.end()) {
@@ -544,72 +650,70 @@ UniValue getbudgetvotes(const UniValue& params, bool fHelp)
 UniValue getnextsuperblock(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
-        throw std::runtime_error(
-                "getnextsuperblock\n"
-                "\nPrint the next super block height\n"
+        throw runtime_error(
+            "getnextsuperblock\n"
+            "\nPrint the next super block height\n"
 
-                "\nResult:\n"
-                "n      (numeric) Block height of the next super block\n"
-
-                "\nExamples:\n" +
-                HelpExampleCli("getnextsuperblock", "") + HelpExampleRpc("getnextsuperblock", ""));
+            "\nResult:\n"
+            "n      (numeric) Block height of the next super block\n"
+            "\nExamples:\n" +
+            HelpExampleCli("getnextsuperblock", "") + HelpExampleRpc("getnextsuperblock", ""));
 
     CBlockIndex* pindexPrev = chainActive.Tip();
     if (!pindexPrev) return "unknown";
 
-    const int nBlocksPerCycle = Params().BudgetCycleBlocks();
-    int nNext = pindexPrev->nHeight - pindexPrev->nHeight % nBlocksPerCycle + nBlocksPerCycle;
+    int nNext = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
     return nNext;
 }
 
 UniValue getbudgetprojection(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
-        throw std::runtime_error(
-                "getbudgetprojection\n"
-                "\nShow the projection of which proposals will be paid the next cycle\n"
+        throw runtime_error(
+            "getbudgetprojection\n"
+            "\nShow the projection of which proposals will be paid the next cycle\n"
 
-                "\nResult:\n"
-                "[\n"
-                "  {\n"
-                "    \"Name\": \"xxxx\",               (string) Proposal Name\n"
-                "    \"URL\": \"xxxx\",                (string) Proposal URL\n"
-                "    \"Hash\": \"xxxx\",               (string) Proposal vote hash\n"
-                "    \"FeeHash\": \"xxxx\",            (string) Proposal fee hash\n"
-                "    \"BlockStart\": n,              (numeric) Proposal starting block\n"
-                "    \"BlockEnd\": n,                (numeric) Proposal ending block\n"
-                "    \"TotalPaymentCount\": n,       (numeric) Number of payments\n"
-                "    \"RemainingPaymentCount\": n,   (numeric) Number of remaining payments\n"
-                "    \"PaymentAddress\": \"xxxx\",     (string) PIVX address of payment\n"
-                "    \"Ratio\": x.xxx,               (numeric) Ratio of yeas vs nays\n"
-                "    \"Yeas\": n,                    (numeric) Number of yea votes\n"
-                "    \"Nays\": n,                    (numeric) Number of nay votes\n"
-                "    \"Abstains\": n,                (numeric) Number of abstains\n"
-                "    \"TotalPayment\": xxx.xxx,      (numeric) Total payment amount\n"
-                "    \"MonthlyPayment\": xxx.xxx,    (numeric) Monthly payment amount\n"
-                "    \"IsEstablished\": true|false,  (boolean) Established (true) or (false)\n"
-                "    \"IsValid\": true|false,        (boolean) Valid (true) or Invalid (false)\n"
-                "    \"IsValidReason\": \"xxxx\",      (string) Error message, if any\n"
-                "    \"fValid\": true|false,         (boolean) Valid (true) or Invalid (false)\n"
-                "    \"Alloted\": xxx.xxx,           (numeric) Amount alloted in current period\n"
-                "    \"TotalBudgetAlloted\": xxx.xxx (numeric) Total alloted\n"
-                "  }\n"
-                "  ,...\n"
-                "]\n"
-
-                "\nExamples:\n" +
-                HelpExampleCli("getbudgetprojection", "") + HelpExampleRpc("getbudgetprojection", ""));
+            "\nResult:\n"
+            "[\n"
+            "  {\n"
+            "    \"Name\": \"xxxx\",               (string) Proposal Name\n"
+            "    \"URL\": \"xxxx\",                (string) Proposal URL\n"
+            "    \"Hash\": \"xxxx\",               (string) Proposal vote hash\n"
+            "    \"FeeHash\": \"xxxx\",            (string) Proposal fee hash\n"
+            "    \"BlockStart\": n,              (numeric) Proposal starting block\n"
+            "    \"BlockEnd\": n,                (numeric) Proposal ending block\n"
+            "    \"TotalPaymentCount\": n,       (numeric) Number of payments\n"
+            "    \"RemainingPaymentCount\": n,   (numeric) Number of remaining payments\n"
+            "    \"PaymentAddress\": \"xxxx\",     (string) VITAE address of payment\n"
+            "    \"Ratio\": x.xxx,               (numeric) Ratio of yeas vs nays\n"
+            "    \"Yeas\": n,                    (numeric) Number of yea votes\n"
+            "    \"Nays\": n,                    (numeric) Number of nay votes\n"
+            "    \"Abstains\": n,                (numeric) Number of abstains\n"
+            "    \"TotalPayment\": xxx.xxx,      (numeric) Total payment amount\n"
+            "    \"MonthlyPayment\": xxx.xxx,    (numeric) Monthly payment amount\n"
+            "    \"IsEstablished\": true|false,  (boolean) Established (true) or (false)\n"
+            "    \"IsValid\": true|false,        (boolean) Valid (true) or Invalid (false)\n"
+            "    \"IsValidReason\": \"xxxx\",      (string) Error message, if any\n"
+            "    \"fValid\": true|false,         (boolean) Valid (true) or Invalid (false)\n"
+            "    \"Alloted\": xxx.xxx,           (numeric) Amount alloted in current period\n"
+            "    \"TotalBudgetAlloted\": xxx.xxx (numeric) Total alloted\n"
+            "  }\n"
+            "  ,...\n"
+            "]\n"
+            "\nExamples:\n" +
+            HelpExampleCli("getbudgetprojection", "") + HelpExampleRpc("getbudgetprojection", ""));
 
     UniValue ret(UniValue::VARR);
     UniValue resultObj(UniValue::VOBJ);
     CAmount nTotalAllotted = 0;
 
     std::vector<CBudgetProposal*> winningProps = budget.GetBudget();
-    for (CBudgetProposal* pbudgetProposal : winningProps) {
+    BOOST_FOREACH (CBudgetProposal* pbudgetProposal, winningProps) {
         nTotalAllotted += pbudgetProposal->GetAllotted();
 
         CTxDestination address1;
         ExtractDestination(pbudgetProposal->GetPayee(), address1);
+        CBitcoinAddress address2(address1);
 
         UniValue bObj(UniValue::VOBJ);
         budgetToJSON(pbudgetProposal, bObj);
@@ -625,41 +729,40 @@ UniValue getbudgetprojection(const UniValue& params, bool fHelp)
 UniValue getbudgetinfo(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
-        throw std::runtime_error(
-                "getbudgetinfo ( \"proposal\" )\n"
-                "\nShow current fundamentalnode budgets\n"
+        throw runtime_error(
+            "getbudgetinfo ( \"proposal\" )\n"
+            "\nShow current fundamentalnode budgets\n"
 
-                "\nArguments:\n"
-                "1. \"proposal\"    (string, optional) Proposal name\n"
+            "\nArguments:\n"
+            "1. \"proposal\"    (string, optional) Proposal name\n"
 
-                "\nResult:\n"
-                "[\n"
-                "  {\n"
-                "    \"Name\": \"xxxx\",               (string) Proposal Name\n"
-                "    \"URL\": \"xxxx\",                (string) Proposal URL\n"
-                "    \"Hash\": \"xxxx\",               (string) Proposal vote hash\n"
-                "    \"FeeHash\": \"xxxx\",            (string) Proposal fee hash\n"
-                "    \"BlockStart\": n,              (numeric) Proposal starting block\n"
-                "    \"BlockEnd\": n,                (numeric) Proposal ending block\n"
-                "    \"TotalPaymentCount\": n,       (numeric) Number of payments\n"
-                "    \"RemainingPaymentCount\": n,   (numeric) Number of remaining payments\n"
-                "    \"PaymentAddress\": \"xxxx\",     (string) PIVX address of payment\n"
-                "    \"Ratio\": x.xxx,               (numeric) Ratio of yeas vs nays\n"
-                "    \"Yeas\": n,                    (numeric) Number of yea votes\n"
-                "    \"Nays\": n,                    (numeric) Number of nay votes\n"
-                "    \"Abstains\": n,                (numeric) Number of abstains\n"
-                "    \"TotalPayment\": xxx.xxx,      (numeric) Total payment amount\n"
-                "    \"MonthlyPayment\": xxx.xxx,    (numeric) Monthly payment amount\n"
-                "    \"IsEstablished\": true|false,  (boolean) Established (true) or (false)\n"
-                "    \"IsValid\": true|false,        (boolean) Valid (true) or Invalid (false)\n"
-                "    \"IsValidReason\": \"xxxx\",      (string) Error message, if any\n"
-                "    \"fValid\": true|false,         (boolean) Valid (true) or Invalid (false)\n"
-                "  }\n"
-                "  ,...\n"
-                "]\n"
-
-                "\nExamples:\n" +
-                HelpExampleCli("getbudgetprojection", "") + HelpExampleRpc("getbudgetprojection", ""));
+            "\nResult:\n"
+            "[\n"
+            "  {\n"
+            "    \"Name\": \"xxxx\",               (string) Proposal Name\n"
+            "    \"URL\": \"xxxx\",                (string) Proposal URL\n"
+            "    \"Hash\": \"xxxx\",               (string) Proposal vote hash\n"
+            "    \"FeeHash\": \"xxxx\",            (string) Proposal fee hash\n"
+            "    \"BlockStart\": n,              (numeric) Proposal starting block\n"
+            "    \"BlockEnd\": n,                (numeric) Proposal ending block\n"
+            "    \"TotalPaymentCount\": n,       (numeric) Number of payments\n"
+            "    \"RemainingPaymentCount\": n,   (numeric) Number of remaining payments\n"
+            "    \"PaymentAddress\": \"xxxx\",     (string) VITAE address of payment\n"
+            "    \"Ratio\": x.xxx,               (numeric) Ratio of yeas vs nays\n"
+            "    \"Yeas\": n,                    (numeric) Number of yea votes\n"
+            "    \"Nays\": n,                    (numeric) Number of nay votes\n"
+            "    \"Abstains\": n,                (numeric) Number of abstains\n"
+            "    \"TotalPayment\": xxx.xxx,      (numeric) Total payment amount\n"
+            "    \"MonthlyPayment\": xxx.xxx,    (numeric) Monthly payment amount\n"
+            "    \"IsEstablished\": true|false,  (boolean) Established (true) or (false)\n"
+            "    \"IsValid\": true|false,        (boolean) Valid (true) or Invalid (false)\n"
+            "    \"IsValidReason\": \"xxxx\",      (string) Error message, if any\n"
+            "    \"fValid\": true|false,         (boolean) Valid (true) or Invalid (false)\n"
+            "  }\n"
+            "  ,...\n"
+            "]\n"
+            "\nExamples:\n" +
+            HelpExampleCli("getbudgetprojection", "") + HelpExampleRpc("getbudgetprojection", ""));
 
     UniValue ret(UniValue::VARR);
 
@@ -667,7 +770,7 @@ UniValue getbudgetinfo(const UniValue& params, bool fHelp)
     if (params.size() == 1) {
         std::string strProposalName = SanitizeString(params[0].get_str());
         CBudgetProposal* pbudgetProposal = budget.FindProposal(strProposalName);
-        if (pbudgetProposal == NULL) throw std::runtime_error("Unknown proposal name");
+        if (pbudgetProposal == NULL) throw runtime_error("Unknown proposal name");
         UniValue bObj(UniValue::VOBJ);
         budgetToJSON(pbudgetProposal, bObj);
         ret.push_back(bObj);
@@ -675,7 +778,7 @@ UniValue getbudgetinfo(const UniValue& params, bool fHelp)
     }
 
     std::vector<CBudgetProposal*> winningProps = budget.GetAllProposals();
-    for (CBudgetProposal* pbudgetProposal : winningProps) {
+    BOOST_FOREACH (CBudgetProposal* pbudgetProposal, winningProps) {
         if (strShow == "valid" && !pbudgetProposal->fValid) continue;
 
         UniValue bObj(UniValue::VOBJ);
@@ -690,25 +793,24 @@ UniValue getbudgetinfo(const UniValue& params, bool fHelp)
 UniValue fnbudgetrawvote(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 6)
-        throw std::runtime_error(
-                "fnbudgetrawvote \"fundamentalnode-tx-hash\" fundamentalnode-tx-index \"proposal-hash\" yes|no time \"vote-sig\"\n"
-                "\nCompile and relay a proposal vote with provided external signature instead of signing vote internally\n"
+        throw runtime_error(
+            "fnbudgetrawvote \"fundamentalnode-tx-hash\" fundamentalnode-tx-index \"proposal-hash\" yes|no time \"vote-sig\"\n"
+            "\nCompile and relay a proposal vote with provided external signature instead of signing vote internally\n"
 
-                "\nArguments:\n"
-                "1. \"fundamentalnode-tx-hash\"  (string, required) Transaction hash for the fundamentalnode\n"
-                "2. fundamentalnode-tx-index   (numeric, required) Output index for the fundamentalnode\n"
-                "3. \"proposal-hash\"       (string, required) Proposal vote hash\n"
-                "4. yes|no                (boolean, required) Vote to cast\n"
-                "5. time                  (numeric, required) Time since epoch in seconds\n"
-                "6. \"vote-sig\"            (string, required) External signature\n"
+            "\nArguments:\n"
+            "1. \"fundamentalnode-tx-hash\"  (string, required) Transaction hash for the fundamentalnode\n"
+            "2. fundamentalnode-tx-index   (numeric, required) Output index for the fundamentalnode\n"
+            "3. \"proposal-hash\"       (string, required) Proposal vote hash\n"
+            "4. yes|no                (boolean, required) Vote to cast\n"
+            "5. time                  (numeric, required) Time since epoch in seconds\n"
+            "6. \"vote-sig\"            (string, required) External signature\n"
 
-                "\nResult:\n"
-                "\"status\"     (string) Vote status or error message\n"
+            "\nResult:\n"
+            "\"status\"     (string) Vote status or error message\n"
+            "\nExamples:\n" +
+            HelpExampleCli("fnbudgetrawvote", "") + HelpExampleRpc("fnbudgetrawvote", ""));
 
-                "\nExamples:\n" +
-                HelpExampleCli("fnbudgetrawvote", "") + HelpExampleRpc("fnbudgetrawvote", ""));
-
-    uint256 hashMnTx = ParseHashV(params[0], "mn tx hash");
+    uint256 hashMnTx = ParseHashV(params[0], "fn tx hash");
     int nMnTxIndex = params[1].get_int();
     CTxIn vin = CTxIn(hashMnTx, nMnTxIndex);
 
@@ -723,7 +825,7 @@ UniValue fnbudgetrawvote(const UniValue& params, bool fHelp)
     int64_t nTime = params[4].get_int64();
     std::string strSig = params[5].get_str();
     bool fInvalid = false;
-    std::vector<unsigned char> vchSig = DecodeBase64(strSig.c_str(), &fInvalid);
+    vector<unsigned char> vchSig = DecodeBase64(strSig.c_str(), &fInvalid);
 
     if (fInvalid)
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Malformed base64 encoding");
@@ -735,17 +837,15 @@ UniValue fnbudgetrawvote(const UniValue& params, bool fHelp)
 
     CBudgetVote vote(vin, hashProposal, nVote);
     vote.nTime = nTime;
-    vote.SetVchSig(vchSig);
+    vote.vchSig = vchSig;
 
-    if (!vote.CheckSignature()) {
-        // try old message version
-        vote.nMessVersion = MessageVersion::MESS_VER_STRMESS;
-        if (!vote.CheckSignature()) return "Failure to verify signature.";
+    if (!vote.SignatureValid(true)) {
+        return "Failure to verify signature.";
     }
 
     std::string strError = "";
     if (budget.UpdateProposal(vote, NULL, strError)) {
-        budget.mapSeenFundamentalnodeBudgetVotes.insert(std::make_pair(vote.GetHash(), vote));
+        budget.mapSeenFundamentalnodeBudgetVotes.insert(make_pair(vote.GetHash(), vote));
         vote.Relay();
         return "Voted successfully";
     } else {
@@ -755,35 +855,35 @@ UniValue fnbudgetrawvote(const UniValue& params, bool fHelp)
 
 UniValue fnfinalbudget(const UniValue& params, bool fHelp)
 {
-    std::string strCommand;
+    string strCommand;
     if (params.size() >= 1)
         strCommand = params[0].get_str();
 
     if (fHelp ||
         (strCommand != "suggest" && strCommand != "vote-many" && strCommand != "vote" && strCommand != "show" && strCommand != "getvotes"))
-        throw std::runtime_error(
-                "fnfinalbudget \"command\"... ( \"passphrase\" )\n"
-                "\nVote or show current budgets\n"
-
-                "\nAvailable commands:\n"
-                "  vote-many   - Vote on a finalized budget\n"
-                "  vote        - Vote on a finalized budget with local fundamentalnode\n"
-                "  show        - Show existing finalized budgets\n"
-                "  getvotes     - Get vote information for each finalized budget\n");
+        throw runtime_error(
+            "fnfinalbudget \"command\"... ( \"passphrase\" )\n"
+            "Vote or show current budgets\n"
+            "\nAvailable commands:\n"
+            "  vote-many   - Vote on a finalized budget\n"
+            "  vote        - Vote on a finalized budget\n"
+            "  show        - Show existing finalized budgets\n"
+            "  getvotes     - Get vote information for each finalized budget\n");
 
     if (strCommand == "vote-many") {
         if (params.size() != 2)
-            throw std::runtime_error("Correct usage is 'fnfinalbudget vote-many BUDGET_HASH'");
+            throw runtime_error("Correct usage is 'fnfinalbudget vote-many BUDGET_HASH'");
 
         std::string strHash = params[1].get_str();
-        uint256 hash(uint256S(strHash));
+        uint256 hash(strHash);
 
         int success = 0;
         int failed = 0;
 
         UniValue resultsObj(UniValue::VOBJ);
 
-        for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
+        BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+            std::string errorMessage;
             std::vector<unsigned char> vchFundamentalNodeSignature;
             std::string strFundamentalNodeSignMessage;
 
@@ -794,10 +894,10 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
 
             UniValue statusObj(UniValue::VOBJ);
 
-            if (!CMessageSigner::GetKeysFromSecret(mne.getPrivKey(), keyFundamentalnode, pubKeyFundamentalnode)) {
+            if (!obfuScationSigner.SetKey(mne.getPrivKey(), errorMessage, keyFundamentalnode, pubKeyFundamentalnode)) {
                 failed++;
                 statusObj.push_back(Pair("result", "failed"));
-                statusObj.push_back(Pair("errorMessage", "Fundamentalnode signing error, could not set key correctly."));
+                statusObj.push_back(Pair("errorMessage", "Fundamentalnode signing error, could not set key correctly: " + errorMessage));
                 resultsObj.push_back(Pair(mne.getAlias(), statusObj));
                 continue;
             }
@@ -823,7 +923,7 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
 
             std::string strError = "";
             if (budget.UpdateFinalizedBudget(vote, NULL, strError)) {
-                budget.mapSeenFinalizedBudgetVotes.insert(std::make_pair(vote.GetHash(), vote));
+                budget.mapSeenFinalizedBudgetVotes.insert(make_pair(vote.GetHash(), vote));
                 vote.Relay();
                 success++;
                 statusObj.push_back(Pair("result", "success"));
@@ -843,37 +943,32 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
     }
 
     if (strCommand == "vote") {
-        if (!fFundamentalNode)
-            throw JSONRPCError(RPC_MISC_ERROR, _("This is not a fundamentalnode. 'local' option disabled."));
-
-        if (activeFundamentalnode.vin == boost::none)
-            throw JSONRPCError(RPC_MISC_ERROR, _("Active Fundamentalnode not initialized."));
-
         if (params.size() != 2)
-            throw std::runtime_error("Correct usage is 'fnfinalbudget vote BUDGET_HASH'");
+            throw runtime_error("Correct usage is 'mnfinalbudget vote BUDGET_HASH'");
 
         std::string strHash = params[1].get_str();
-        uint256 hash(uint256S(strHash));
+        uint256 hash(strHash);
 
         CPubKey pubKeyFundamentalnode;
         CKey keyFundamentalnode;
+        std::string errorMessage;
 
-        if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode))
-            return "Error upon calling GetKeysFromSecret";
+        if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, errorMessage, keyFundamentalnode, pubKeyFundamentalnode))
+            return "Error upon calling SetKey";
 
-        CFundamentalnode* pmn = mnodeman.Find(*(activeFundamentalnode.vin));
+        CFundamentalnode* pmn = mnodeman.Find(activeFundamentalnode.vin);
         if (pmn == NULL) {
-            return "Failure to find fundamentalnode in list : " + activeFundamentalnode.vin->ToString();
+            return "Failure to find fundamentalnode in list : " + activeFundamentalnode.vin.ToString();
         }
 
-        CFinalizedBudgetVote vote(*(activeFundamentalnode.vin), hash);
+        CFinalizedBudgetVote vote(activeFundamentalnode.vin, hash);
         if (!vote.Sign(keyFundamentalnode, pubKeyFundamentalnode)) {
             return "Failure to sign.";
         }
 
         std::string strError = "";
         if (budget.UpdateFinalizedBudget(vote, NULL, strError)) {
-            budget.mapSeenFinalizedBudgetVotes.insert(std::make_pair(vote.GetHash(), vote));
+            budget.mapSeenFinalizedBudgetVotes.insert(make_pair(vote.GetHash(), vote));
             vote.Relay();
             return "success";
         } else {
@@ -885,7 +980,7 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
         UniValue resultObj(UniValue::VOBJ);
 
         std::vector<CFinalizedBudget*> winningFbs = budget.GetFinalizedBudgets();
-        for (CFinalizedBudget* finalizedBudget : winningFbs) {
+        BOOST_FOREACH (CFinalizedBudget* finalizedBudget, winningFbs) {
             UniValue bObj(UniValue::VOBJ);
             bObj.push_back(Pair("FeeTX", finalizedBudget->nFeeTXHash.ToString()));
             bObj.push_back(Pair("Hash", finalizedBudget->GetHash().ToString()));
@@ -907,10 +1002,10 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
 
     if (strCommand == "getvotes") {
         if (params.size() != 2)
-            throw std::runtime_error("Correct usage is 'fnbudget getvotes budget-hash'");
+            throw runtime_error("Correct usage is 'fnbudget getvotes budget-hash'");
 
         std::string strHash = params[1].get_str();
-        uint256 hash(uint256S(strHash));
+        uint256 hash(strHash);
 
         UniValue obj(UniValue::VOBJ);
 
@@ -939,12 +1034,11 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
 UniValue checkbudgets(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
-        throw std::runtime_error(
-                "checkbudgets\n"
-                "\nInitiates a budget check cycle manually\n"
-
-                "\nExamples:\n" +
-                HelpExampleCli("checkbudgets", "") + HelpExampleRpc("checkbudgets", ""));
+        throw runtime_error(
+            "checkbudgets\n"
+            "\nInitiates a buddget check cycle manually\n"
+            "\nExamples:\n" +
+            HelpExampleCli("checkbudgets", "") + HelpExampleRpc("checkbudgets", ""));
 
     budget.CheckAndRemove();
 

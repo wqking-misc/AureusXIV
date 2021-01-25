@@ -275,7 +275,7 @@ bool GetKernelStakeModifier(uint256 hashBlockFrom, uint64_t& nStakeModifier, int
 
 uint256 stakeHash(unsigned int nTimeTx, CDataStream ss, unsigned int prevoutIndex, uint256 prevoutHash, unsigned int nTimeBlockFrom)
 {
-    //AureusXIV will hash in the transaction hash and the index number in order to make sure each hash is unique
+    //VITAE will hash in the transaction hash and the index number in order to make sure each hash is unique
     ss << nTimeBlockFrom << prevoutIndex << prevoutHash << nTimeTx;
     return Hash(ss.begin(), ss.end());
 }
@@ -370,7 +370,7 @@ bool CheckProofOfStake(const CBlock block, uint256& hashProofOfStake, std::uniqu
     if (!VerifyScript(txin.scriptSig, txPrev.vout[txin.prevout.n].scriptPubKey, STANDARD_SCRIPT_VERIFY_FLAGS, TransactionSignatureChecker(&tx, 0)))
         return error("CheckProofOfStake() : VerifySignature failed on coinstake %s", tx.GetHash().ToString().c_str());
 
-    CAXIVStake* zitInput = new CAXIVStake();
+    CVitStake* zitInput = new CVitStake();
     zitInput->SetInput(txPrev, txin.prevout.n);
     stake = std::unique_ptr<CStakeInput>(zitInput);
 

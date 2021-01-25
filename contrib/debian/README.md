@@ -1,21 +1,21 @@
 
 Debian
 ====================
-This directory contains files used to package aureusxivd/aureusxiv-qt
-for Debian-based Linux systems. If you compile aureusxivd/aureusxiv-qt yourself, there are some useful files here.
+This directory contains files used to package vitaed/vitae-qt
+for Debian-based Linux systems. If you compile vitaed/vitae-qt yourself, there are some useful files here.
 
-## aureusxiv: URI support ##
+## vitae: URI support ##
 
 
-aureusxiv-qt.desktop  (Gnome / Open Desktop)
+vitae-qt.desktop  (Gnome / Open Desktop)
 To install:
 
-	sudo desktop-file-install aureusxiv-qt.desktop
+	sudo desktop-file-install vitae-qt.desktop
 	sudo update-desktop-database
 
 If you build yourself, you will either need to modify the paths in
-the .desktop file or copy or symlink your aureusxivqt binary to `/usr/bin`
-and the `../../share/pixmaps/aureusxiv128.png` to `/usr/share/pixmaps`
+the .desktop file or copy or symlink your vitaeqt binary to `/usr/bin`
+and the `../../share/pixmaps/vitae128.png` to `/usr/share/pixmaps`
 
-aureusxiv-qt.protocol (KDE)
+vitae-qt.protocol (KDE)
 

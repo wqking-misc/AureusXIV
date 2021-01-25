@@ -1,5 +1,5 @@
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2015-2017 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,9 +9,11 @@
 #include "key.h"
 #include "main.h"
 #include "fundamentalnode.h"
+#include <boost/lexical_cast.hpp>
 
+using namespace std;
 
-extern CCriticalSection cs_vecFundamentalnodePayments;
+extern CCriticalSection cs_vecPayments;
 extern CCriticalSection cs_mapFundamentalnodeBlocks;
 extern CCriticalSection cs_mapFundamentalnodePayeeVotes;
 
@@ -26,9 +28,9 @@ extern CFundamentalnodePayments fundamentalnodePayments;
 
 void ProcessMessageFundamentalnodePayments(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
 bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight);
-std::string GetFundamentalnodeRequiredPaymentsString(int nBlockHeight);
+std::string GetRequiredPaymentsString(int nBlockHeight);
 bool IsBlockValueValid(const CBlock& block, CAmount nExpectedValue, CAmount nMinted);
-void FillBlockPayeeFundamentalnode(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake);
+void FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake, bool IsMasternode );
 
 void DumpFundamentalnodePayments();
 
@@ -104,9 +106,9 @@ public:
 
     void AddPayee(CScript payeeIn, int nIncrement)
     {
-        LOCK(cs_vecFundamentalnodePayments);
+        LOCK(cs_vecPayments);
 
-        for (CFundamentalnodePayee& payee : vecPayments) {
+        BOOST_FOREACH (CFundamentalnodePayee& payee, vecPayments) {
             if (payee.scriptPubKey == payeeIn) {
                 payee.nVotes += nIncrement;
                 return;
@@ -119,10 +121,10 @@ public:
 
     bool GetPayee(CScript& payee)
     {
-        LOCK(cs_vecFundamentalnodePayments);
+        LOCK(cs_vecPayments);
 
         int nVotes = -1;
-        for (CFundamentalnodePayee& p : vecPayments) {
+        BOOST_FOREACH (CFundamentalnodePayee& p, vecPayments) {
             if (p.nVotes > nVotes) {
                 payee = p.scriptPubKey;
                 nVotes = p.nVotes;
@@ -134,9 +136,9 @@ public:
 
     bool HasPayeeWithVotes(CScript payee, int nVotesReq)
     {
-        LOCK(cs_vecFundamentalnodePayments);
+        LOCK(cs_vecPayments);
 
-        for (CFundamentalnodePayee& p : vecPayments) {
+        BOOST_FOREACH (CFundamentalnodePayee& p, vecPayments) {
             if (p.nVotes >= nVotesReq && p.scriptPubKey == payee) return true;
         }
 
@@ -144,7 +146,7 @@ public:
     }
 
     bool IsTransactionValid(const CTransaction& txNew);
-    std::string GetFundamentalnodeRequiredPaymentsString();
+    std::string GetRequiredPaymentsString();
 
     ADD_SERIALIZE_METHODS;
 
@@ -157,42 +159,49 @@ public:
 };
 
 // for storing the winning payments
-class CFundamentalnodePaymentWinner : public CSignedMessage
+class CFundamentalnodePaymentWinner
 {
 public:
     CTxIn vinFundamentalnode;
 
     int nBlockHeight;
     CScript payee;
+    std::vector<unsigned char> vchSig;
 
-    CFundamentalnodePaymentWinner() :
-            CSignedMessage(),
-            vinFundamentalnode(),
-            nBlockHeight(0),
-            payee()
-    {}
+    CFundamentalnodePaymentWinner()
+    {
+        nBlockHeight = 0;
+        vinFundamentalnode = CTxIn();
+        payee = CScript();
+    }
 
-    CFundamentalnodePaymentWinner(CTxIn vinIn) :
-            CSignedMessage(),
-            vinFundamentalnode(vinIn),
-            nBlockHeight(0),
-            payee()
-    {}
+    CFundamentalnodePaymentWinner(CTxIn vinIn)
+    {
+        nBlockHeight = 0;
+        vinFundamentalnode = vinIn;
+        payee = CScript();
+    }
 
-    uint256 GetHash() const;
+    uint256 GetHash()
+    {
+        CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+        ss << payee;
+        ss << nBlockHeight;
+        ss << vinFundamentalnode.prevout;
 
-    // override CSignedMessage functions
-    uint256 GetSignatureHash() const override { return GetHash(); }
-    std::string GetStrMessage() const override;
-    const CTxIn GetVin() const override { return vinFundamentalnode; };
+        return ss.GetHash();
+    }
 
+    bool Sign(CKey& keyFundamentalnode, CPubKey& pubKeyFundamentalnode);
     bool IsValid(CNode* pnode, std::string& strError);
+    bool SignatureValid();
     void Relay();
 
     void AddPayee(CScript payeeIn)
     {
         payee = payeeIn;
     }
+
 
     ADD_SERIALIZE_METHODS;
 
@@ -203,21 +212,15 @@ public:
         READWRITE(nBlockHeight);
         READWRITE(payee);
         READWRITE(vchSig);
-        try
-        {
-            READWRITE(nMessVersion);
-        } catch (...) {
-            nMessVersion = MessageVersion::MESS_VER_STRMESS;
-        }
     }
 
     std::string ToString()
     {
         std::string ret = "";
         ret += vinFundamentalnode.ToString();
-        ret += ", " + std::to_string(nBlockHeight);
-        ret += ", " + HexStr(payee);
-        ret += ", " + std::to_string((int)vchSig.size());
+        ret += ", " + boost::lexical_cast<std::string>(nBlockHeight);
+        ret += ", " + payee.ToString();
+        ret += ", " + boost::lexical_cast<std::string>((int)vchSig.size());
         return ret;
     }
 };
@@ -236,7 +239,7 @@ private:
 public:
     std::map<uint256, CFundamentalnodePaymentWinner> mapFundamentalnodePayeeVotes;
     std::map<int, CFundamentalnodeBlockPayees> mapFundamentalnodeBlocks;
-    std::map<COutPoint, int> mapFundamentalnodesLastVote; //prevout, nBlockHeight
+    std::map<uint256, int> mapFundamentalnodesLastVote; //prevout.hash + prevout.n, nBlockHeight
 
     CFundamentalnodePayments()
     {
@@ -266,21 +269,21 @@ public:
     {
         LOCK(cs_mapFundamentalnodePayeeVotes);
 
-        if (mapFundamentalnodesLastVote.count(outFundamentalnode)) {
-            if (mapFundamentalnodesLastVote[outFundamentalnode] == nBlockHeight) {
+        if (mapFundamentalnodesLastVote.count(outFundamentalnode.hash + outFundamentalnode.n)) {
+            if (mapFundamentalnodesLastVote[outFundamentalnode.hash + outFundamentalnode.n] == nBlockHeight) {
                 return false;
             }
         }
 
         //record this fundamentalnode voted
-        mapFundamentalnodesLastVote[outFundamentalnode] = nBlockHeight;
+        mapFundamentalnodesLastVote[outFundamentalnode.hash + outFundamentalnode.n] = nBlockHeight;
         return true;
     }
 
     int GetMinFundamentalnodePaymentsProto();
     void ProcessMessageFundamentalnodePayments(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
-    std::string GetFundamentalnodeRequiredPaymentsString(int nBlockHeight);
-    void FillBlockPayeeFundamentalnode(CMutableTransaction& txNew, int64_t nFees, bool fProofOfStake, bool IsMasternode);
+    std::string GetRequiredPaymentsString(int nBlockHeight);
+    void FillBlockPayee(CMutableTransaction& txNew, int64_t nFees, bool fProofOfStake, bool IsMasternode);
     std::string ToString() const;
     int GetOldestBlock();
     int GetNewestBlock();

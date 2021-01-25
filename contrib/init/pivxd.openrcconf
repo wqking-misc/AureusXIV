@@ -1,25 +1,25 @@
-# /etc/conf.d/aureusxivd: config file for /etc/init.d/aureusxivd
+# /etc/conf.d/vitaed: config file for /etc/init.d/vitaed
 
 # Config file location
-#BITCOIND_CONFIGFILE="/etc/aureusxiv/aureusxiv.conf"
+#BITCOIND_CONFIGFILE="/etc/vitae/vitae.conf"
 
 # What directory to write pidfile to?  (created and owned by $BITCOIND_USER)
-#BITCOIND_PIDDIR="/var/run/aureusxivd"
+#BITCOIND_PIDDIR="/var/run/vitaed"
 
 # What filename to give the pidfile
-#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/aureusxivd.pid"
+#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/vitaed.pid"
 
-# Where to write aureusxivd data (be mindful that the blockchain is large)
-#BITCOIND_DATADIR="/var/lib/aureusxivd"
+# Where to write vitaed data (be mindful that the blockchain is large)
+#BITCOIND_DATADIR="/var/lib/vitaed"
 
-# User and group to own aureusxivd process
-#BITCOIND_USER="aureusxiv"
-#BITCOIND_GROUP="aureusxiv"
+# User and group to own vitaed process
+#BITCOIND_USER="vitae"
+#BITCOIND_GROUP="vitae"
 
-# Path to aureusxivd executable
-#BITCOIND_BIN="/usr/bin/aureusxivd"
+# Path to vitaed executable
+#BITCOIND_BIN="/usr/bin/vitaed"
 
-# Nice value to run aureusxivd under
+# Nice value to run vitaed under
 #BITCOIND_NICE=0
 
 # Additional options (avoid -conf and -datadir, use flags above)

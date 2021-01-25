@@ -1,19 +1,19 @@
 [Unit]
-Description=AureusXIV's distributed currency daemon
+Description=VITAE's distributed currency daemon
 After=network.target
 
 [Service]
-User=aureusxiv
-Group=aureusxiv
+User=vitae
+Group=vitae
 
 Type=forking
-PIDFile=/var/lib/aureusxivd/aureusxivd.pid
+PIDFile=/var/lib/vitaed/vitaed.pid
 
-ExecStart=/usr/bin/aureusxivd -daemon -pid=/var/lib/aureusxivd/aureusxivd.pid \
-          -conf=/etc/aureusxiv/aureusxiv.conf -datadir=/var/lib/aureusxivd
+ExecStart=/usr/bin/vitaed -daemon -pid=/var/lib/vitaed/vitaed.pid \
+          -conf=/etc/vitae/vitae.conf -datadir=/var/lib/vitaed
 
-ExecStop=-/usr/bin/aureusxiv-cli -conf=/etc/aureusxiv/aureusxiv.conf \
-         -datadir=/var/lib/aureusxivd stop
+ExecStop=-/usr/bin/vitae-cli -conf=/etc/vitae/vitae.conf \
+         -datadir=/var/lib/vitaed stop
 
 Restart=always
 PrivateTmp=true

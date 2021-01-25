@@ -25,7 +25,7 @@ struct CDNSSeedData {
 
 /**
  * CChainParams defines various tweakable parameters of a given instance of the
- * AureusXIV system. There are three: the main network on which people trade goods
+ * VITAE system. There are three: the main network on which people trade goods
  * and services, the public test network which gets reset from time to time and
  * a regression test mode which is intended for private networks only. It has
  * minimal difficulty to ensure that blocks can be found instantly.
@@ -76,9 +76,6 @@ public:
     int64_t Interval() const { return nTargetTimespan / nTargetSpacing; }
     int COINBASE_MATURITY() const { return nMaturity; }
     CAmount MaxMoneyOut() const { return nMaxMoneyOut; }
-    CAmount BudgetCycleBlocks() const { return nBudgetCycleBlocks; }
-    CAmount BudgetFeeConfirmations() const { return nBudgetFeeConfirmations; }
-    CAmount ProposalEstablishmentTime() const { return nProposalEstablishmentTime; }
     /** The fundamentalnode count that we will allow the see-saw reward payments to be off by */
     int FundamentalnodeCountDrift() const { return nFundamentalnodeCountDrift; }
 	/** The masternode count that we will allow the see-saw reward payments to be off by */
@@ -96,7 +93,7 @@ public:
     int PoolMaxTransactions() const { return nPoolMaxTransactions; }
 
     /** Spork key and Masternode Handling **/
-    std::string strSporkPubKey() const { return strSporkKey; }
+    std::string SporkKey() const { return strSporkKey; }
     std::string SporkKeyOld() const { return strSporkKeyOld; }
     int64_t NewSporkStart() const { return nEnforceNewSporkKey; }
     int64_t RejectOldSporkKey() const { return nRejectOldSporkKey; }
@@ -131,9 +128,6 @@ protected:
     int nLastPOWBlock;
     int nFundamentalnodeCountDrift;
 	int nMasternodeCountDrift;
-    int nBudgetCycleBlocks;
-    int nBudgetFeeConfirmations;
-    int64_t nProposalEstablishmentTime;
     int nMaturity;
     int nModifierUpdateBlock;
     CAmount nMaxMoneyOut;

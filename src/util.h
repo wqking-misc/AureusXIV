@@ -13,7 +13,7 @@
 #define BITCOIN_UTIL_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/aureusxiv-config.h"
+#include "config/vitae-config.h"
 #endif
 
 #include "compat.h"
@@ -29,16 +29,19 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/thread/exceptions.hpp>
 
-//AureusXIV only features
+//VITAE only features
 
 extern bool fFundamentalNode;
 extern bool fLiteMode;
 extern bool fEnableSwiftTX;
 extern int nSwiftTXDepth;
+extern int nAnonymizeVitaeAmount;
+extern int nLiquidityProvider;
 extern int64_t enforceFundamentalnodePaymentsTime;
 extern std::string strFundamentalNodeAddr;
 extern int keysLoaded;
 extern bool fSucessfullyLoaded;
+extern std::vector<int64_t> obfuScationDenominations;
 extern std::string strBudgetMode;
 
 //masternodes
@@ -213,7 +216,7 @@ void RenameThread(const char* name);
 template <typename Callable>
 void TraceThread(const char* name, Callable func)
 {
-    std::string s = strprintf("aureusxiv-%s", name);
+    std::string s = strprintf("vitae-%s", name);
     RenameThread(s.c_str());
     try {
         LogPrintf("%s thread start\n", name);

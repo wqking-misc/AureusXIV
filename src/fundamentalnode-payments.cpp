@@ -1,28 +1,30 @@
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2015-2017 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "fundamentalnode-payments.h"
 #include "addrman.h"
-#include "chainparams.h"
-#include "fs.h"
 #include "fundamentalnode-budget.h"
 #include "fundamentalnode-sync.h"
 #include "fundamentalnodeman.h"
+#include "obfuscation.h"
 #include "spork.h"
 #include "sync.h"
 #include "util.h"
 #include "utilmoneystr.h"
 
+#include "masternode-pos.h"
 #include "masternode.h"
 #include "masternodeman.h"
-#include "masternode-payments.h"
+
+#include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
 
 /** Object for who's going to get paid on which blocks */
 CFundamentalnodePayments fundamentalnodePayments;
 
-CCriticalSection cs_vecFundamentalnodePayments;
+CCriticalSection cs_vecPayments;
 CCriticalSection cs_mapFundamentalnodeBlocks;
 CCriticalSection cs_mapFundamentalnodePayeeVotes;
 
@@ -79,12 +81,12 @@ CFundamentalnodePaymentDB::ReadResult CFundamentalnodePaymentDB::Read(CFundament
     }
 
     // use file size to size memory buffer
-    int fileSize = fs::file_size(pathDB);
+    int fileSize = boost::filesystem::file_size(pathDB);
     int dataSize = fileSize - sizeof(uint256);
     // Don't try to resize to a negative number if file is small
     if (dataSize < 0)
         dataSize = 0;
-    std::vector<unsigned char> vchData;
+    vector<unsigned char> vchData;
     vchData.resize(dataSize);
     uint256 hashIn;
 
@@ -149,59 +151,6 @@ CFundamentalnodePaymentDB::ReadResult CFundamentalnodePaymentDB::Read(CFundament
     return Ok;
 }
 
-uint256 CFundamentalnodePaymentWinner::GetHash() const
-{
-    CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
-    ss << std::vector<unsigned char>(payee.begin(), payee.end());
-    ss << nBlockHeight;
-    ss << vinFundamentalnode.prevout;
-    return ss.GetHash();
-}
-
-std::string CFundamentalnodePaymentWinner::GetStrMessage() const
-{
-    return vinFundamentalnode.prevout.ToStringShort() + std::to_string(nBlockHeight) + HexStr(payee);
-}
-
-bool CFundamentalnodePaymentWinner::IsValid(CNode* pnode, std::string& strError)
-{
-    CFundamentalnode* pmn = mnodeman.Find(vinFundamentalnode);
-
-    if (!pmn) {
-        strError = strprintf("Unknown Fundamentalnode %s", vinFundamentalnode.prevout.hash.ToString());
-        LogPrint("fundamentalnode","CFundamentalnodePaymentWinner::IsValid - %s\n", strError);
-        mnodeman.AskForMN(pnode, vinFundamentalnode);
-        return false;
-    }
-
-    if (pmn->protocolVersion < ActiveProtocol()) {
-        strError = strprintf("Fundamentalnode protocol too old %d - req %d", pmn->protocolVersion, ActiveProtocol());
-        LogPrint("fundamentalnode","CFundamentalnodePaymentWinner::IsValid - %s\n", strError);
-        return false;
-    }
-
-    int n = mnodeman.GetFundamentalnodeRank(vinFundamentalnode, nBlockHeight - 100, ActiveProtocol());
-
-    if (n > MNPAYMENTS_SIGNATURES_TOTAL) {
-        //It's common to have fundamentalnodes mistakenly think they are in the top 10
-        // We don't want to print all of these messages, or punish them unless they're way off
-        if (n > MNPAYMENTS_SIGNATURES_TOTAL * 2) {
-            strError = strprintf("Fundamentalnode not in the top %d (%d)", MNPAYMENTS_SIGNATURES_TOTAL * 2, n);
-            LogPrint("fundamentalnode","CFundamentalnodePaymentWinner::IsValid - %s\n", strError);
-            //if (fundamentalnodeSync.IsSynced()) Misbehaving(pnode->GetId(), 20);
-        }
-        return false;
-    }
-
-    return true;
-}
-
-void CFundamentalnodePaymentWinner::Relay()
-{
-    CInv inv(MSG_FUNDAMENTALNODE_WINNER, GetHash());
-    RelayInv(inv);
-}
-
 void DumpFundamentalnodePayments()
 {
     int64_t nStart = GetTimeMillis();
@@ -251,7 +200,7 @@ bool IsBlockValueValid(const CBlock& block, CAmount nExpectedValue, CAmount nMin
 
     if (!fundamentalnodeSync.IsSynced()) { //there is no budget data to use to check anything
         //super blocks will always be on these blocks, max 100 per budgeting
-        if (nHeight % Params().BudgetCycleBlocks() < 100) {
+        if (nHeight % GetBudgetPaymentCycleBlocks() < 100) {
             return true;
         } else {
             if (nMinted > nExpectedValue) {
@@ -261,7 +210,7 @@ bool IsBlockValueValid(const CBlock& block, CAmount nExpectedValue, CAmount nMin
     } else { // we're synced and have data so check the budget schedule
 
         //are these blocks even enabled
-        if (!sporkManager.IsSporkActive(SPORK_11_ENABLE_SUPERBLOCKS)) {
+        if (!IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS)) {
             return nMinted <= nExpectedValue;
         }
 
@@ -287,12 +236,12 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
         return true;
     }
 
-    bool MasternodePayments = false;
+	bool MasternodePayments = false;
 
 
     if(block.nTime > START_MASTERNODE_PAYMENTS) MasternodePayments = true;
 
-    if(!sporkManager.IsSporkActive(SPORK_9_MASTERNODE_PAYMENT_ENFORCEMENT)){
+    if(!IsMNSporkActive(MN_SPORK_1_MASTERNODE_PAYMENTS_ENFORCEMENT)){
         MasternodePayments = false; //
         if(fDebug) LogPrintf("CheckBlock() : Masternode payment enforcement is off\n");
     }
@@ -305,7 +254,7 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
         if(pindex != NULL){
             if(pindex->GetBlockHash() == block.hashPrevBlock){
                 CAmount stakeReward = GetBlockValue(pindex->nHeight + 1);
-                CAmount masternodePaymentAmount = GetMasternodePayment(pindex->nHeight+1, stakeReward);
+                CAmount masternodePaymentAmount = GetMasternodePayment(pindex->nHeight+1, stakeReward, 0);//todo++
 
                 bool fIsInitialDownload = IsInitialBlockDownload();
 
@@ -360,8 +309,9 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
     }
 
     const CTransaction& txNew = (nBlockHeight > Params().LAST_POW_BLOCK() ? block.vtx[1] : block.vtx[0]);
+
     //check if it's a budget block
-    if (sporkManager.IsSporkActive(SPORK_11_ENABLE_SUPERBLOCKS)) {
+    if (IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS)) {
         if (budget.IsBudgetPaymentBlock(nBlockHeight)) {
             transactionStatus = budget.IsTransactionValid(txNew, nBlockHeight);
             if (transactionStatus == TrxValidationStatus::Valid) {
@@ -370,7 +320,7 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
 
             if (transactionStatus == TrxValidationStatus::InValid) {
                 LogPrint("fundamentalnode","Invalid budget payment detected %s\n", txNew.ToString().c_str());
-                if (sporkManager.IsSporkActive(SPORK_10_FUNDAMENTALNODE_BUDGET_ENFORCEMENT))
+                if (IsSporkActive(SPORK_9_FUNDAMENTALNODE_BUDGET_ENFORCEMENT))
                     return false;
 
                 LogPrint("fundamentalnode","Budget enforcement is disabled, accepting block\n");
@@ -388,35 +338,36 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
         return true;
     LogPrint("fundamentalnode","Invalid mn payment detected %s\n", txNew.ToString().c_str());
 
-    if (sporkManager.IsSporkActive(SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT))
+    if (IsSporkActive(SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT))
         return false;
     LogPrint("fundamentalnode","Fundamentalnode payment enforcement is disabled, accepting block\n");
+
     return true;
 }
 
 
-void FillBlockPayeeFundamentalnode(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake, bool IsMasternode)
+void FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake, bool IsMasternode)
 {
     CBlockIndex* pindexPrev = chainActive.Tip();
     if (!pindexPrev) return;
 
-    if (sporkManager.IsSporkActive(SPORK_11_ENABLE_SUPERBLOCKS) && budget.IsBudgetPaymentBlock(pindexPrev->nHeight + 1)) {
-        budget.FillBlockPayeeFundamentalnode(txNew, nFees, fProofOfStake);
+    if (IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS) && budget.IsBudgetPaymentBlock(pindexPrev->nHeight + 1)) {
+        budget.FillBlockPayee(txNew, nFees, fProofOfStake);
     } else {
-        fundamentalnodePayments.FillBlockPayeeFundamentalnode(txNew, nFees, fProofOfStake, IsMasternode);
+        fundamentalnodePayments.FillBlockPayee(txNew, nFees, fProofOfStake, IsMasternode);
     }
 }
 
-std::string GetFundamentalnodeRequiredPaymentsString(int nBlockHeight)
+std::string GetRequiredPaymentsString(int nBlockHeight)
 {
-    if (sporkManager.IsSporkActive(SPORK_11_ENABLE_SUPERBLOCKS) && budget.IsBudgetPaymentBlock(nBlockHeight)) {
-        return budget.GetFundamentalnodeRequiredPaymentsString(nBlockHeight);
+    if (IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS) && budget.IsBudgetPaymentBlock(nBlockHeight)) {
+        return budget.GetRequiredPaymentsString(nBlockHeight);
     } else {
-        return fundamentalnodePayments.GetFundamentalnodeRequiredPaymentsString(nBlockHeight);
+        return fundamentalnodePayments.GetRequiredPaymentsString(nBlockHeight);
     }
 }
 
-void CFundamentalnodePayments::FillBlockPayeeFundamentalnode(CMutableTransaction& txNew, int64_t nFees, bool fProofOfStake, bool IsMasternode)
+void CFundamentalnodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFees, bool fProofOfStake, bool IsMasternode)
 {
     CBlockIndex* pindexPrev = chainActive.Tip();
     if (!pindexPrev) return;
@@ -459,7 +410,7 @@ void CFundamentalnodePayments::FillBlockPayeeFundamentalnode(CMutableTransaction
         //no masternode detected
         CMasternode* winningNode = m_nodeman.GetCurrentMasterNode(1);
         if(winningNode){
-            mn_payee = GetScriptForDestination(winningNode->pubKeyCollateralAddress.GetID());
+            mn_payee = GetScriptForDestination(winningNode->pubkey.GetID());
         } else {
             LogPrintf("CreateNewBlock: Failed to detect masternode to pay\n");
             hasMnPayment = false;
@@ -469,8 +420,7 @@ void CFundamentalnodePayments::FillBlockPayeeFundamentalnode(CMutableTransaction
 
     CAmount blockValue = GetBlockValue(pindexPrev->nHeight);
     CAmount fundamentalnodePayment = GetFundamentalnodePayment(pindexPrev->nHeight + 1, blockValue);
-
-    CAmount masternodepayment = GetMasternodePayment(pindexPrev->nHeight +1 , blockValue);
+    CAmount masternodepayment = GetMasternodePayment(pindexPrev->nHeight +1 , blockValue, 0);
 
     //txNew.vout[0].nValue = blockValue;
 
@@ -596,25 +546,28 @@ void CFundamentalnodePayments::FillBlockPayeeFundamentalnode(CMutableTransaction
 
 int CFundamentalnodePayments::GetMinFundamentalnodePaymentsProto()
 {
-    return ActiveProtocol();
+    if (IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES))
+        return ActiveProtocol();                          // Allow only updated peers
+    else
+        return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT; // Also allow old peers as long as they are allowed to run
 }
 
 void CFundamentalnodePayments::ProcessMessageFundamentalnodePayments(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
     if (!fundamentalnodeSync.IsBlockchainSynced()) return;
 
-    if (fLiteMode) return; //disable all Fundamentalnode related functionality
+    if (fLiteMode) return; //disable all Obfuscation/Fundamentalnode related functionality
 
 
     if (strCommand == "fnget") { //Fundamentalnode Payments Request Sync
-        if (fLiteMode) return;   //disable all Fundamentalnode related functionality
+        if (fLiteMode) return;   //disable all Obfuscation/Fundamentalnode related functionality
 
         int nCountNeeded;
         vRecv >> nCountNeeded;
 
         if (Params().NetworkID() == CBaseChainParams::MAIN) {
             if (pfrom->HasFulfilledRequest("fnget")) {
-                LogPrintf("CFundamentalnodePayments::ProcessMessagefundamentalnodePayments() : mnget - peer already asked me for the list\n");
+                LogPrint("fundamentalnode","fnget - peer already asked me for the list\n");
                 Misbehaving(pfrom->GetId(), 20);
                 return;
             }
@@ -655,12 +608,6 @@ void CFundamentalnodePayments::ProcessMessageFundamentalnodePayments(CNode* pfro
             return;
         }
 
-        // reject old signature version
-        if (winner.nMessVersion != MessageVersion::MESS_VER_HASH) {
-            LogPrint("fundamentalnode", "mnw - rejecting old message version %d\n", winner.nMessVersion);
-            return;
-        }
-
         std::string strError = "";
         if (!winner.IsValid(pfrom, strError)) {
             // if(strError != "") LogPrint("fundamentalnode","fnw - invalid message - %s\n", strError);
@@ -668,15 +615,13 @@ void CFundamentalnodePayments::ProcessMessageFundamentalnodePayments(CNode* pfro
         }
 
         if (!fundamentalnodePayments.CanVote(winner.vinFundamentalnode.prevout, winner.nBlockHeight)) {
-            //  LogPrint("fundamentalnode","mnw - fundamentalnode already voted - %s\n", winner.vinFundamentalnode.prevout.ToStringShort());
+            //  LogPrint("fundamentalnode","fnw - fundamentalnode already voted - %s\n", winner.vinFundamentalnode.prevout.ToStringShort());
             return;
         }
 
-        if (!winner.CheckSignature()) {
-            if (fundamentalnodeSync.IsSynced()) {
-                LogPrintf("CFundamentalnodePayments::ProcessMessagefundamentalnodePayments() : mnw - invalid signature\n");
-                Misbehaving(pfrom->GetId(), 20);
-            }
+        if (!winner.SignatureValid()) {
+            // LogPrint("fundamentalnode","fnw - invalid signature\n");
+            if (fundamentalnodeSync.IsSynced()) Misbehaving(pfrom->GetId(), 20);
             // it could just be a non-synced fundamentalnode
             mnodeman.AskForMN(pfrom, winner.vinFundamentalnode);
             return;
@@ -693,6 +638,28 @@ void CFundamentalnodePayments::ProcessMessageFundamentalnodePayments(CNode* pfro
             fundamentalnodeSync.AddedFundamentalnodeWinner(winner.GetHash());
         }
     }
+}
+
+bool CFundamentalnodePaymentWinner::Sign(CKey& keyFundamentalnode, CPubKey& pubKeyFundamentalnode)
+{
+    std::string errorMessage;
+    std::string strFundamentalNodeSignMessage;
+
+    std::string strMessage = vinFundamentalnode.prevout.ToStringShort() +
+                             boost::lexical_cast<std::string>(nBlockHeight) +
+                             payee.ToString();
+
+    if (!obfuScationSigner.SignMessage(strMessage, errorMessage, vchSig, keyFundamentalnode)) {
+        LogPrint("fundamentalnode","CFundamentalnodePing::Sign() - Error: %s\n", errorMessage.c_str());
+        return false;
+    }
+
+    if (!obfuScationSigner.VerifyMessage(pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
+        LogPrint("fundamentalnode","CFundamentalnodePing::Sign() - Error: %s\n", errorMessage.c_str());
+        return false;
+    }
+
+    return true;
 }
 
 bool CFundamentalnodePayments::GetBlockPayee(int nBlockHeight, CScript& payee)
@@ -737,8 +704,13 @@ bool CFundamentalnodePayments::IsScheduled(CFundamentalnode& mn, int nNotBlockHe
 
 bool CFundamentalnodePayments::AddWinningFundamentalnode(CFundamentalnodePaymentWinner& winnerIn)
 {
-    uint256 blockHash;
-    if (!GetFundamentalnodeBlockHash(blockHash, winnerIn.nBlockHeight - 100)) {
+    if(! isVinValidFundamentalNode(winnerIn.vinFundamentalnode)) {
+        LogPrint("mnpayments", "AddWinningFundamentalnode - new fundamentalnode is disabled\n");
+        return false;
+    }
+
+    uint256 blockHash = 0;
+    if (!GetBlockHash(blockHash, winnerIn.nBlockHeight - 100)) {
         return false;
     }
 
@@ -764,30 +736,44 @@ bool CFundamentalnodePayments::AddWinningFundamentalnode(CFundamentalnodePayment
 
 bool CFundamentalnodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
 {
-    LOCK(cs_vecFundamentalnodePayments);
+    LOCK(cs_vecPayments);
+
+    int nMaxSignatures = 0;
+    int nFundamentalnode_Drift_Count = 0;
+
+    std::string strPayeesPossible = "";
+
+    CAmount nReward = GetBlockValue(nBlockHeight);
+
+    if (IsSporkActive(SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT)) {
+        // Get a stable number of fundamentalnodes by ignoring newly activated (< 8000 sec old) fundamentalnodes
+        nFundamentalnode_Drift_Count = mnodeman.stable_size() + Params().FundamentalnodeCountDrift();
+    }
+    else {
+        //account for the fact that all peers do not see the same fundamentalnode count. A allowance of being off our fundamentalnode count is given
+        //we only need to look at an increased fundamentalnode count because as count increases, the reward decreases. This code only checks
+        //for mnPayment >= required, so it only makes sense to check the max node count allowed.
+        nFundamentalnode_Drift_Count = mnodeman.size() + Params().FundamentalnodeCountDrift();
+    }
+
+    CAmount requiredFundamentalnodePayment = GetFundamentalnodePayment(nBlockHeight, nReward, nFundamentalnode_Drift_Count);
 
     //require at least 6 signatures
-    int nMaxSignatures = 0;
-    for (CFundamentalnodePayee& payee : vecPayments)
+    BOOST_FOREACH (CFundamentalnodePayee& payee, vecPayments)
         if (payee.nVotes >= nMaxSignatures && payee.nVotes >= MNPAYMENTS_SIGNATURES_REQUIRED)
             nMaxSignatures = payee.nVotes;
 
     // if we don't have at least 6 signatures on a payee, approve whichever is the longest chain
     if (nMaxSignatures < MNPAYMENTS_SIGNATURES_REQUIRED) return true;
 
-    std::string strPayeesPossible = "";
-    CAmount nReward = GetBlockValue(nBlockHeight);
-    CAmount requiredFundamentalnodePayment = GetFundamentalnodePayment(nBlockHeight, nReward);
-
-    for (CFundamentalnodePayee& payee : vecPayments) {
+    BOOST_FOREACH (CFundamentalnodePayee& payee, vecPayments) {
         bool found = false;
-        for (CTxOut out : txNew.vout) {
+        BOOST_FOREACH (CTxOut out, txNew.vout) {
             if (payee.scriptPubKey == out.scriptPubKey) {
-                if(out.nValue == requiredFundamentalnodePayment)
+                if(out.nValue >= requiredFundamentalnodePayment)
                     found = true;
                 else
-                    LogPrintf("%s : Fundamentalnode payment value (%s) different from required value (%s).\n",
-                              __func__, FormatMoney(out.nValue).c_str(), FormatMoney(requiredFundamentalnodePayment).c_str());
+                    LogPrint("fundamentalnode","Fundamentalnode payment is out of drift range. Paid=%s Min=%s\n", FormatMoney(out.nValue).c_str(), FormatMoney(requiredFundamentalnodePayment).c_str());
             }
         }
 
@@ -810,13 +796,13 @@ bool CFundamentalnodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
     return false;
 }
 
-std::string CFundamentalnodeBlockPayees::GetFundamentalnodeRequiredPaymentsString()
+std::string CFundamentalnodeBlockPayees::GetRequiredPaymentsString()
 {
-    LOCK(cs_vecFundamentalnodePayments);
+    LOCK(cs_vecPayments);
 
     std::string ret = "Unknown";
 
-    for (CFundamentalnodePayee& payee : vecPayments) {
+    BOOST_FOREACH (CFundamentalnodePayee& payee, vecPayments) {
         CTxDestination address1;
         ExtractDestination(payee.scriptPubKey, address1);
         CBitcoinAddress address2(address1);
@@ -831,12 +817,12 @@ std::string CFundamentalnodeBlockPayees::GetFundamentalnodeRequiredPaymentsStrin
     return ret;
 }
 
-std::string CFundamentalnodePayments::GetFundamentalnodeRequiredPaymentsString(int nBlockHeight)
+std::string CFundamentalnodePayments::GetRequiredPaymentsString(int nBlockHeight)
 {
     LOCK(cs_mapFundamentalnodeBlocks);
 
     if (mapFundamentalnodeBlocks.count(nBlockHeight)) {
-        return mapFundamentalnodeBlocks[nBlockHeight].GetFundamentalnodeRequiredPaymentsString();
+        return mapFundamentalnodeBlocks[nBlockHeight].GetRequiredPaymentsString();
     }
 
     return "Unknown";
@@ -882,35 +868,65 @@ void CFundamentalnodePayments::CleanPaymentList()
     }
 }
 
+bool CFundamentalnodePaymentWinner::IsValid(CNode* pnode, std::string& strError)
+{
+    CFundamentalnode* pmn = mnodeman.Find(vinFundamentalnode);
+
+    if (!pmn) {
+        strError = strprintf("Unknown Fundamentalnode %s", vinFundamentalnode.prevout.hash.ToString());
+        LogPrint("fundamentalnode","CFundamentalnodePaymentWinner::IsValid - %s\n", strError);
+        mnodeman.AskForMN(pnode, vinFundamentalnode);
+        return false;
+    }
+
+    if (pmn->protocolVersion < ActiveProtocol()) {
+        strError = strprintf("Fundamentalnode protocol too old %d - req %d", pmn->protocolVersion, ActiveProtocol());
+        LogPrint("fundamentalnode","CFundamentalnodePaymentWinner::IsValid - %s\n", strError);
+        return false;
+    }
+
+    int n = mnodeman.GetFundamentalnodeRank(vinFundamentalnode, nBlockHeight - 100, ActiveProtocol());
+
+    if (n > MNPAYMENTS_SIGNATURES_TOTAL) {
+        //It's common to have fundamentalnodes mistakenly think they are in the top 10
+        // We don't want to print all of these messages, or punish them unless they're way off
+        if (n > MNPAYMENTS_SIGNATURES_TOTAL * 2) {
+            strError = strprintf("Fundamentalnode not in the top %d (%d)", MNPAYMENTS_SIGNATURES_TOTAL * 2, n);
+            LogPrint("fundamentalnode","CFundamentalnodePaymentWinner::IsValid - %s\n", strError);
+            //if (fundamentalnodeSync.IsSynced()) Misbehaving(pnode->GetId(), 20);
+        }
+        return false;
+    }
+
+    return true;
+}
+
 bool CFundamentalnodePayments::ProcessBlock(int nBlockHeight)
 {
     if (!fFundamentalNode) return false;
 
-    if (activeFundamentalnode.vin == boost::none)
-        return error("%s: Active Fundamentalnode not initialized.", __func__);
-
     //reference node - hybrid mode
 
-    int n = mnodeman.GetFundamentalnodeRank(*(activeFundamentalnode.vin), nBlockHeight - 100, ActiveProtocol());
+    int n = mnodeman.GetFundamentalnodeRank(activeFundamentalnode.vin, nBlockHeight - 100, ActiveProtocol());
 
     if (n == -1) {
-        LogPrint("fundamentalnode", "CFundamentalnodePayments::ProcessBlock - Unknown Fundamentalnode\n");
+        LogPrint("mnpayments", "CFundamentalnodePayments::ProcessBlock - Unknown Fundamentalnode\n");
         return false;
     }
 
     if (n > MNPAYMENTS_SIGNATURES_TOTAL) {
-        LogPrint("fundamentalnode", "CFundamentalnodePayments::ProcessBlock - Fundamentalnode not in the top %d (%d)\n", MNPAYMENTS_SIGNATURES_TOTAL, n);
+        LogPrint("mnpayments", "CFundamentalnodePayments::ProcessBlock - Fundamentalnode not in the top %d (%d)\n", MNPAYMENTS_SIGNATURES_TOTAL, n);
         return false;
     }
 
     if (nBlockHeight <= nLastBlockHeight) return false;
 
-    CFundamentalnodePaymentWinner newWinner(*(activeFundamentalnode.vin));
+    CFundamentalnodePaymentWinner newWinner(activeFundamentalnode.vin);
 
     if (budget.IsBudgetPaymentBlock(nBlockHeight)) {
         //is budget payment block -- handled by the budgeting software
     } else {
-        LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() Start nHeight %d - vin %s. \n", nBlockHeight, activeFundamentalnode.vin->prevout.hash.ToString());
+        LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() Start nHeight %d - vin %s. \n", nBlockHeight, activeFundamentalnode.vin.prevout.hash.ToString());
 
         // pay to the oldest MN that still had no payment but its input is old enough and it was active long enough
         int nCount = 0;
@@ -938,8 +954,8 @@ bool CFundamentalnodePayments::ProcessBlock(int nBlockHeight)
     CPubKey pubKeyFundamentalnode;
     CKey keyFundamentalnode;
 
-    if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode)) {
-        LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() - Error upon calling GetKeysFromSecret.\n");
+    if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, errorMessage, keyFundamentalnode, pubKeyFundamentalnode)) {
+        LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() - Error upon calling SetKey: %s\n", errorMessage.c_str());
         return false;
     }
 
@@ -952,6 +968,32 @@ bool CFundamentalnodePayments::ProcessBlock(int nBlockHeight)
             nLastBlockHeight = nBlockHeight;
             return true;
         }
+    }
+
+    return false;
+}
+
+void CFundamentalnodePaymentWinner::Relay()
+{
+    CInv inv(MSG_FUNDAMENTALNODE_WINNER, GetHash());
+    RelayInv(inv);
+}
+
+bool CFundamentalnodePaymentWinner::SignatureValid()
+{
+    CFundamentalnode* pmn = mnodeman.Find(vinFundamentalnode);
+
+    if (pmn != NULL) {
+        std::string strMessage = vinFundamentalnode.prevout.ToStringShort() +
+                                 boost::lexical_cast<std::string>(nBlockHeight) +
+                                 payee.ToString();
+
+        std::string errorMessage = "";
+        if (!obfuScationSigner.VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
+            return error("CFundamentalnodePaymentWinner::SignatureValid() - Got bad Fundamentalnode address signature %s\n", vinFundamentalnode.prevout.hash.ToString());
+        }
+
+        return true;
     }
 
     return false;
