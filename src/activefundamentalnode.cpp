@@ -1,5 +1,6 @@
 // Copyright (c) 2014-2016 The Dash developers
-// Copyright (c) 2015-2019 The PIVX developers
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,12 +9,11 @@
 #include "fundamentalnode.h"
 #include "fundamentalnodeconfig.h"
 #include "fundamentalnodeman.h"
-#include "messagesigner.h"
 #include "protocol.h"
 #include "spork.h"
 
 //
-// Bootup the Fundamentalnode, look for a 10000 PIVX input and register on the network
+// Bootup the Fundamentalnode, look for a 10000 VITAE input and register on the network
 //
 void CActiveFundamentalnode::ManageStatus()
 {
@@ -33,11 +33,11 @@ void CActiveFundamentalnode::ManageStatus()
     if (status == ACTIVE_FUNDAMENTALNODE_SYNC_IN_PROCESS) status = ACTIVE_FUNDAMENTALNODE_INITIAL;
 
     if (status == ACTIVE_FUNDAMENTALNODE_INITIAL) {
-        CFundamentalnode* pfn;
-        pfn = fnodeman.Find(pubKeyFundamentalnode);
-        if (pfn != NULL) {
-            pfn->Check();
-            if (pfn->IsEnabled() && pfn->protocolVersion == PROTOCOL_VERSION) EnableHotColdFundamentalNode(pfn->vin, pfn->addr);
+        CFundamentalnode* pmn;
+        pmn = fnodeman.Find(pubKeyFundamentalnode);
+        if (pmn != NULL) {
+            pmn->Check();
+            if (pmn->IsEnabled() && pmn->protocolVersion == PROTOCOL_VERSION) EnableHotColdFundamentalNode(pmn->vin, pmn->addr);
         }
     }
 
@@ -68,7 +68,6 @@ void CActiveFundamentalnode::ManageStatus()
             service = CService(strFundamentalNodeAddr);
         }
 
-        // The service needs the correct default port to work properly
         if(!CFundamentalnodeBroadcast::CheckDefaultPort(strFundamentalNodeAddr, errorMessage, "CActiveFundamentalnode::ManageStatus()"))
             return;
 
@@ -87,6 +86,12 @@ void CActiveFundamentalnode::ManageStatus()
         CKey keyCollateralAddress;
 
         if (GetFundamentalNodeVin(vin, pubKeyCollateralAddress, keyCollateralAddress)) {
+            if(! isVinValidFundamentalNode(vin)) {
+                status = ACTIVE_FUNDAMENTALNODE_NEW_NODE_DISABLED;
+                notCapableReason = strprintf("%s", GetStatus());
+                LogPrintf("CActiveFundamentalnode::ManageStatus() - %s\n", notCapableReason);
+                return;
+            }  
             if (GetInputAge(vin) < FUNDAMENTALNODE_MIN_CONFIRMATIONS) {
                 status = ACTIVE_FUNDAMENTALNODE_INPUT_TOO_NEW;
                 notCapableReason = strprintf("%s - %d confirmations", GetStatus(), GetInputAge(vin));
@@ -102,12 +107,13 @@ void CActiveFundamentalnode::ManageStatus()
             CKey keyFundamentalnode;
 
             if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode)) {
-                LogPrintf("%s : Invalid fundamentalnode key", __func__);
+                notCapableReason = "Error upon calling SetKey: " + errorMessage;
+                LogPrintf("Register::ManageStatus() - %s\n", notCapableReason);
                 return;
             }
 
-            CFundamentalnodeBroadcast fnb;
-            if (!CreateBroadcast(vin, service, keyCollateralAddress, pubKeyCollateralAddress, keyFundamentalnode, pubKeyFundamentalnode, errorMessage, fnb)) {
+            CFundamentalnodeBroadcast mnb;
+            if (!CreateBroadcast(vin, service, keyCollateralAddress, pubKeyCollateralAddress, keyFundamentalnode, pubKeyFundamentalnode, errorMessage, mnb)) {
                 notCapableReason = "Error on Register: " + errorMessage;
                 LogPrintf("CActiveFundamentalnode::ManageStatus() - %s\n", notCapableReason);
                 return;
@@ -115,7 +121,11 @@ void CActiveFundamentalnode::ManageStatus()
 
             //send to all peers
             LogPrintf("CActiveFundamentalnode::ManageStatus() - Relay broadcast vin = %s\n", vin.ToString());
-            fnb.Relay();
+            mnb.Relay();
+
+            //send to all peers
+            LogPrintf("CActiveFundamentalnode::ManageStatus() - Relay broadcast vin = %s\n", vin.ToString());
+            mnb.Relay();
 
             LogPrintf("CActiveFundamentalnode::ManageStatus() - Is capable master node!\n");
             status = ACTIVE_FUNDAMENTALNODE_STARTED;
@@ -137,18 +147,20 @@ void CActiveFundamentalnode::ManageStatus()
 std::string CActiveFundamentalnode::GetStatus()
 {
     switch (status) {
-        case ACTIVE_FUNDAMENTALNODE_INITIAL:
-            return "Node just started, not yet activated";
-        case ACTIVE_FUNDAMENTALNODE_SYNC_IN_PROCESS:
-            return "Sync in progress. Must wait until sync is complete to start Fundamentalnode";
-        case ACTIVE_FUNDAMENTALNODE_INPUT_TOO_NEW:
-            return strprintf("Fundamentalnode input must have at least %d confirmations", FUNDAMENTALNODE_MIN_CONFIRMATIONS);
-        case ACTIVE_FUNDAMENTALNODE_NOT_CAPABLE:
-            return "Not capable fundamentalnode: " + notCapableReason;
-        case ACTIVE_FUNDAMENTALNODE_STARTED:
-            return "Fundamentalnode successfully started";
-        default:
-            return "unknown";
+    case ACTIVE_FUNDAMENTALNODE_INITIAL:
+        return "Node just started, not yet activated";
+    case ACTIVE_FUNDAMENTALNODE_SYNC_IN_PROCESS:
+        return "Sync in progress. Must wait until sync is complete to start Fundamentalnode";
+    case ACTIVE_FUNDAMENTALNODE_INPUT_TOO_NEW:
+        return strprintf("Fundamentalnode input must have at least %d confirmations", FUNDAMENTALNODE_MIN_CONFIRMATIONS);
+    case ACTIVE_FUNDAMENTALNODE_NOT_CAPABLE:
+        return "Not capable fundamentalnode: " + notCapableReason;
+    case ACTIVE_FUNDAMENTALNODE_STARTED:
+        return "Fundamentalnode successfully started";
+    case ACTIVE_FUNDAMENTALNODE_NEW_NODE_DISABLED:
+        return "New fundamentalnode is disabled";        
+    default:
+        return "unknown";
     }
 }
 
@@ -163,50 +175,45 @@ bool CActiveFundamentalnode::SendFundamentalnodePing(std::string& errorMessage)
     CKey keyFundamentalnode;
 
     if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode)) {
-        errorMessage = "Error upon calling GetKeysFromSecret.\n";
+        errorMessage = strprintf("Error upon calling SetKey: %s\n", errorMessage);
         return false;
     }
 
     LogPrintf("CActiveFundamentalnode::SendFundamentalnodePing() - Relay Fundamentalnode Ping vin = %s\n", vin.ToString());
 
-    CFundamentalnodePing fnp(vin);
-    if (!fnp.Sign(keyFundamentalnode, pubKeyFundamentalnode)) {
+    CFundamentalnodePing mnp(vin);
+    if (!mnp.Sign(keyFundamentalnode, pubKeyFundamentalnode)) {
         errorMessage = "Couldn't sign Fundamentalnode Ping";
         return false;
     }
 
     // Update lastPing for our fundamentalnode in Fundamentalnode list
-    CFundamentalnode* pfn = fnodeman.Find(vin);
-    if (pfn != NULL) {
-        if (pfn->IsPingedWithin(FUNDAMENTALNODE_PING_SECONDS, fnp.sigTime)) {
+    CFundamentalnode* pmn = fnodeman.Find(vin);
+    if (pmn != NULL) {
+        if (pmn->IsPingedWithin(FUNDAMENTALNODE_PING_SECONDS, mnp.sigTime)) {
             errorMessage = "Too early to send Fundamentalnode Ping";
             return false;
         }
 
-        pfn->lastPing = fnp;
-        fnodeman.mapSeenFundamentalnodePing.insert(std::make_pair(fnp.GetHash(), fnp));
+        pmn->lastPing = mnp;
+        fnodeman.mapSeenFundamentalnodePing.insert(make_pair(mnp.GetHash(), mnp));
 
         //fnodeman.mapSeenFundamentalnodeBroadcast.lastPing is probably outdated, so we'll update it
-        CFundamentalnodeBroadcast fnb(*pfn);
-        uint256 hash = fnb.GetHash();
-        if (fnodeman.mapSeenFundamentalnodeBroadcast.count(hash)) fnodeman.mapSeenFundamentalnodeBroadcast[hash].lastPing = fnp;
+        CFundamentalnodeBroadcast mnb(*pmn);
+        uint256 hash = mnb.GetHash();
+        if (fnodeman.mapSeenFundamentalnodeBroadcast.count(hash)) fnodeman.mapSeenFundamentalnodeBroadcast[hash].lastPing = mnp;
 
-        fnp.Relay();
-
-        /*
-         * IT'S SAFE TO REMOVE THIS IN FURTHER VERSIONS
-         * AFTER MIGRATION TO V12 IS DONE
-         */
+        mnp.Relay();
 
         // for migration purposes ping our node on old fundamentalnodes network too
         std::string retErrorMessage;
         std::vector<unsigned char> vchFundamentalNodeSignature;
         int64_t fundamentalNodeSignatureTime = GetAdjustedTime();
 
-        std::string strMessage = service.ToString() + std::to_string(fundamentalNodeSignatureTime) + std::to_string(false);
+        std::string strMessage = service.ToString() + boost::lexical_cast<std::string>(fundamentalNodeSignatureTime) + boost::lexical_cast<std::string>(false);
 
         if (!CMessageSigner::SignMessage(strMessage, vchFundamentalNodeSignature, keyFundamentalnode)) {
-            errorMessage = "dseep sign message failed.";
+            errorMessage = "dseep sign message failed: " + retErrorMessage;
             return false;
         }
 
@@ -215,9 +222,9 @@ bool CActiveFundamentalnode::SendFundamentalnodePing(std::string& errorMessage)
             return false;
         }
 
-        LogPrint("fundamentalnode", "dseep - relaying from active fn, %s \n", vin.ToString().c_str());
+        LogPrint("fundamentalnode", "dseep - relaying from active mn, %s \n", vin.ToString().c_str());
         LOCK(cs_vNodes);
-        for (CNode* pnode : vNodes)
+        BOOST_FOREACH (CNode* pnode, vNodes)
             pnode->PushMessage("obseep", vin, vchFundamentalNodeSignature, fundamentalNodeSignatureTime, false);
 
         /*
@@ -234,7 +241,7 @@ bool CActiveFundamentalnode::SendFundamentalnodePing(std::string& errorMessage)
     }
 }
 
-bool CActiveFundamentalnode::CreateBroadcast(std::string strService, std::string strKeyFundamentalnode, std::string strTxHash, std::string strOutputIndex, std::string& errorMessage, CFundamentalnodeBroadcast &fnb, bool fOffline)
+bool CActiveFundamentalnode::CreateBroadcast(std::string strService, std::string strKeyFundamentalnode, std::string strTxHash, std::string strOutputIndex, std::string& errorMessage, CFundamentalnodeBroadcast &mnb, bool fOffline)
 {
     CTxIn vin;
     CPubKey pubKeyCollateralAddress;
@@ -244,13 +251,13 @@ bool CActiveFundamentalnode::CreateBroadcast(std::string strService, std::string
 
     //need correct blocks to send ping
     if (!fOffline && !fundamentalnodeSync.IsBlockchainSynced()) {
-        errorMessage = "Sync in progress. Must wait until sync is complete to start Fundamentalnode";
+        errorMessage = "Sync in progress. Must wait until sync is complete to start Masternode";
         LogPrintf("CActiveFundamentalnode::CreateBroadcast() - %s\n", errorMessage);
         return false;
     }
 
     if (!CMessageSigner::GetKeysFromSecret(strKeyFundamentalnode, keyFundamentalnode, pubKeyFundamentalnode)) {
-        errorMessage = strprintf("Can't find keys for fundamentalnode %s", strService);
+        errorMessage = strprintf("Can't find keys for fundamentalnode %s - %s", strService, errorMessage);
         LogPrintf("CActiveFundamentalnode::CreateBroadcast() - %s\n", errorMessage);
         return false;
     }
@@ -262,42 +269,35 @@ bool CActiveFundamentalnode::CreateBroadcast(std::string strService, std::string
     }
 
     CService service = CService(strService);
-
-    // The service needs the correct default port to work properly
     if(!CFundamentalnodeBroadcast::CheckDefaultPort(strService, errorMessage, "CActiveFundamentalnode::CreateBroadcast()"))
         return false;
 
     addrman.Add(CAddress(service), CNetAddr("127.0.0.1"), 2 * 60 * 60);
 
-    return CreateBroadcast(vin, CService(strService), keyCollateralAddress, pubKeyCollateralAddress, keyFundamentalnode, pubKeyFundamentalnode, errorMessage, fnb);
+    return CreateBroadcast(vin, CService(strService), keyCollateralAddress, pubKeyCollateralAddress, keyFundamentalnode, pubKeyFundamentalnode, errorMessage, mnb);
 }
 
-bool CActiveFundamentalnode::CreateBroadcast(CTxIn vin, CService service, CKey keyCollateralAddress, CPubKey pubKeyCollateralAddress, CKey keyFundamentalnode, CPubKey pubKeyFundamentalnode, std::string& errorMessage, CFundamentalnodeBroadcast &fnb)
+bool CActiveFundamentalnode::CreateBroadcast(CTxIn vin, CService service, CKey keyCollateralAddress, CPubKey pubKeyCollateralAddress, CKey keyFundamentalnode, CPubKey pubKeyFundamentalnode, std::string& errorMessage, CFundamentalnodeBroadcast &mnb)
 {
-    // wait for reindex and/or import to finish
-    if (fImporting || fReindex) return false;
+	// wait for reindex and/or import to finish
+	if (fImporting || fReindex) return false;
 
-    CFundamentalnodePing fnp(vin);
-    if (!fnp.Sign(keyFundamentalnode, pubKeyFundamentalnode)) {
+    CFundamentalnodePing mnp(vin);
+    if (!mnp.Sign(keyFundamentalnode, pubKeyFundamentalnode)) {
         errorMessage = strprintf("Failed to sign ping, vin: %s", vin.ToString());
         LogPrintf("CActiveFundamentalnode::CreateBroadcast() -  %s\n", errorMessage);
-        fnb = CFundamentalnodeBroadcast();
+        mnb = CFundamentalnodeBroadcast();
         return false;
     }
 
-    fnb = CFundamentalnodeBroadcast(service, vin, pubKeyCollateralAddress, pubKeyFundamentalnode, PROTOCOL_VERSION);
-    fnb.lastPing = fnp;
-    if (!fnb.Sign(keyCollateralAddress, pubKeyCollateralAddress)) {
+    mnb = CFundamentalnodeBroadcast(service, vin, pubKeyCollateralAddress, pubKeyFundamentalnode, PROTOCOL_VERSION);
+    mnb.lastPing = mnp;
+    if (!mnb.Sign(keyCollateralAddress)) {
         errorMessage = strprintf("Failed to sign broadcast, vin: %s", vin.ToString());
         LogPrintf("CActiveFundamentalnode::CreateBroadcast() - %s\n", errorMessage);
-        fnb = CFundamentalnodeBroadcast();
+        mnb = CFundamentalnodeBroadcast();
         return false;
     }
-
-    /*
-     * IT'S SAFE TO REMOVE THIS IN FURTHER VERSIONS
-     * AFTER MIGRATION TO V12 IS DONE
-     */
 
     // for migration purposes inject our node in old fundamentalnodes' list too
     std::string retErrorMessage;
@@ -309,22 +309,22 @@ bool CActiveFundamentalnode::CreateBroadcast(CTxIn vin, CService service, CKey k
     std::string vchPubKey(pubKeyCollateralAddress.begin(), pubKeyCollateralAddress.end());
     std::string vchPubKey2(pubKeyFundamentalnode.begin(), pubKeyFundamentalnode.end());
 
-    std::string strMessage = service.ToString() + std::to_string(fundamentalNodeSignatureTime) + vchPubKey + vchPubKey2 + std::to_string(PROTOCOL_VERSION) + donationAddress + std::to_string(donationPercantage);
+    std::string strMessage = service.ToString() + boost::lexical_cast<std::string>(fundamentalNodeSignatureTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(PROTOCOL_VERSION) + donationAddress + boost::lexical_cast<std::string>(donationPercantage);
 
     if (!CMessageSigner::SignMessage(strMessage, vchFundamentalNodeSignature, keyCollateralAddress)) {
-        errorMessage = "dsee sign message failed.";
-        LogPrintf("CActiveFundamentalnode::Register() - Error: %s\n", errorMessage.c_str());
+        errorMessage = "dsee sign message failed: " + retErrorMessage;
+        LogPrintf("CActiveFundamentalnode::CreateBroadcast() - Error: %s\n", errorMessage.c_str());
         return false;
     }
 
     if (!CMessageSigner::VerifyMessage(pubKeyCollateralAddress, vchFundamentalNodeSignature, strMessage, retErrorMessage)) {
         errorMessage = "dsee verify message failed: " + retErrorMessage;
-        LogPrintf("CActiveFundamentalnode::Register() - Error: %s\n", errorMessage.c_str());
+        LogPrintf("CActiveFundamentalnode::CreateBroadcast() - Error: %s\n", errorMessage.c_str());
         return false;
     }
 
     LOCK(cs_vNodes);
-    for (CNode* pnode : vNodes)
+    BOOST_FOREACH (CNode* pnode, vNodes)
         pnode->PushMessage("obsee", vin, service, vchFundamentalNodeSignature, fundamentalNodeSignatureTime, pubKeyCollateralAddress, pubKeyFundamentalnode, -1, -1, fundamentalNodeSignatureTime, PROTOCOL_VERSION, donationAddress, donationPercantage);
 
     /*
@@ -341,14 +341,14 @@ bool CActiveFundamentalnode::GetFundamentalNodeVin(CTxIn& vin, CPubKey& pubkey, 
 
 bool CActiveFundamentalnode::GetFundamentalNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secretKey, std::string strTxHash, std::string strOutputIndex)
 {
-    // wait for reindex and/or import to finish
-    if (fImporting || fReindex) return false;
+	// wait for reindex and/or import to finish
+	if (fImporting || fReindex) return false;
 
     // Find possible candidates
     TRY_LOCK(pwalletMain->cs_wallet, fWallet);
     if (!fWallet) return false;
 
-    std::vector<COutput> possibleCoins = SelectCoinsFundamentalnode();
+    vector<COutput> possibleCoins = SelectCoinsFundamentalnode();
     COutput* selectedOutput;
 
     // Find the vin
@@ -364,7 +364,7 @@ bool CActiveFundamentalnode::GetFundamentalNodeVin(CTxIn& vin, CPubKey& pubkey, 
         }
 
         bool found = false;
-        for (COutput& out : possibleCoins) {
+        BOOST_FOREACH (COutput& out, possibleCoins) {
             if (out.tx->GetHash() == txHash && out.i == outputIndex) {
                 selectedOutput = &out;
                 found = true;
@@ -393,8 +393,8 @@ bool CActiveFundamentalnode::GetFundamentalNodeVin(CTxIn& vin, CPubKey& pubkey, 
 // Extract Fundamentalnode vin information from output
 bool CActiveFundamentalnode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubkey, CKey& secretKey)
 {
-    // wait for reindex and/or import to finish
-    if (fImporting || fReindex) return false;
+	// wait for reindex and/or import to finish
+	if (fImporting || fReindex) return false;
 
     CScript pubScript;
 
@@ -421,23 +421,23 @@ bool CActiveFundamentalnode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& 
 }
 
 // get all possible outputs for running Fundamentalnode
-std::vector<COutput> CActiveFundamentalnode::SelectCoinsFundamentalnode()
+vector<COutput> CActiveFundamentalnode::SelectCoinsFundamentalnode()
 {
-    std::vector<COutput> vCoins;
-    std::vector<COutput> filteredCoins;
-    std::vector<COutPoint> confLockedCoins;
+    vector<COutput> vCoins;
+    vector<COutput> filteredCoins;
+    vector<COutPoint> confLockedCoins;
 
-    // Temporary unlock FN coins from fundamentalnode.conf
-    if (GetBoolArg("-fnconflock", true)) {
-        uint256 fnTxHash;
-        for (CFundamentalnodeConfig::CFundamentalnodeEntry fne : fundamentalnodeConfig.getEntries()) {
-            fnTxHash.SetHex(fne.getTxHash());
+    // Temporary unlock MN coins from fundamentalnode.conf
+    if (GetBoolArg("-mnconflock", true)) {
+        uint256 mnTxHash;
+        BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+            mnTxHash.SetHex(mne.getTxHash());
 
             int nIndex;
-            if(!fne.castOutputIndex(nIndex))
+            if(!mne.castOutputIndex(nIndex))
                 continue;
 
-            COutPoint outpoint = COutPoint(fnTxHash, nIndex);
+            COutPoint outpoint = COutPoint(mnTxHash, nIndex);
             confLockedCoins.push_back(outpoint);
             pwalletMain->UnlockCoin(outpoint);
         }
@@ -446,14 +446,14 @@ std::vector<COutput> CActiveFundamentalnode::SelectCoinsFundamentalnode()
     // Retrieve all possible outputs
     pwalletMain->AvailableCoins(vCoins);
 
-    // Lock FN coins from fundamentalnode.conf back if they where temporary unlocked
+    // Lock MN coins from fundamentalnode.conf back if they where temporary unlocked
     if (!confLockedCoins.empty()) {
-        for (COutPoint outpoint : confLockedCoins)
+        BOOST_FOREACH (COutPoint outpoint, confLockedCoins)
             pwalletMain->LockCoin(outpoint);
     }
 
     // Filter
-    for (const COutput& out : vCoins) {
+    BOOST_FOREACH (const COutput& out, vCoins) {
         if (out.tx->vout[out.i].nValue == FN_MAGIC_AMOUNT) { //exactly
             filteredCoins.push_back(out);
         }
@@ -468,7 +468,7 @@ bool CActiveFundamentalnode::EnableHotColdFundamentalNode(CTxIn& newVin, CServic
 
     status = ACTIVE_FUNDAMENTALNODE_STARTED;
 
-    //The values below are needed for signing fnping messages going forward
+    //The values below are needed for signing mnping messages going forward
     vin = newVin;
     service = newService;
 

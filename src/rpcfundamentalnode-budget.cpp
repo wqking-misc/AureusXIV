@@ -1,15 +1,17 @@
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2019 The PIVX developers
+// Copyright (c) 2015-2020 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "activefundamentalnode.h"
+#include "base58.h"
 #include "chainparams.h"
 #include "db.h"
 #include "init.h"
 #include "main.h"
 #include "fundamentalnode-budget.h"
 #include "fundamentalnode-payments.h"
+#include "fundamentalnode-sync.h"
 #include "fundamentalnodeconfig.h"
 #include "fundamentalnodeman.h"
 #include "messagesigner.h"
@@ -50,7 +52,7 @@ void budgetToJSON(CBudgetProposal* pbudgetProposal, UniValue& bObj)
 }
 
 void checkBudgetInputs(const UniValue& params, std::string &strProposalName, std::string &strURL,
-                       int &nPaymentCount, int &nBlockStart, CBitcoinAddress &address, CAmount &nAmount)
+                       int &nPaymentCount, int &nBlockStart, CAmount &nAmount)
 {
     strProposalName = SanitizeString(params[0].get_str());
     if (strProposalName.size() > 20)
@@ -79,16 +81,12 @@ void checkBudgetInputs(const UniValue& params, std::string &strProposalName, std
     if ((nBlockStart < nBlockMin) || ((nBlockStart % budgetCycleBlocks) != 0))
         throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid block start - must be a budget cycle block. Next valid block: %d", nBlockMin));
 
-    address = params[4].get_str();
-    if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid PIVX address");
-
     nAmount = AmountFromValue(params[5]);
     if (nAmount < 10 * COIN)
-        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid amount - Payment of %d is less than minimum 10 PIV allowed", FormatMoney(nAmount)));
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid amount - Payment of %s is less than minimum 10 PIV allowed", FormatMoney(nAmount)));
 
     if (nAmount > budget.GetTotalBudget(nBlockStart))
-        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid amount - Payment of %d more than max of %d", FormatMoney(nAmount), FormatMoney(budget.GetTotalBudget(nBlockStart))));
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid amount - Payment of %s more than max of %s", FormatMoney(nAmount), FormatMoney(budget.GetTotalBudget(nBlockStart))));
 }
 
 UniValue preparebudget(const UniValue& params, bool fHelp)
@@ -125,16 +123,19 @@ UniValue preparebudget(const UniValue& params, bool fHelp)
     std::string strURL;
     int nPaymentCount;
     int nBlockStart;
-    CBitcoinAddress address;
     CAmount nAmount;
 
-    checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, address, nAmount);
+    checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, nAmount);
+
+    CBitcoinAddress address(params[4].get_str());
+    if (!address.IsValid())
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VITAE address");
 
     // Parse PIVX address
     CScript scriptPubKey = GetScriptForDestination(address.Get());
 
     // create transaction 15 minutes into the future, to allow for confirmation time
-    CBudgetProposalBroadcast budgetProposalBroadcast(strProposalName, strURL, nPaymentCount, scriptPubKey, nAmount, nBlockStart, 0);
+    CBudgetProposalBroadcast budgetProposalBroadcast(strProposalName, strURL, nPaymentCount, scriptPubKey, nAmount, nBlockStart, uint256());
 
     std::string strError = "";
     if (!budgetProposalBroadcast.IsValid(strError, false))
@@ -187,10 +188,13 @@ UniValue submitbudget(const UniValue& params, bool fHelp)
     std::string strURL;
     int nPaymentCount;
     int nBlockStart;
-    CBitcoinAddress address;
     CAmount nAmount;
 
-    checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, address, nAmount);
+    checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, nAmount);
+
+    CBitcoinAddress address(params[4].get_str());
+    if (!address.IsValid())
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VITAE address");
 
     // Parse PIVX address
     CScript scriptPubKey = GetScriptForDestination(address.Get());
@@ -241,17 +245,17 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
                 "\nVote on a budget proposal\n"
 
                 "\nArguments:\n"
-                "1. \"mode\"      (string, required) The voting mode. 'local' for voting directly from a fundamentalnode, 'many' for voting with a FN controller and casting the same vote for each FN, 'alias' for voting with a FN controller and casting a vote for a single FN\n"
+                "1. \"mode\"      (string, required) The voting mode. 'local' for voting directly from a fundamentalnode, 'many' for voting with a MN controller and casting the same vote for each MN, 'alias' for voting with a MN controller and casting a vote for a single MN\n"
                 "2. \"votehash\"  (string, required) The vote hash for the proposal\n"
                 "3. \"votecast\"  (string, required) Your vote. 'yes' to vote for the proposal, 'no' to vote against\n"
-                "4. \"alias\"     (string, required for 'alias' mode) The FN alias to cast a vote for.\n"
+                "4. \"alias\"     (string, required for 'alias' mode) The MN alias to cast a vote for.\n"
 
                 "\nResult:\n"
                 "{\n"
                 "  \"overall\": \"xxxx\",      (string) The overall status message for the vote cast\n"
                 "  \"detail\": [\n"
                 "    {\n"
-                "      \"node\": \"xxxx\",      (string) 'local' or the FN alias\n"
+                "      \"node\": \"xxxx\",      (string) 'local' or the MN alias\n"
                 "      \"result\": \"xxxx\",    (string) Either 'Success' or 'Failed'\n"
                 "      \"error\": \"xxxx\",     (string) Error message, if vote failed\n"
                 "    }\n"
@@ -277,6 +281,10 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
     UniValue resultsObj(UniValue::VARR);
 
     if (strCommand == "local") {
+        // local node must be a masternode
+        if (!fFundamentalNode)
+            throw JSONRPCError(RPC_MISC_ERROR, _("This is not a fundamentalnode. 'local' option disabled."));
+
         CPubKey pubKeyFundamentalnode;
         CKey keyFundamentalnode;
 
@@ -292,8 +300,8 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
                 break;
             }
 
-            CFundamentalnode* pfn = fnodeman.Find(activeFundamentalnode.vin);
-            if (pfn == NULL) {
+            CFundamentalnode* pmn = fnodeman.Find(activeFundamentalnode.vin);
+            if (pmn == NULL) {
                 failed++;
                 statusObj.push_back(Pair("node", "local"));
                 statusObj.push_back(Pair("result", "failed"));
@@ -338,7 +346,7 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
     }
 
     if (strCommand == "many") {
-        for (CFundamentalnodeConfig::CFundamentalnodeEntry fne : fundamentalnodeConfig.getEntries()) {
+        for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
             std::vector<unsigned char> vchFundamentalNodeSignature;
             std::string strFundamentalNodeSignMessage;
 
@@ -349,29 +357,29 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
 
             UniValue statusObj(UniValue::VOBJ);
 
-            if (!CMessageSigner::GetKeysFromSecret(fne.getPrivKey(), keyFundamentalnode, pubKeyFundamentalnode)) {
+            if (!CMessageSigner::GetKeysFromSecret(mne.getPrivKey(), keyFundamentalnode, pubKeyFundamentalnode)) {
                 failed++;
-                statusObj.push_back(Pair("node", fne.getAlias()));
+                statusObj.push_back(Pair("node", mne.getAlias()));
                 statusObj.push_back(Pair("result", "failed"));
                 statusObj.push_back(Pair("error", "Fundamentalnode signing error, could not set key correctly."));
                 resultsObj.push_back(statusObj);
                 continue;
             }
 
-            CFundamentalnode* pfn = fnodeman.Find(pubKeyFundamentalnode);
-            if (pfn == NULL) {
+            CFundamentalnode* pmn = fnodeman.Find(pubKeyFundamentalnode);
+            if (pmn == NULL) {
                 failed++;
-                statusObj.push_back(Pair("node", fne.getAlias()));
+                statusObj.push_back(Pair("node", mne.getAlias()));
                 statusObj.push_back(Pair("result", "failed"));
                 statusObj.push_back(Pair("error", "Can't find fundamentalnode by pubkey"));
                 resultsObj.push_back(statusObj);
                 continue;
             }
 
-            CBudgetVote vote(pfn->vin, hash, nVote);
+            CBudgetVote vote(pmn->vin, hash, nVote);
             if (!vote.Sign(keyFundamentalnode, pubKeyFundamentalnode)) {
                 failed++;
-                statusObj.push_back(Pair("node", fne.getAlias()));
+                statusObj.push_back(Pair("node", mne.getAlias()));
                 statusObj.push_back(Pair("result", "failed"));
                 statusObj.push_back(Pair("error", "Failure to sign."));
                 resultsObj.push_back(statusObj);
@@ -383,12 +391,12 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
                 budget.mapSeenFundamentalnodeBudgetVotes.insert(std::make_pair(vote.GetHash(), vote));
                 vote.Relay();
                 success++;
-                statusObj.push_back(Pair("node", fne.getAlias()));
+                statusObj.push_back(Pair("node", mne.getAlias()));
                 statusObj.push_back(Pair("result", "success"));
                 statusObj.push_back(Pair("error", ""));
             } else {
                 failed++;
-                statusObj.push_back(Pair("node", fne.getAlias()));
+                statusObj.push_back(Pair("node", mne.getAlias()));
                 statusObj.push_back(Pair("result", "failed"));
                 statusObj.push_back(Pair("error", strError.c_str()));
             }
@@ -405,12 +413,12 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
 
     if (strCommand == "alias") {
         std::string strAlias = params[3].get_str();
-        std::vector<CFundamentalnodeConfig::CFundamentalnodeEntry> fnEntries;
-        fnEntries = fundamentalnodeConfig.getEntries();
+        std::vector<CFundamentalnodeConfig::CFundamentalnodeEntry> mnEntries;
+        mnEntries = fundamentalnodeConfig.getEntries();
 
-        for (CFundamentalnodeConfig::CFundamentalnodeEntry fne : fundamentalnodeConfig.getEntries()) {
+        for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
 
-            if( strAlias != fne.getAlias()) continue;
+            if( strAlias != mne.getAlias()) continue;
 
             std::vector<unsigned char> vchFundamentalNodeSignature;
             std::string strFundamentalNodeSignMessage;
@@ -422,30 +430,30 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
 
             UniValue statusObj(UniValue::VOBJ);
 
-            if(!CMessageSigner::GetKeysFromSecret(fne.getPrivKey(), keyFundamentalnode, pubKeyFundamentalnode)){
+            if(!CMessageSigner::GetKeysFromSecret(mne.getPrivKey(), keyFundamentalnode, pubKeyFundamentalnode)){
                 failed++;
-                statusObj.push_back(Pair("node", fne.getAlias()));
+                statusObj.push_back(Pair("node", mne.getAlias()));
                 statusObj.push_back(Pair("result", "failed"));
                 statusObj.push_back(Pair("error", "Fundamentalnode signing error, could not set key correctly."));
                 resultsObj.push_back(statusObj);
                 continue;
             }
 
-            CFundamentalnode* pfn = fnodeman.Find(pubKeyFundamentalnode);
-            if(pfn == NULL)
+            CFundamentalnode* pmn = fnodeman.Find(pubKeyFundamentalnode);
+            if(pmn == NULL)
             {
                 failed++;
-                statusObj.push_back(Pair("node", fne.getAlias()));
+                statusObj.push_back(Pair("node", mne.getAlias()));
                 statusObj.push_back(Pair("result", "failed"));
                 statusObj.push_back(Pair("error", "Can't find fundamentalnode by pubkey"));
                 resultsObj.push_back(statusObj);
                 continue;
             }
 
-            CBudgetVote vote(pfn->vin, hash, nVote);
+            CBudgetVote vote(pmn->vin, hash, nVote);
             if(!vote.Sign(keyFundamentalnode, pubKeyFundamentalnode)){
                 failed++;
-                statusObj.push_back(Pair("node", fne.getAlias()));
+                statusObj.push_back(Pair("node", mne.getAlias()));
                 statusObj.push_back(Pair("result", "failed"));
                 statusObj.push_back(Pair("error", "Failure to sign."));
                 resultsObj.push_back(statusObj);
@@ -457,12 +465,12 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
                 budget.mapSeenFundamentalnodeBudgetVotes.insert(std::make_pair(vote.GetHash(), vote));
                 vote.Relay();
                 success++;
-                statusObj.push_back(Pair("node", fne.getAlias()));
+                statusObj.push_back(Pair("node", mne.getAlias()));
                 statusObj.push_back(Pair("result", "success"));
                 statusObj.push_back(Pair("error", ""));
             } else {
                 failed++;
-                statusObj.push_back(Pair("node", fne.getAlias()));
+                statusObj.push_back(Pair("node", mne.getAlias()));
                 statusObj.push_back(Pair("result", "failed"));
                 statusObj.push_back(Pair("error", strError.c_str()));
             }
@@ -493,7 +501,7 @@ UniValue getbudgetvotes(const UniValue& params, bool fHelp)
                 "\nResult:\n"
                 "[\n"
                 "  {\n"
-                "    \"fnId\": \"xxxx\",        (string) Hash of the fundamentalnode's collateral transaction\n"
+                "    \"mnId\": \"xxxx\",        (string) Hash of the fundamentalnode's collateral transaction\n"
                 "    \"nHash\": \"xxxx\",       (string) Hash of the vote\n"
                 "    \"Vote\": \"YES|NO\",      (string) Vote cast ('YES' or 'NO')\n"
                 "    \"nTime\": xxxx,         (numeric) Time in seconds since epoch the vote was cast\n"
@@ -516,7 +524,7 @@ UniValue getbudgetvotes(const UniValue& params, bool fHelp)
     std::map<uint256, CBudgetVote>::iterator it = pbudgetProposal->mapVotes.begin();
     while (it != pbudgetProposal->mapVotes.end()) {
         UniValue bObj(UniValue::VOBJ);
-        bObj.push_back(Pair("fnId", (*it).second.vin.prevout.hash.ToString()));
+        bObj.push_back(Pair("mnId", (*it).second.vin.prevout.hash.ToString()));
         bObj.push_back(Pair("nHash", (*it).first.ToString().c_str()));
         bObj.push_back(Pair("Vote", (*it).second.GetVoteString()));
         bObj.push_back(Pair("nTime", (int64_t)(*it).second.nTime));
@@ -546,7 +554,8 @@ UniValue getnextsuperblock(const UniValue& params, bool fHelp)
     CBlockIndex* pindexPrev = chainActive.Tip();
     if (!pindexPrev) return "unknown";
 
-    int nNext = pindexPrev->nHeight - pindexPrev->nHeight % Params().BudgetCycleBlocks() + Params().BudgetCycleBlocks();
+    const int nBlocksPerCycle = Params().BudgetCycleBlocks();
+    int nNext = pindexPrev->nHeight - pindexPrev->nHeight % nBlocksPerCycle + nBlocksPerCycle;
     return nNext;
 }
 
@@ -598,7 +607,6 @@ UniValue getbudgetprojection(const UniValue& params, bool fHelp)
 
         CTxDestination address1;
         ExtractDestination(pbudgetProposal->GetPayee(), address1);
-        CBitcoinAddress address2(address1);
 
         UniValue bObj(UniValue::VOBJ);
         budgetToJSON(pbudgetProposal, bObj);
@@ -697,9 +705,9 @@ UniValue fnbudgetrawvote(const UniValue& params, bool fHelp)
                 "\nExamples:\n" +
                 HelpExampleCli("fnbudgetrawvote", "") + HelpExampleRpc("fnbudgetrawvote", ""));
 
-    uint256 hashFnTx = ParseHashV(params[0], "fn tx hash");
-    int nFnTxIndex = params[1].get_int();
-    CTxIn vin = CTxIn(hashFnTx, nFnTxIndex);
+    uint256 hashMnTx = ParseHashV(params[0], "mn tx hash");
+    int nMnTxIndex = params[1].get_int();
+    CTxIn vin = CTxIn(hashMnTx, nMnTxIndex);
 
     uint256 hashProposal = ParseHashV(params[2], "Proposal hash");
     std::string strVote = params[3].get_str();
@@ -717,16 +725,16 @@ UniValue fnbudgetrawvote(const UniValue& params, bool fHelp)
     if (fInvalid)
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Malformed base64 encoding");
 
-    CFundamentalnode* pfn = fnodeman.Find(vin);
-    if (pfn == NULL) {
+    CFundamentalnode* pmn = fnodeman.Find(vin);
+    if (pmn == NULL) {
         return "Failure to find fundamentalnode in list : " + vin.ToString();
     }
 
     CBudgetVote vote(vin, hashProposal, nVote);
     vote.nTime = nTime;
-    vote.SetVchSig(vchSig);
+    vote.vchSig = vchSig;
 
-    if (!vote.CheckSignature(true)) {
+    if (!vote.SignatureValid(true)) {
         return "Failure to verify signature.";
     }
 
@@ -754,7 +762,7 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
 
                 "\nAvailable commands:\n"
                 "  vote-many   - Vote on a finalized budget\n"
-                "  vote        - Vote on a finalized budget\n"
+                "  vote        - Vote on a finalized budget with local fundamentalnode\n"
                 "  show        - Show existing finalized budgets\n"
                 "  getvotes     - Get vote information for each finalized budget\n");
 
@@ -763,14 +771,14 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
             throw std::runtime_error("Correct usage is 'fnfinalbudget vote-many BUDGET_HASH'");
 
         std::string strHash = params[1].get_str();
-        uint256 hash(strHash);
+        uint256 hash(uint256S(strHash));
 
         int success = 0;
         int failed = 0;
 
         UniValue resultsObj(UniValue::VOBJ);
 
-        for (CFundamentalnodeConfig::CFundamentalnodeEntry fne : fundamentalnodeConfig.getEntries()) {
+        for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
             std::vector<unsigned char> vchFundamentalNodeSignature;
             std::string strFundamentalNodeSignMessage;
 
@@ -781,30 +789,30 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
 
             UniValue statusObj(UniValue::VOBJ);
 
-            if (!CMessageSigner::GetKeysFromSecret(fne.getPrivKey(), keyFundamentalnode, pubKeyFundamentalnode)) {
+            if (!CMessageSigner::GetKeysFromSecret(mne.getPrivKey(), keyFundamentalnode, pubKeyFundamentalnode)) {
                 failed++;
                 statusObj.push_back(Pair("result", "failed"));
                 statusObj.push_back(Pair("errorMessage", "Fundamentalnode signing error, could not set key correctly."));
-                resultsObj.push_back(Pair(fne.getAlias(), statusObj));
+                resultsObj.push_back(Pair(mne.getAlias(), statusObj));
                 continue;
             }
 
-            CFundamentalnode* pfn = fnodeman.Find(pubKeyFundamentalnode);
-            if (pfn == NULL) {
+            CFundamentalnode* pmn = fnodeman.Find(pubKeyFundamentalnode);
+            if (pmn == NULL) {
                 failed++;
                 statusObj.push_back(Pair("result", "failed"));
                 statusObj.push_back(Pair("errorMessage", "Can't find fundamentalnode by pubkey"));
-                resultsObj.push_back(Pair(fne.getAlias(), statusObj));
+                resultsObj.push_back(Pair(mne.getAlias(), statusObj));
                 continue;
             }
 
 
-            CFinalizedBudgetVote vote(pfn->vin, hash);
+            CFinalizedBudgetVote vote(pmn->vin, hash);
             if (!vote.Sign(keyFundamentalnode, pubKeyFundamentalnode)) {
                 failed++;
                 statusObj.push_back(Pair("result", "failed"));
                 statusObj.push_back(Pair("errorMessage", "Failure to sign."));
-                resultsObj.push_back(Pair(fne.getAlias(), statusObj));
+                resultsObj.push_back(Pair(mne.getAlias(), statusObj));
                 continue;
             }
 
@@ -819,7 +827,7 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
                 statusObj.push_back(Pair("result", strError.c_str()));
             }
 
-            resultsObj.push_back(Pair(fne.getAlias(), statusObj));
+            resultsObj.push_back(Pair(mne.getAlias(), statusObj));
         }
 
         UniValue returnObj(UniValue::VOBJ);
@@ -830,11 +838,14 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
     }
 
     if (strCommand == "vote") {
+        if (!fFundamentalNode)
+            throw JSONRPCError(RPC_MISC_ERROR, _("This is not a fundamentalnode. 'local' option disabled."));
+
         if (params.size() != 2)
             throw std::runtime_error("Correct usage is 'fnfinalbudget vote BUDGET_HASH'");
 
         std::string strHash = params[1].get_str();
-        uint256 hash(strHash);
+        uint256 hash(uint256S(strHash));
 
         CPubKey pubKeyFundamentalnode;
         CKey keyFundamentalnode;
@@ -842,8 +853,8 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
         if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode))
             return "Error upon calling GetKeysFromSecret";
 
-        CFundamentalnode* pfn = fnodeman.Find(activeFundamentalnode.vin);
-        if (pfn == NULL) {
+        CFundamentalnode* pmn = fnodeman.Find(activeFundamentalnode.vin);
+        if (pmn == NULL) {
             return "Failure to find fundamentalnode in list : " + activeFundamentalnode.vin.ToString();
         }
 
@@ -891,7 +902,7 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
             throw std::runtime_error("Correct usage is 'fnbudget getvotes budget-hash'");
 
         std::string strHash = params[1].get_str();
-        uint256 hash(strHash);
+        uint256 hash(uint256S(strHash));
 
         UniValue obj(UniValue::VOBJ);
 
