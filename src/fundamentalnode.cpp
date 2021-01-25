@@ -339,7 +339,7 @@ bool CFundamentalnode::IsInputAssociatedWithPubkey() const
     uint256 hash;
     if(GetTransaction(vin.prevout.hash, txVin, hash, true)) {
         for (CTxOut out : txVin.vout) {
-            if (out.nValue == FN_MAGIC_AMOUNT && out.scriptPubKey == payee) return true;
+            if (out.nValue == 10000 * COIN && out.scriptPubKey == payee) return true;
         }
     }
 
