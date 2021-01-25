@@ -1023,7 +1023,7 @@ QWidget#PrivacyDialog QLabel {
 border:0px solid #000;
 }
 
-QWidget#PrivacyDialog QLabel#zAXIVLabel {
+QWidget#PrivacyDialog QLabel#zAureusXIVLabel {
 font-size:14px;
 color:#ffffff;
 background-color: #f9ffdc;
@@ -1169,12 +1169,12 @@ QDialog#HelpMessageDialog QScrollBar:vertical, QDialog#HelpMessageDialog QScroll
 border:0;
 }
 
-/* About AXIV Dialog */
-QDialog#AboutDialog QLabel#label, QDialog#AboutDialog QLabel#copyrightLabel, QDialog#AboutDialog QLabel#label_2 { /* About AXIV Contents */
+/* About AureusXIV Dialog */
+QDialog#AboutDialog QLabel#label, QDialog#AboutDialog QLabel#copyrightLabel, QDialog#AboutDialog QLabel#label_2 { /* About AureusXIV Contents */
 margin-left:10px;
 }
 
-QDialog#AboutDialog QLabel#label_2 { /* Margin for About AXIV text */
+QDialog#AboutDialog QLabel#label_2 { /* Margin for About AureusXIV text */
 margin-right:10px;
 }
 
@@ -1201,11 +1201,11 @@ background-color:transparent;
 
 QLabel#labelOverviewHeaderRight {
 qproperty-alignment: 'AlignVCenter | AlignRight';
-/* background-image: url(':/images/AXIV_logo_horizontal'); */
+/* background-image: url(':/images/AureusXIV_logo_horizontal'); */
 background-repeat: no-repeat;
 }
 
-QWidget .QFrame#frame_Header { /* Header with Page-Title and AXIV-image */
+QWidget .QFrame#frame_Header { /* Header with Page-Title and AureusXIV-image */
 min-width:400px;
 background-color:transparent;
 }
@@ -1253,7 +1253,7 @@ font-weight:normal;
 /* min-height:30px; */
 }
 
-QWidget .QFrame#frame_Balances .QLabel#label_5 { /* AXIV Balances Label */
+QWidget .QFrame#frame_Balances .QLabel#label_5 { /* AureusXIV Balances Label */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 min-width:160px;
 background-color:transparent;
@@ -1377,7 +1377,7 @@ font-size:16px;
 margin-left:16px;
 }
 
-QWidget .QFrame#frame_Balances .QLabel#labelLockedBalanceText { /* Available zAXIV Label */
+QWidget .QFrame#frame_Balances .QLabel#labelLockedBalanceText { /* Available zAureusXIV Label */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 min-width:160px;
 color: #f9ffdc;
@@ -1387,7 +1387,7 @@ font-weight:bold;
 font-size:12px;
 }
 
-QWidget .QFrame#frame_Balances .QLabel#labelLockedBalance { /* Available zAXIV Balance */
+QWidget .QFrame#frame_Balances .QLabel#labelLockedBalance { /* Available zAureusXIV Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:12px;
 font-weight:bold;
@@ -1395,7 +1395,7 @@ color: #f9ffdc;
 margin-left:0px;
 }
 
-QWidget .QFrame#frame_Balances .QLabel#labelWatchLocked { /* Available zAXIV Balance */
+QWidget .QFrame#frame_Balances .QLabel#labelWatchLocked { /* Available zAureusXIV Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:12px;
 margin-left:16px;
@@ -1414,7 +1414,7 @@ margin-right:5px;
 padding-right:5px;
 }
 
-QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceText { /* Available zAXIV Label */
+QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceText { /* Available zAureusXIV Label */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 min-width:160px;
 color: #f9ffdc;
@@ -1424,7 +1424,7 @@ font-weight:bold;
 font-size:12px;
 }
 
-QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalance { /* Available zAXIV Balance */
+QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalance { /* Available zAureusXIV Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:12px;
 font-weight:bold;
@@ -1432,7 +1432,7 @@ color: #f9ffdc;
 margin-left:0px;
 }
 
-QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceUnconfirmedText { /* Unconfirmed zAXIV Label */
+QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceUnconfirmedText { /* Unconfirmed zAureusXIV Label */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 min-width:160px;
 color: #f9ffdc;
@@ -1442,7 +1442,7 @@ font-weight:bold;
 font-size:12px;
 }
 
-QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceUnconfirmed { /* Unconfirmed zAXIV Balance */
+QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceUnconfirmed { /* Unconfirmed zAureusXIV Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:12px;
 font-weight:bold;
@@ -1450,7 +1450,7 @@ color: #f9ffdc;
 margin-left:0px;
 }
 
-QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceMatureText { /* Mature zAXIV Label */
+QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceMatureText { /* Mature zAureusXIV Label */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 min-width:160px;
 color: #f9ffdc;
@@ -1460,7 +1460,7 @@ font-weight:bold;
 font-size:12px;
 }
 
-QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceMature { /* Mature zAXIV Balance */
+QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceMature { /* Mature zAureusXIV Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:12px;
 font-weight:bold;
@@ -1468,7 +1468,7 @@ color: #f9ffdc;
 margin-left:0px;
 }
 
-QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceImmatureText { /* Immature zAXIV Label */
+QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceImmatureText { /* Immature zAureusXIV Label */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 min-width:160px;
 color: #f9ffdc;
@@ -1478,7 +1478,7 @@ font-weight:bold;
 font-size:12px;
 }
 
-QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceImmature { /* Immature zAXIV Balance */
+QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceImmature { /* Immature zAureusXIV Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:12px;
 font-weight:bold;
@@ -1497,7 +1497,7 @@ margin-right:5px;
 padding-right:5px;
 }
 
-QWidget .QFrame#frame_CombinedBalances .QLabel#labelBalanceTextz { /* Available AXIV Label */
+QWidget .QFrame#frame_CombinedBalances .QLabel#labelBalanceTextz { /* Available AureusXIV Label */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 min-width:160px;
 color: #f9ffdc;
@@ -1507,14 +1507,14 @@ font-weight:bold;
 font-size:12px;
 }
 
-QWidget .QFrame#frame_CombinedBalances .QLabel#labelBalancez { /* Available AXIV Balance */
+QWidget .QFrame#frame_CombinedBalances .QLabel#labelBalancez { /* Available AureusXIV Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:26px;
 font-weight:normal;
 color: #f9ffdc;
 }
 
-QWidget .QFrame#frame_CombinedBalances .QLabel#labelzBalanceTextz { /* Available zAXIV Label */
+QWidget .QFrame#frame_CombinedBalances .QLabel#labelzBalanceTextz { /* Available zAureusXIV Label */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 min-width:160px;
 color: #f9ffdc;
@@ -1524,7 +1524,7 @@ font-weight:bold;
 font-size:12px;
 }
 
-QWidget .QFrame#frame_CombinedBalances .QLabel#labelzBalancez { /* Available zAXIV Balance */
+QWidget .QFrame#frame_CombinedBalances .QLabel#labelzBalancez { /* Available zAureusXIV Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:12px;
 font-weight:bold;

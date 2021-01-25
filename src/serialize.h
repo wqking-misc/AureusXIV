@@ -6,8 +6,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef AXIV_SERIALIZE_H
-#define AXIV_SERIALIZE_H
+#ifndef AUREUSXIV_SERIALIZE_H
+#define AUREUSXIV_SERIALIZE_H
 
 #include <algorithm>
 #include <assert.h>
@@ -950,4 +950,4 @@ public:
     }
 };
 
-#endif // AXIV_SERIALIZE_H
+#endif // AUREUSXIV_SERIALIZE_H

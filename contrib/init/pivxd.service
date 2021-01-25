@@ -1,19 +1,19 @@
 [Unit]
-Description=AXIV's distributed currency daemon
+Description=AureusXIV's distributed currency daemon
 After=network.target
 
 [Service]
-User=axiv
-Group=axiv
+User=aureusxiv
+Group=aureusxiv
 
 Type=forking
-PIDFile=/var/lib/axivd/axivd.pid
+PIDFile=/var/lib/aureusxivd/aureusxivd.pid
 
-ExecStart=/usr/bin/axivd -daemon -pid=/var/lib/axivd/axivd.pid \
-          -conf=/etc/axiv/axiv.conf -datadir=/var/lib/axivd
+ExecStart=/usr/bin/aureusxivd -daemon -pid=/var/lib/aureusxivd/aureusxivd.pid \
+          -conf=/etc/aureusxiv/aureusxiv.conf -datadir=/var/lib/aureusxivd
 
-ExecStop=-/usr/bin/axiv-cli -conf=/etc/axiv/axiv.conf \
-         -datadir=/var/lib/axivd stop
+ExecStop=-/usr/bin/aureusxiv-cli -conf=/etc/aureusxiv/aureusxiv.conf \
+         -datadir=/var/lib/aureusxivd stop
 
 Restart=always
 PrivateTmp=true

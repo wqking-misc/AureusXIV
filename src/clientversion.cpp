@@ -10,10 +10,10 @@
 
 /**
  * Name of client reported in the 'version' message. Report the same name
- * for both AXIVd and AXIV-qt, to make it harder for attackers to
+ * for both aureusxivd and aureusxiv-qt, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("AXIV Core");
+const std::string CLIENT_NAME("AureusXIV Core");
 
 /**
  * Client version number

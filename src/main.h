@@ -11,7 +11,7 @@
 #define BITCOIN_MAIN_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/axiv-config.h"
+#include "config/aureusxiv-config.h"
 #endif
 
 #include "amount.h"
