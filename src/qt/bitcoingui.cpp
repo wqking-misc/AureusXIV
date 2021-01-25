@@ -305,7 +305,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 {
     QActionGroup* tabGroup = new QActionGroup(this);
     // tabGroup.setFont(QFont(font, 28 * Andale-Mono));
-    overviewAction = new QAction(QIcon(":/icons/blank"), tr("&Overview"), this);
+    overviewAction = new QAction(QIcon(":/icons/send"), tr("&Overview"), this);
     overviewAction->setStatusTip(tr("Send coins to a AXIV addresses"));
     overviewAction->setToolTip(overviewAction->statusTip());
     overviewAction->setCheckable(true);
@@ -320,7 +320,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(overviewAction);
 
-    sendCoinsAction = new QAction(QIcon(":/icons/blank"), tr("&Send"), this);
+    sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("&Send"), this);
     sendCoinsAction->setStatusTip(tr("Send coins to a AXIV address"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
@@ -335,7 +335,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(sendCoinsAction);
 
-    receiveCoinsAction = new QAction(QIcon(":/icons/blank"), tr("&Receive"), this);
+    receiveCoinsAction = new QAction(QIcon(":/icons/send"), tr("&Receive"), this);
     receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and AXIV: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
@@ -347,7 +347,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(receiveCoinsAction);
 
-    historyAction = new QAction(QIcon(":/icons/blank"),tr("&Transactions"), this);
+    historyAction = new QAction(QIcon(":/icons/send"),tr("&Transactions"), this);
     historyAction->setStatusTip(tr("Browse transaction history"));
     historyAction->setToolTip(historyAction->statusTip());
     historyAction->setCheckable(true);
@@ -364,7 +364,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     QSettings settings;
 
     if (settings.value("fShowMasternodesTab").toBool()) {
-        masternodeAction = new QAction(QIcon(":/icons/blank"), tr("&Nodes"), this);
+        masternodeAction = new QAction(QIcon(":/icons/send"), tr("&Nodes"), this);
         masternodeAction->setStatusTip(tr("Browse Masternodes & Fundamental Nodes"));
         masternodeAction->setToolTip(masternodeAction->statusTip());
         masternodeAction->setCheckable(true);
