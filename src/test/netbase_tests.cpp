@@ -10,8 +10,6 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <iostream>
-
 using namespace std;
 
 BOOST_AUTO_TEST_SUITE(netbase_tests)
@@ -90,7 +88,7 @@ BOOST_AUTO_TEST_CASE(netbase_lookupnumeric)
     BOOST_CHECK(TestParse("::", "[::]:65535"));
     BOOST_CHECK(TestParse("[::]:10135", "[::]:10135"));
     BOOST_CHECK(TestParse("[127.0.0.1]", "127.0.0.1:65535"));
-    BOOST_CHECK(TestParse(":::", "[::]:0"));
+    BOOST_CHECK(TestParse(":::", ""));
 }
 
 BOOST_AUTO_TEST_CASE(onioncat_test)
