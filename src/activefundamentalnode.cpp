@@ -218,7 +218,7 @@ bool CActiveFundamentalnode::SendFundamentalnodePing(std::string& errorMessage)
         LogPrint("fundamentalnode", "dseep - relaying from active fn, %s \n", vin.ToString().c_str());
         LOCK(cs_vNodes);
         for (CNode* pnode : vNodes)
-            pnode->PushMessage("obseep", vin, vchFundamentalNodeSignature, fundamentalNodeSignatureTime, false);
+            pnode->PushMessage("dseep", vin, vchFundamentalNodeSignature, fundamentalNodeSignatureTime, false);
 
         /*
          * END OF "REMOVE"
@@ -325,7 +325,7 @@ bool CActiveFundamentalnode::CreateBroadcast(CTxIn vin, CService service, CKey k
 
     LOCK(cs_vNodes);
     for (CNode* pnode : vNodes)
-        pnode->PushMessage("obsee", vin, service, vchFundamentalNodeSignature, fundamentalNodeSignatureTime, pubKeyCollateralAddress, pubKeyFundamentalnode, -1, -1, fundamentalNodeSignatureTime, PROTOCOL_VERSION, donationAddress, donationPercantage);
+        pnode->PushMessage("dsee", vin, service, vchFundamentalNodeSignature, fundamentalNodeSignatureTime, pubKeyCollateralAddress, pubKeyFundamentalnode, -1, -1, fundamentalNodeSignatureTime, PROTOCOL_VERSION, donationAddress, donationPercantage);
 
     /*
      * END OF "REMOVE"
