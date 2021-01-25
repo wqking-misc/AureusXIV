@@ -38,6 +38,8 @@ public:
         ToggleLock,     /** Toggle wallet lock state */
         ChangePass,     /** Change passphrase */
         Send_PIV,       /** Send PIV */
+        Send_zPIV,      /** Send zAXIV */
+        Mint_zPIV,      /** Mint zAXIV */
         BIP_38,         /** BIP38 menu */
         Multi_Sig,      /** Multi-Signature dialog */
         Sign_Message    /** Sign/verify message dialog */
