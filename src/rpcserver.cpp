@@ -356,7 +356,6 @@ static const CRPCCommand vRPCCommands[] =
         {"fundamentalnode", "decodefundamentalnodebroadcast", &decodefundamentalnodebroadcast, true, true, false},
         {"fundamentalnode", "relayfundamentalnodebroadcast", &relayfundamentalnodebroadcast, true, true, false},
         {"fundamentalnode", "fundamentalnodecurrent", &fundamentalnodecurrent, true, true, false},
-        {"fundamentalnode", "fundamentalnodedebug", &fundamentalnodedebug, true, true, false},
         {"fundamentalnode", "startfundamentalnode", &startfundamentalnode, true, true, false},
         {"fundamentalnode", "createfundamentalnodekey", &createfundamentalnodekey, true, true, false},
         {"fundamentalnode", "getfundamentalnodeoutputs", &getfundamentalnodeoutputs, true, true, false},

@@ -1,17 +1,16 @@
 // Copyright (c) 2014-2016 The Dash developers
-// Copyright (c) 2016-2019 The PIVX developers
+// Copyright (c) 2016-2020 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "swifttx.h"
-
 #include "activefundamentalnode.h"
 #include "base58.h"
 #include "key.h"
+#include "fundamentalnode-sync.h"
 #include "fundamentalnodeman.h"
 #include "messagesigner.h"
 #include "net.h"
-#include "obfuscation.h"
 #include "protocol.h"
 #include "spork.h"
 #include "sync.h"
@@ -37,7 +36,7 @@ int nCompleteTXLocks;
 
 void ProcessMessageSwiftTX(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
-    if (fLiteMode) return; //disable all obfuscation/fundamentalnode related functionality
+    if (fLiteMode) return; //disable all fundamentalnode related functionality
     if (!sporkManager.IsSporkActive(SPORK_2_SWIFTTX)) return;
     if (!fundamentalnodeSync.IsBlockchainSynced()) return;
 
@@ -264,7 +263,11 @@ void DoConsensusVote(CTransaction& tx, int64_t nBlockHeight)
 {
     if (!fFundamentalNode) return;
 
-    int n = fnodeman.GetFundamentalnodeRank(activeFundamentalnode.vin, nBlockHeight, MIN_SWIFTTX_PROTO_VERSION);
+    if (activeFundamentalnode.vin == boost::none)
+        LogPrint("swiftx", "%s: Active Fundamentalnode not initialized.", __func__);
+    return;
+
+    int n = fnodeman.GetFundamentalnodeRank(*(activeFundamentalnode.vin), nBlockHeight, MIN_SWIFTTX_PROTO_VERSION);
 
     if (n == -1) {
         LogPrint("swiftx", "%s : Unknown Fundamentalnode\n", __func__);
@@ -282,9 +285,10 @@ void DoConsensusVote(CTransaction& tx, int64_t nBlockHeight)
     LogPrint("swiftx", "%s : In the top %d (%d)\n", __func__, SWIFTTX_SIGNATURES_TOTAL, n);
 
     CConsensusVote ctx;
-    ctx.vinFundamentalnode = activeFundamentalnode.vin;
+    ctx.vinFundamentalnode = *(activeFundamentalnode.vin);
     ctx.txHash = tx.GetHash();
     ctx.nBlockHeight = nBlockHeight;
+
     if (!ctx.Sign(strFundamentalNodePrivKey)) {
         LogPrintf("%s : Failed to sign consensus vote\n", __func__);
         return;

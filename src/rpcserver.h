@@ -282,7 +282,6 @@ extern UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHel
 extern UniValue decodefundamentalnodebroadcast(const UniValue& params, bool fHelp);
 extern UniValue relayfundamentalnodebroadcast(const UniValue& params, bool fHelp);
 extern UniValue fundamentalnodecurrent(const UniValue& params, bool fHelp);
-extern UniValue fundamentalnodedebug(const UniValue& params, bool fHelp);
 extern UniValue startfundamentalnode(const UniValue& params, bool fHelp);
 extern UniValue createfundamentalnodekey(const UniValue& params, bool fHelp);
 extern UniValue getfundamentalnodeoutputs(const UniValue& params, bool fHelp);

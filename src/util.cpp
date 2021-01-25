@@ -115,13 +115,9 @@ bool fLiteMode = false;
 bool fEnableSwiftTX = true;
 int nSwiftTXDepth = 5;
 
-int nAnonymizeVitaeAmount = 1000;
-int nLiquidityProvider = 0;
 /** Spork enforcement enabled time */
 int64_t enforceFundamentalnodePaymentsTime = 4085657524;
 bool fSucessfullyLoaded = false;
-/** All denominations used by obfuscation */
-std::vector<int64_t> obfuScationDenominations;
 string strBudgetMode = "";
 
 bool fMasterNode = false;
@@ -242,7 +238,6 @@ bool LogAcceptCategory(const char* category)
             // thread_specific_ptr automatically deletes the set when the thread ends.
             // "AXIV" is a composite category enabling all AXIV-related debug output
             if (ptrCategory->count(string("AXIV"))) {
-                ptrCategory->insert(string("obfuscation"));
                 ptrCategory->insert(string("swiftx"));
                 ptrCategory->insert(string("fundamentalnode"));
                 ptrCategory->insert(string("fnpayments"));

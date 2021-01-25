@@ -1,5 +1,5 @@
 // Copyright (c) 2014-2018 The Dash Core developers
-// Copyright (c) 2018-2019 The PIVX developers
+// Copyright (c) 2018-2020 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,8 +10,8 @@
 #include "primitives/transaction.h" // for CTxIn
 
 enum MessageVersion {
-    MESS_VER_STRMESS    = 0,
-    MESS_VER_HASH       = 1,
+        MESS_VER_STRMESS    = 0,
+        MESS_VER_HASH       = 1,
 };
 
 /** Helper class for signing messages and checking their signatures
@@ -56,8 +56,8 @@ public:
     int nMessVersion;
 
     CSignedMessage() :
-            vchSig(),
-            nMessVersion(MessageVersion::MESS_VER_HASH)
+        vchSig(),
+        nMessVersion(MessageVersion::MESS_VER_HASH)
     {}
     CSignedMessage(const CSignedMessage& other)
     {
@@ -70,7 +70,7 @@ public:
     bool Sign(const CKey& key, const CPubKey& pubKey);
     bool Sign(const std::string strSignKey);
     bool CheckSignature(const CPubKey& pubKey) const;
-    bool CheckSignature(const bool fSignatureCheck = true) const;
+    bool CheckSignature() const;
 
     // Pure virtual functions (used in Sign-Verify functions)
     // Must be implemented in child classes

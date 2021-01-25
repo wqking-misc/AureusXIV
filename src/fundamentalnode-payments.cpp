@@ -1,15 +1,15 @@
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2019 The PIVX developers
+// Copyright (c) 2015-2020 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "fundamentalnode-payments.h"
 #include "addrman.h"
 #include "chainparams.h"
+#include "fs.h"
 #include "fundamentalnode-budget.h"
 #include "fundamentalnode-sync.h"
 #include "fundamentalnodeman.h"
-#include "obfuscation.h"
 #include "spork.h"
 #include "sync.h"
 #include "util.h"
@@ -18,7 +18,6 @@
 #include "masternode.h"
 #include "masternodeman.h"
 #include "masternode-payments.h"
-#include <boost/filesystem.hpp>
 
 /** Object for who's going to get paid on which blocks */
 CFundamentalnodePayments fundamentalnodePayments;
@@ -80,7 +79,7 @@ CFundamentalnodePaymentDB::ReadResult CFundamentalnodePaymentDB::Read(CFundament
     }
 
     // use file size to size memory buffer
-    int fileSize = boost::filesystem::file_size(pathDB);
+    int fileSize = fs::file_size(pathDB);
     int dataSize = fileSize - sizeof(uint256);
     // Don't try to resize to a negative number if file is small
     if (dataSize < 0)
@@ -153,7 +152,7 @@ CFundamentalnodePaymentDB::ReadResult CFundamentalnodePaymentDB::Read(CFundament
 uint256 CFundamentalnodePaymentWinner::GetHash() const
 {
     CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
-    ss << payee;
+    ss << std::vector<unsigned char>(payee.begin(), payee.end());
     ss << nBlockHeight;
     ss << vinFundamentalnode.prevout;
     return ss.GetHash();
@@ -161,7 +160,7 @@ uint256 CFundamentalnodePaymentWinner::GetHash() const
 
 std::string CFundamentalnodePaymentWinner::GetStrMessage() const
 {
-    return vinFundamentalnode.prevout.ToStringShort() + std::to_string(nBlockHeight) + payee.ToString();
+    return vinFundamentalnode.prevout.ToStringShort() + std::to_string(nBlockHeight) + HexStr(payee);
 }
 
 bool CFundamentalnodePaymentWinner::IsValid(CNode* pnode, std::string& strError)
@@ -470,12 +469,13 @@ void CFundamentalnodePayments::FillBlockPayeeFundamentalnode(CMutableTransaction
 
     CAmount blockValue = GetBlockValue(pindexPrev->nHeight);
     CAmount fundamentalnodePayment = GetFundamentalnodePayment(pindexPrev->nHeight + 1, blockValue);
+
     CAmount masternodepayment = GetMasternodePayment(pindexPrev->nHeight +1 , blockValue);
 
     //txNew.vout[0].nValue = blockValue;
 
     if (hasPayment) {
-        if(hasMnPayment){
+        if(IsMasternode && hasMnPayment){
             if (fProofOfStake) {
                 /**For Proof Of Stake vout[0] must be null
                  * Stake reward can be split into many different outputs, so we must
@@ -490,7 +490,21 @@ void CFundamentalnodePayments::FillBlockPayeeFundamentalnode(CMutableTransaction
                 txNew.vout[i + 1].nValue = masternodepayment;
 
                 //subtract mn payment from the stake reward
-                txNew.vout[i - 1].nValue -= (fundamentalnodePayment + masternodepayment);
+                CAmount sub = fundamentalnodePayment;
+                if (i == 2) {
+                    // Majority of cases; do it quick and move on
+                    txNew.vout[i - 1].nValue -= sub;
+                } else if (i > 2) {
+                    // special case, stake is split between (i-1) outputs
+                    unsigned int outputs = i-1;
+                    CAmount paymentSplit = sub / outputs;
+                    CAmount paymentRemainder = sub - (paymentSplit * outputs);
+                    for (unsigned int j=1; j<=outputs; j++) {
+                        txNew.vout[j].nValue -= paymentSplit;
+                    }
+                    // in case it's not an even division, take the last bit of dust from the last one
+                    txNew.vout[outputs].nValue -= paymentRemainder;
+                }
             } else {
                 txNew.vout.resize(3);
                 txNew.vout[2].scriptPubKey = mn_payee;
@@ -527,7 +541,21 @@ void CFundamentalnodePayments::FillBlockPayeeFundamentalnode(CMutableTransaction
                 txNew.vout[i].nValue = fundamentalnodePayment;
 
                 //subtract mn payment from the stake reward
-                txNew.vout[i - 1].nValue -= fundamentalnodePayment;
+                CAmount sub = fundamentalnodePayment;
+                if (i == 2) {
+                    // Majority of cases; do it quick and move on
+                    txNew.vout[i - 1].nValue -= sub;
+                } else if (i > 2) {
+                    // special case, stake is split between (i-1) outputs
+                    unsigned int outputs = i-1;
+                    CAmount paymentSplit = sub / outputs;
+                    CAmount paymentRemainder = sub - (paymentSplit * outputs);
+                    for (unsigned int j=1; j<=outputs; j++) {
+                        txNew.vout[j].nValue -= paymentSplit;
+                    }
+                    // in case it's not an even division, take the last bit of dust from the last one
+                    txNew.vout[outputs].nValue -= paymentRemainder;
+                }
             } else {
                 txNew.vout.resize(2);
                 txNew.vout[1].scriptPubKey = payee;
@@ -542,8 +570,8 @@ void CFundamentalnodePayments::FillBlockPayeeFundamentalnode(CMutableTransaction
             LogPrint("fundamentalnode","Fundamentalnode payment of %s to %s\n", FormatMoney(fundamentalnodePayment).c_str(), address2.ToString().c_str());
         }
     } else {
-
-        if(hasMnPayment){
+        
+        if(IsMasternode && hasMnPayment){
             if (fProofOfStake) {
                 /**For Proof Of Stake vout[0] must be null
                  * Stake reward can be split into many different outputs, so we must
@@ -555,7 +583,7 @@ void CFundamentalnodePayments::FillBlockPayeeFundamentalnode(CMutableTransaction
                 txNew.vout[i ].scriptPubKey = mn_payee;
                 txNew.vout[i ].nValue = masternodepayment;
 
-                //subtract mn payment from the stake reward
+                //subtract fn payment from the stake reward
                 txNew.vout[i - 1].nValue -= ( masternodepayment);
             } else {
                 txNew.vout.resize(2);
@@ -596,18 +624,18 @@ void CFundamentalnodePayments::FillBlockPayeeFundamentalnode(CMutableTransaction
 
 int CFundamentalnodePayments::GetMinFundamentalnodePaymentsProto()
 {
-    return ActiveProtocol();                          // Allow only updated peers
+    return ActiveProtocol();
 }
 
 void CFundamentalnodePayments::ProcessMessageFundamentalnodePayments(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
     if (!fundamentalnodeSync.IsBlockchainSynced()) return;
 
-    if (fLiteMode) return; //disable all Obfuscation/Fundamentalnode related functionality
+    if (fLiteMode) return; //disable all Fundamentalnode related functionality
 
 
     if (strCommand == "fnget") { //Fundamentalnode Payments Request Sync
-        if (fLiteMode) return;   //disable all Obfuscation/Fundamentalnode related functionality
+        if (fLiteMode) return;   //disable all Fundamentalnode related functionality
 
         int nCountNeeded;
         vRecv >> nCountNeeded;
@@ -646,6 +674,12 @@ void CFundamentalnodePayments::ProcessMessageFundamentalnodePayments(CNode* pfro
         int nFirstBlock = nHeight - (fnodeman.CountEnabled() * 1.25);
         if (winner.nBlockHeight < nFirstBlock || winner.nBlockHeight > nHeight + 20) {
             LogPrint("fnpayments", "fnw - winner out of range - FirstBlock %d Height %d bestHeight %d\n", nFirstBlock, winner.nBlockHeight, nHeight);
+            return;
+        }
+
+        // reject old signature version
+        if (winner.nMessVersion != MessageVersion::MESS_VER_HASH) {
+            LogPrint("fundamentalnode", "fnw - rejecting old message version %d\n", winner.nMessVersion);
             return;
         }
 
@@ -725,7 +759,7 @@ bool CFundamentalnodePayments::IsScheduled(CFundamentalnode& fn, int nNotBlockHe
 
 bool CFundamentalnodePayments::AddWinningFundamentalnode(CFundamentalnodePaymentWinner& winnerIn)
 {
-    uint256 blockHash = 0;
+    uint256 blockHash;
     if (!GetFundamentalnodeBlockHash(blockHash, winnerIn.nBlockHeight - 100)) {
         return false;
     }
@@ -754,21 +788,18 @@ bool CFundamentalnodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
 {
     LOCK(cs_vecFundamentalnodePayments);
 
-    int nMaxSignatures = 0;
-
-    std::string strPayeesPossible = "";
-
-    CAmount nReward = GetBlockValue(nBlockHeight);
-
-    CAmount requiredFundamentalnodePayment = GetFundamentalnodePayment(nBlockHeight, nReward);
-
     //require at least 6 signatures
+    int nMaxSignatures = 0;
     for (CFundamentalnodePayee& payee : vecPayments)
         if (payee.nVotes >= nMaxSignatures && payee.nVotes >= FNPAYMENTS_SIGNATURES_REQUIRED)
             nMaxSignatures = payee.nVotes;
 
     // if we don't have at least 6 signatures on a payee, approve whichever is the longest chain
     if (nMaxSignatures < FNPAYMENTS_SIGNATURES_REQUIRED) return true;
+
+    std::string strPayeesPossible = "";
+    CAmount nReward = GetBlockValue(nBlockHeight);
+    CAmount requiredFundamentalnodePayment = GetFundamentalnodePayment(nBlockHeight, nReward);
 
     for (CFundamentalnodePayee& payee : vecPayments) {
         bool found = false;
@@ -813,9 +844,9 @@ std::string CFundamentalnodeBlockPayees::GetFundamentalnodeRequiredPaymentsStrin
         CBitcoinAddress address2(address1);
 
         if (ret != "Unknown") {
-            ret += ", " + address2.ToString() + ":" + std::to_string(payee.nVotes);
+            ret += ", " + address2.ToString() + ":" + boost::lexical_cast<std::string>(payee.nVotes);
         } else {
-            ret = address2.ToString() + ":" + std::to_string(payee.nVotes);
+            ret = address2.ToString() + ":" + boost::lexical_cast<std::string>(payee.nVotes);
         }
     }
 
@@ -877,45 +908,52 @@ bool CFundamentalnodePayments::ProcessBlock(int nBlockHeight)
 {
     if (!fFundamentalNode) return false;
 
+    if (activeFundamentalnode.vin == boost::none)
+        return error("%s: Active Fundamentalnode not initialized.", __func__);
+
     //reference node - hybrid mode
 
-    int n = fnodeman.GetFundamentalnodeRank(activeFundamentalnode.vin, nBlockHeight - 100, ActiveProtocol());
+    int n = fnodeman.GetFundamentalnodeRank(*(activeFundamentalnode.vin), nBlockHeight - 100, ActiveProtocol());
 
     if (n == -1) {
-        LogPrint("fnpayments", "CFundamentalnodePayments::ProcessBlock - Unknown Fundamentalnode\n");
+        LogPrint("fundamentalnode", "CFundamentalnodePayments::ProcessBlock - Unknown Fundamentalnode\n");
         return false;
     }
 
     if (n > FNPAYMENTS_SIGNATURES_TOTAL) {
-        LogPrint("fnpayments", "CFundamentalnodePayments::ProcessBlock - Fundamentalnode not in the top %d (%d)\n", FNPAYMENTS_SIGNATURES_TOTAL, n);
+        LogPrint("fundamentalnode", "CFundamentalnodePayments::ProcessBlock - Fundamentalnode not in the top %d (%d)\n", FNPAYMENTS_SIGNATURES_TOTAL, n);
         return false;
     }
 
     if (nBlockHeight <= nLastBlockHeight) return false;
 
-    CFundamentalnodePaymentWinner newWinner(activeFundamentalnode.vin);
+    CFundamentalnodePaymentWinner newWinner(*(activeFundamentalnode.vin));
 
-    LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() Start nHeight %d - vin %s. \n", nBlockHeight, activeFundamentalnode.vin.prevout.hash.ToString());
-
-    // pay to the oldest FN that still had no payment but its input is old enough and it was active long enough
-    int nCount = 0;
-    CFundamentalnode* pfn = fnodeman.GetNextFundamentalnodeInQueueForPayment(nBlockHeight, true, nCount);
-
-    if (pfn != NULL) {
-        LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() Found by FindOldestNotInVec \n");
-
-        newWinner.nBlockHeight = nBlockHeight;
-
-        CScript payee = GetScriptForDestination(pfn->pubKeyCollateralAddress.GetID());
-        newWinner.AddPayee(payee);
-
-        CTxDestination address1;
-        ExtractDestination(payee, address1);
-        CBitcoinAddress address2(address1);
-
-        LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() Winner payee %s nHeight %d. \n", address2.ToString().c_str(), newWinner.nBlockHeight);
+    if (budget.IsBudgetPaymentBlock(nBlockHeight)) {
+        //is budget payment block -- handled by the budgeting software
     } else {
-        LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() Failed to find fundamentalnode to pay\n");
+        LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() Start nHeight %d - vin %s. \n", nBlockHeight, activeFundamentalnode.vin->prevout.hash.ToString());
+
+        // pay to the oldest FN that still had no payment but its input is old enough and it was active long enough
+        int nCount = 0;
+        CFundamentalnode* pfn = fnodeman.GetNextFundamentalnodeInQueueForPayment(nBlockHeight, true, nCount);
+
+        if (pfn != NULL) {
+            LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() Found by FindOldestNotInVec \n");
+
+            newWinner.nBlockHeight = nBlockHeight;
+
+            CScript payee = GetScriptForDestination(pfn->pubKeyCollateralAddress.GetID());
+            newWinner.AddPayee(payee);
+
+            CTxDestination address1;
+            ExtractDestination(payee, address1);
+            CBitcoinAddress address2(address1);
+
+            LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() Winner payee %s nHeight %d. \n", address2.ToString().c_str(), newWinner.nBlockHeight);
+        } else {
+            LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() Failed to find fundamentalnode to pay\n");
+        }
     }
 
     std::string errorMessage;
