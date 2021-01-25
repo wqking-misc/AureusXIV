@@ -454,7 +454,7 @@ std::vector<COutput> CActiveFundamentalnode::SelectCoinsFundamentalnode()
 
     // Filter
     for (const COutput& out : vCoins) {
-        if (out.tx->vout[out.i].nValue == FN_MAGIC_AMOUNT) { //exactly
+        if (out.tx->vout[out.i].nValue == FN_MAGIC_AMOUNT * COIN) { //exactly
             filteredCoins.push_back(out);
         }
     }

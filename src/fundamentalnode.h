@@ -23,7 +23,7 @@
 #define FUNDAMENTALNODE_REMOVAL_SECONDS (130 * 60)
 #define FUNDAMENTALNODE_CHECK_SECONDS 5
 
-static const CAmount FN_MAGIC_AMOUNT = 0.1234 * COIN;
+static const int64_t FN_MAGIC_AMOUNT = 0.1234;
 static const int64_t FUNDAMENTALNODE_AMOUNT = 10000;
 
 class CFundamentalnode;
