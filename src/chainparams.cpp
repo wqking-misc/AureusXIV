@@ -130,7 +130,6 @@ public:
         nInvalidAmountFiltered = 268200*COIN; //Amount of invalid coins filtered through exchanges, that should be considered valid
         nEnforceNewSporkKey = 1596240000; //!> Sporks signed after (GMT): August 1, 2020 12:00:00 AM must use the new spork key
         nRejectOldSporkKey = 1604188800; //!> Fully reject old spork key after (GMT): November 1, 2020 12:00:00 AM
-        nStartMasternodePayments = 2000; // This will be the block when masternode payments will start
 
         /**
          * Build the genesis block. Note that the output of the genesis coinbase cannot
@@ -307,8 +306,6 @@ public:
         nInvalidAmountFiltered = 0; //Amount of invalid coins filtered through exchanges, that should be considered valid
         nEnforceNewSporkKey = 1596240000; //!> Sporks signed after (GMT): August 1, 2020 12:00:00 AM must use the new spork key
         nRejectOldSporkKey = 1601510400; //!> Fully reject old spork key after (GMT): October 1, 2020 12:00:00 AM
-        nStartMasternodePayments = 2000; // This will be the block when masternode payments will start
-
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
         genesis.nTime = 1603311280;
