@@ -20,7 +20,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include "sporkid.h"
 
 class CScript;
 
@@ -285,22 +284,6 @@ inline void Unserialize(Stream& s, bool& a, int, int = 0)
     char f;
     READDATA(s, f);
     a = f;
-}
-
-// Serialization for SporkId
-template <typename Stream>
-inline void Serialize(Stream& s, SporkId sporkID, int, int = 0)
-{
-    int32_t f = static_cast<int32_t>(sporkID);
-    WRITEDATA(s, f);
-}
-
-template <typename Stream>
-inline void Unserialize(Stream& s, SporkId& sporkID, int, int = 0)
-{
-    int32_t f=0;
-    READDATA(s, f);
-    sporkID = (SporkId) f;
 }
 
 /**

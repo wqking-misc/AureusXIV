@@ -28,7 +28,7 @@ void ProcessMessageFundamentalnodePayments(CNode* pfrom, std::string& strCommand
 bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight);
 std::string GetFundamentalnodeRequiredPaymentsString(int nBlockHeight);
 bool IsBlockValueValid(const CBlock& block, CAmount nExpectedValue, CAmount nMinted);
-void FillBlockPayeeFundamentalnode(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake, bool IsMasternode);
+void FillBlockPayeeFundamentalnode(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake);
 
 void DumpFundamentalnodePayments();
 

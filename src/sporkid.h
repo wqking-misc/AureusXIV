@@ -21,7 +21,6 @@ enum SporkId : int32_t {
     SPORK_11_ENABLE_SUPERBLOCKS                 = 10010,
     SPORK_12_NEW_PROTOCOL_ENFORCEMENT           = 10011,
     SPORK_13_NEW_PROTOCOL_ENFORCEMENT_2         = 10012,
-    SPORK_14_DISABLE_NEW_FUNDAMENTALNODE        = 10013,
 
     SPORK_INVALID                               = -1
 };

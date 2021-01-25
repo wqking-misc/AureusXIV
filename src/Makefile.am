@@ -269,6 +269,7 @@ libbitcoin_wallet_a_SOURCES = \
   masternodeconfig.cpp \
   masternodeman.cpp \
   messagesigner.cpp \
+  mintpool.cpp \
   rpcdump.cpp \
   rpcwallet.cpp \
   kernel.cpp \

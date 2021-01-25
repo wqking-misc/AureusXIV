@@ -11,7 +11,6 @@
 #include "fundamentalnode-sync.h"
 #include "fundamentalnodeman.h"
 #include "netbase.h"
-#include "spork.h"
 #include "sync.h"
 #include "util.h"
 #include "wallet.h"
@@ -593,9 +592,9 @@ bool CFundamentalnodeBroadcast::CheckInputsAndAdd(int& nDoS)
     // incorrect ping or its sigTime
     if(lastPing == CFundamentalnodePing() || !lastPing.CheckAndUpdate(nDoS, false, true)) return false;
 
-    if(sporkManager.GetSporkValue(SPORK_14_DISABLE_NEW_FUNDAMENTALNODE) > 0) {
+    if(GetSporkValue(SPORK_23_DISABLE_NEW_FUNDAMENTALNODE) > 0) {
         int blockHeight = GetInputHeight(vin);
-        if(blockHeight < 0 || blockHeight > sporkManager.GetSporkValue(SPORK_14_DISABLE_NEW_FUNDAMENTALNODE)) {
+        if(blockHeight < 0 || blockHeight > GetSporkValue(SPORK_23_DISABLE_NEW_FUNDAMENTALNODE)) {
             LogPrintf("CheckInputsAndAdd: New fundamentalnode is disabled \n");
             return false;
         }
