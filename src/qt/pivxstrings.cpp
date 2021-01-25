@@ -486,6 +486,8 @@ QT_TRANSLATE_NOOP("aureusxiv-core", "Your entries added successfully."),
 QT_TRANSLATE_NOOP("aureusxiv-core", "Your transaction was accepted into the pool!"),
 QT_TRANSLATE_NOOP("aureusxiv-core", "Zapping all transactions from wallet..."),
 QT_TRANSLATE_NOOP("aureusxiv-core", "ZeroMQ notification options:"),
+QT_TRANSLATE_NOOP("aureusxiv-core", "Zerocoin options:"),
+QT_TRANSLATE_NOOP("aureusxiv-core", "failed to validate zerocoin"),
 QT_TRANSLATE_NOOP("aureusxiv-core", "on startup"),
 QT_TRANSLATE_NOOP("aureusxiv-core", "wallet.dat corrupt, salvage failed"),
 };
