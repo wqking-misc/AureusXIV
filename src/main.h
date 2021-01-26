@@ -3,6 +3,7 @@
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2017 The PIVX developers
 // Copyright (c) 2018-2018 The AXIV developers
+// Copyright (c) 2020 Bitcoin Builders
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
