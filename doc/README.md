@@ -1,13 +1,13 @@
-VITAE Core
+AXIV Core
 =====================
 
 Setup
 ---------------------
-[VITAE Core](http://vitae.org/wallet) is the original VITAE client and it builds the backbone of the network. However, it downloads and stores the entire history of VITAE transactions; depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more. Thankfully you only have to do this once.
+[AXIV Core](http://vitae.org/wallet) is the original AXIV client and it builds the backbone of the network. However, it downloads and stores the entire history of AXIV transactions; depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more. Thankfully you only have to do this once.
 
 Running
 ---------------------
-The following are some helpful notes on how to run VITAE on your native platform.
+The following are some helpful notes on how to run AXIV on your native platform.
 
 ### Unix
 
@@ -22,19 +22,19 @@ Unpack the files into a directory, and then run vitae-qt.exe.
 
 ### OSX
 
-Drag VITAE-Qt to your applications folder, and then run VITAE-Qt.
+Drag AXIV-Qt to your applications folder, and then run AXIV-Qt.
 
 ### Need Help?
 
-* See the documentation at the [VITAE Wiki](https://en.bitcoin.it/wiki/Main_Page) ***TODO***
+* See the documentation at the [AXIV Wiki](https://en.bitcoin.it/wiki/Main_Page) ***TODO***
 for help and more information.
-* Ask for help on [BitcoinTalk](https://bitcointalk.org/index.php?topic=1262920.0) or on the [VITAE Forum](http://forum.vitae.org/).
+* Ask for help on [BitcoinTalk](https://bitcointalk.org/index.php?topic=1262920.0) or on the [AXIV Forum](http://forum.vitae.org/).
 * Join our Discord server [Discord Server](https://discord.vitae.org)
-* Join one of our Slack groups [VITAE Slack Groups](https://vitae.org/slack-logins/) (Main community is replaced by Discord).
+* Join one of our Slack groups [AXIV Slack Groups](https://vitae.org/slack-logins/) (Main community is replaced by Discord).
 
 Building
 ---------------------
-The following are developer notes on how to build VITAE on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build AXIV on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
 - [OSX Build Notes](build-osx.md)
 - [Unix Build Notes](build-unix.md)
@@ -42,7 +42,7 @@ The following are developer notes on how to build VITAE on your native platform.
 
 Development
 ---------------------
-The Vitae repo's [root README](https://github.com/vitaeteam/VITAE/blob/master/README.md) contains relevant information on the development process and automated testing.
+The Vitae repo's [root README](https://github.com/vitaeteam/AXIV/blob/master/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Multiwallet Qt Development](multiwallet-qt.md)
@@ -56,8 +56,8 @@ The Vitae repo's [root README](https://github.com/vitaeteam/VITAE/blob/master/RE
 
 ### Resources
 
-* Discuss on the [BitcoinTalk](https://bitcointalk.org/index.php?topic=1262920.0) or the [VITAE](http://forum.vitae.org/) forum.
-* Join the [VITAE-Dev](https://vitae-dev.slack.com/) Slack group ([Sign-Up](https://vitae-dev.herokuapp.com/)).
+* Discuss on the [BitcoinTalk](https://bitcointalk.org/index.php?topic=1262920.0) or the [AXIV](http://forum.vitae.org/) forum.
+* Join the [AXIV-Dev](https://vitae-dev.slack.com/) Slack group ([Sign-Up](https://vitae-dev.herokuapp.com/)).
 
 ### Miscellaneous
 - [Assets Attribution](assets-attribution.md)

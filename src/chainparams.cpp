@@ -114,15 +114,15 @@ public:
         pchMessageStart[3] = 0x13;
         vAlertPubKey = ParseHex("0000098d3ba6ba6e7423fa5cbd6a89e0a9a5348f88d332b44a5cb1a8b7ed2c1eaa335fc8dc4f012cb8241cc0bdafd6ca70c5f5448916e4e6f511bcd746ed57dc50");
         nDefaultPort = 8765;
-        bnProofOfWorkLimit = ~uint256(0) >> 20; // VITAE starting difficulty is 1 / 2^12
+        bnProofOfWorkLimit = ~uint256(0) >> 20; // AXIV starting difficulty is 1 / 2^12
         nSubsidyHalvingInterval = 210000;
         nMaxReorganizationDepth = 100;
         nEnforceBlockUpgradeMajority = 10800;  // 75% ... ((60*60*24)/45)*7.5 = 14400 or about 7 days
         nRejectBlockOutdatedMajority = 13680;  // 95%
         nToCheckBlockUpgradeMajority = 14400;  // Approximate expected amount of blocks in 7 days (1920*7.5)
         nMinerThreads = 0;
-        nTargetTimespan = 1 * 45; // VITAE: 1 day
-        nTargetSpacing = 1 * 45;  // VITAE: 1 minute
+        nTargetTimespan = 1 * 45; // AXIV: 1 day
+        nTargetSpacing = 1 * 45;  // AXIV: 1 minute
         nMaturity = 8;
         nFundamentalnodeCountDrift = 20;
         nMasternodeCountDrift = 20;
@@ -274,8 +274,8 @@ public:
         nRejectBlockOutdatedMajority = 8208;
         nToCheckBlockUpgradeMajority = 8640; // ((60*60*24)/45)*4.5 = 8640 or about 4 days
         nMinerThreads = 0;
-        nTargetTimespan = 1 * 45; // VITAE: 1 day
-        nTargetSpacing = 1 * 45;  // VITAE: 1 minute
+        nTargetTimespan = 1 * 45; // AXIV: 1 day
+        nTargetSpacing = 1 * 45;  // AXIV: 1 minute
         nLastPOWBlock = 200;
         nMaturity = 15;
         nFundamentalnodeCountDrift = 4;
@@ -382,8 +382,8 @@ public:
         nRejectBlockOutdatedMajority = 950;
         nToCheckBlockUpgradeMajority = 1000;
         nMinerThreads = 1;
-        nTargetTimespan = 24 * 60 * 60; // VITAE: 1 day
-        nTargetSpacing = 1 * 60;        // VITAE: 1 minutes
+        nTargetTimespan = 24 * 60 * 60; // AXIV: 1 day
+        nTargetSpacing = 1 * 60;        // AXIV: 1 minutes
         bnProofOfWorkLimit = ~uint256(0) >> 1;
         genesis.nTime = 1454124731;
         genesis.nBits = 0x207fffff;

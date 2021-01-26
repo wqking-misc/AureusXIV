@@ -1,7 +1,7 @@
-#ifndef VITAE_INVALID_H
-#define VITAE_INVALID_H
+#ifndef AXIV_INVALID_H
+#define AXIV_INVALID_H
 
-#endif //VITAE_INVALID_H
+#endif //AXIV_INVALID_H
 
 #include <bignum.h>
 #include <univalue/include/univalue.h>

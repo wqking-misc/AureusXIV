@@ -89,7 +89,7 @@ use old versions of Upstart and do not supply the start-stop-daemon uitility.
 Copy vitaed.init to /etc/init.d/vitaed. Test by running "service vitaed start".
 
 Using this script, you can adjust the path and flags to the vitaed program by
-setting the VITAED and FLAGS environment variables in the file
+setting the AXIVD and FLAGS environment variables in the file
 /etc/sysconfig/vitaed. You can also use the DAEMONOPTS environment variable here.
 
 5. Auto-respawn

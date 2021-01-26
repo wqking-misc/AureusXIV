@@ -105,7 +105,7 @@ std::string to_internal(const std::string&);
 
 using namespace std;
 
-// VITAE only features
+// AXIV only features
 // fundamentalnode
 bool fFundamentalNode = false;
 string strFundamentalNodePrivKey = "";
@@ -240,7 +240,7 @@ bool LogAcceptCategory(const char* category)
             const vector<string>& categories = mapMultiArgs["-debug"];
             ptrCategory.reset(new set<string>(categories.begin(), categories.end()));
             // thread_specific_ptr automatically deletes the set when the thread ends.
-            // "vitae" is a composite category enabling all VITAE-related debug output
+            // "vitae" is a composite category enabling all AXIV-related debug output
             if (ptrCategory->count(string("vitae"))) {
                 ptrCategory->insert(string("obfuscation"));
                 ptrCategory->insert(string("swiftx"));
@@ -427,13 +427,13 @@ void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
 boost::filesystem::path GetDefaultDataDir()
 {
     namespace fs = boost::filesystem;
-// Windows < Vista: C:\Documents and Settings\Username\Application Data\VITAE
-// Windows >= Vista: C:\Users\Username\AppData\Roaming\VITAE
-// Mac: ~/Library/Application Support/VITAE
+// Windows < Vista: C:\Documents and Settings\Username\Application Data\AXIV
+// Windows >= Vista: C:\Users\Username\AppData\Roaming\AXIV
+// Mac: ~/Library/Application Support/AXIV
 // Unix: ~/.vitae
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "VITAE";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "AXIV";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -445,7 +445,7 @@ boost::filesystem::path GetDefaultDataDir()
     // Mac
     pathRet /= "Library/Application Support";
     TryCreateDirectory(pathRet);
-    return pathRet / "VITAE";
+    return pathRet / "AXIV";
 #else
     // Unix
     return pathRet / ".vitae";

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  vitaed The VITAE core server.
+#  vitaed The AXIV core server.
 #
 #
 # chkconfig: 345 80 20

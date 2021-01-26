@@ -7,7 +7,7 @@
 #include "stakeinput.h"
 #include "wallet.h"
 
-//!VITAE Stake
+//!AXIV Stake
 bool CVitStake::SetInput(CTransaction txPrev, unsigned int n)
 {
     this->txFrom = txPrev;

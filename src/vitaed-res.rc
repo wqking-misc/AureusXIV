@@ -16,8 +16,8 @@ BEGIN
     BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
-            VALUE "CompanyName",        "VITAE"
-            VALUE "FileDescription",    "vitaed (OSS daemon/client for VITAE)"
+            VALUE "CompanyName",        "AXIV"
+            VALUE "FileDescription",    "vitaed (OSS daemon/client for AXIV)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
             VALUE "InternalName",       "vitaed"
             VALUE "LegalCopyright",     COPYRIGHT_STR

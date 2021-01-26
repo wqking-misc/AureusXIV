@@ -29,7 +29,7 @@
 #include <boost/filesystem/path.hpp>
 #include <boost/thread/exceptions.hpp>
 
-//VITAE only features
+//AXIV only features
 
 extern bool fFundamentalNode;
 extern bool fLiteMode;

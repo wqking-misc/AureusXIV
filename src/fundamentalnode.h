@@ -105,7 +105,7 @@ public:
 };
 
 //
-// The Fundamentalnode Class. For managing the Obfuscation process. It contains the input of the 10000 VITAE, signature to prove
+// The Fundamentalnode Class. For managing the Obfuscation process. It contains the input of the 10000 AXIV, signature to prove
 // it's the one who own that ip address and code for calculating the payment election.
 //
 class CFundamentalnode

@@ -1,5 +1,5 @@
 [Unit]
-Description=VITAE's distributed currency daemon
+Description=AXIV's distributed currency daemon
 After=network.target
 
 [Service]

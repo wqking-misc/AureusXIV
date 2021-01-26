@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The VITAE developers
+// Copyright (c) 2015-2017 The AXIV developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -19,18 +19,18 @@ BitcoinUnits::BitcoinUnits(QObject* parent) : QAbstractListModel(parent),
 QList<BitcoinUnits::Unit> BitcoinUnits::availableUnits()
 {
     QList<BitcoinUnits::Unit> unitlist;
-    unitlist.append(VITAE);
-    unitlist.append(mVITAE);
-    unitlist.append(uVITAE);
+    unitlist.append(AXIV);
+    unitlist.append(mAXIV);
+    unitlist.append(uAXIV);
     return unitlist;
 }
 
 bool BitcoinUnits::valid(int unit)
 {
     switch (unit) {
-    case VITAE:
-    case mVITAE:
-    case uVITAE:
+    case AXIV:
+    case mAXIV:
+    case uAXIV:
         return true;
     default:
         return false;
@@ -40,11 +40,11 @@ bool BitcoinUnits::valid(int unit)
 QString BitcoinUnits::id(int unit)
 {
     switch (unit) {
-    case VITAE:
+    case AXIV:
         return QString("vitae");
-    case mVITAE:
+    case mAXIV:
         return QString("mvitae");
-    case uVITAE:
+    case uAXIV:
         return QString::fromUtf8("uvitae");
     default:
         return QString("???");
@@ -55,23 +55,23 @@ QString BitcoinUnits::name(int unit)
 {
     if (Params().NetworkID() == CBaseChainParams::MAIN) {
         switch (unit) {
-        case VITAE:
-            return QString("VITAE");
-        case mVITAE:
-            return QString("mVITAE");
-        case uVITAE:
-            return QString::fromUtf8("μVIT");
+        case AXIV:
+            return QString("AXIV");
+        case mAXIV:
+            return QString("mAXIV");
+        case uAXIV:
+            return QString::fromUtf8("μAXIV");
         default:
             return QString("???");
         }
     } else {
         switch (unit) {
-        case VITAE:
-            return QString("tVIT");
-        case mVITAE:
-            return QString("mtVIT");
-        case uVITAE:
-            return QString::fromUtf8("μtVIT");
+        case AXIV:
+            return QString("tAXIV");
+        case mAXIV:
+            return QString("mtAXIV");
+        case uAXIV:
+            return QString::fromUtf8("μtAXIV");
         default:
             return QString("???");
         }
@@ -82,23 +82,23 @@ QString BitcoinUnits::description(int unit)
 {
     if (Params().NetworkID() == CBaseChainParams::MAIN) {
         switch (unit) {
-        case VITAE:
-            return QString("VITAE");
-        case mVITAE:
-            return QString("Milli-VITAE (1 / 1" THIN_SP_UTF8 "000)");
-        case uVITAE:
-            return QString("Micro-VITAE (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+        case AXIV:
+            return QString("AXIV");
+        case mAXIV:
+            return QString("Milli-AXIV (1 / 1" THIN_SP_UTF8 "000)");
+        case uAXIV:
+            return QString("Micro-AXIV (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
         default:
             return QString("???");
         }
     } else {
         switch (unit) {
-        case VITAE:
-            return QString("TestVITs");
-        case mVITAE:
-            return QString("Milli-TestVIT (1 / 1" THIN_SP_UTF8 "000)");
-        case uVITAE:
-            return QString("Micro-TestVIT (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+        case AXIV:
+            return QString("TestAXIVs");
+        case mAXIV:
+            return QString("Milli-TestAXIV (1 / 1" THIN_SP_UTF8 "000)");
+        case uAXIV:
+            return QString("Micro-TestAXIV (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
         default:
             return QString("???");
         }
@@ -108,11 +108,11 @@ QString BitcoinUnits::description(int unit)
 qint64 BitcoinUnits::factor(int unit)
 {
     switch (unit) {
-    case VITAE:
+    case AXIV:
         return 100000000;
-    case mVITAE:
+    case mAXIV:
         return 100000;
-    case uVITAE:
+    case uAXIV:
         return 100;
     default:
         return 100000000;
@@ -122,11 +122,11 @@ qint64 BitcoinUnits::factor(int unit)
 int BitcoinUnits::decimals(int unit)
 {
     switch (unit) {
-    case VITAE:
+    case AXIV:
         return 8;
-    case mVITAE:
+    case mAXIV:
         return 5;
-    case uVITAE:
+    case uAXIV:
         return 2;
     default:
         return 0;

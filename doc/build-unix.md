@@ -1,6 +1,6 @@
 UNIX BUILD NOTES
 ====================
-Some notes on how to build VITAE in Unix.
+Some notes on how to build AXIV in Unix.
 
 Note
 ---------------------
@@ -52,7 +52,7 @@ System requirements
 --------------------
 
 C++ compilers are memory-hungry. It is recommended to have at least 1 GB of
-memory available when compiling VITAE Core. With 512MB of memory or less
+memory available when compiling AXIV Core. With 512MB of memory or less
 compilation will take much longer due to swap thrashing.
 
 Dependency Build Instructions: Ubuntu & Debian
@@ -85,7 +85,7 @@ Optional:
 Dependencies for the GUI: Ubuntu & Debian
 -----------------------------------------
 
-If you want to build VITAE-Qt, make sure that the required packages for Qt development
+If you want to build AXIV-Qt, make sure that the required packages for Qt development
 are installed. Qt 5 is necessary to build the GUI.
 If both Qt 4 and Qt 5 are installed, Qt 5 will be used.
 To build without GUI pass `--without-gui`.
@@ -132,10 +132,10 @@ Berkeley DB
 It is recommended to use Berkeley DB 4.8. If you have to build it yourself:
 
 ```bash
-VITAE_ROOT=$(pwd)
+AXIV_ROOT=$(pwd)
 
 # Pick some path to install BDB to, here we create a directory within the vitae directory
-BDB_PREFIX="${VITAE_ROOT}/db4"
+BDB_PREFIX="${AXIV_ROOT}/db4"
 mkdir -p $BDB_PREFIX
 
 # Fetch the source and verify that it is not tampered with
@@ -150,8 +150,8 @@ cd db-4.8.30.NC/build_unix/
 ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PREFIX
 make install
 
-# Configure VITAE Core to use our own-built instance of BDB
-cd $VITAE_ROOT
+# Configure AXIV Core to use our own-built instance of BDB
+cd $AXIV_ROOT
 ./configure (other args...) LDFLAGS="-L${BDB_PREFIX}/lib/" CPPFLAGS="-I${BDB_PREFIX}/include/"
 ```
 
@@ -168,7 +168,7 @@ If you need to build Boost yourself:
 
 Security
 --------
-To help make your VITAE installation more secure by making certain attacks impossible to
+To help make your AXIV installation more secure by making certain attacks impossible to
 exploit even if a vulnerability is found, binaries are hardened by default.
 This can be disabled with:
 

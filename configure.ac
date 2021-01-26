@@ -19,9 +19,9 @@ BITCOIN_TX_NAME=vitae-tx
 
 AC_CANONICAL_HOST
 
-AH_TOP([#ifndef VIT_CONFIG_H])
-AH_TOP([#define VIT_CONFIG_H])
-AH_BOTTOM([#endif //VIT_CONFIG_H])
+AH_TOP([#ifndef AXIV_CONFIG_H])
+AH_TOP([#define AXIV_CONFIG_H])
+AH_BOTTOM([#endif //AXIV_CONFIG_H])
 
 dnl faketime breaks configure and is only needed for make. Disable it here.
 unset FAKETIME

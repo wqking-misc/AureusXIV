@@ -62,12 +62,12 @@
         <translation>Indirizzi di ricezione</translation>
     </message>
     <message>
-        <source>These are your VITAE addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Questi sono gli indirizzi VITAE per l'invio di pagamenti. Controlla sempre l'importo e l'indirizzo di ricezione prima di inviare valuta.</translation>
+        <source>These are your AXIV addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Questi sono gli indirizzi AXIV per l'invio di pagamenti. Controlla sempre l'importo e l'indirizzo di ricezione prima di inviare valuta.</translation>
     </message>
     <message>
-        <source>These are your VITAE addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Questi sono gli indirizzi VITAE per la ricezione di pagamenti. Si raccomanda di utilizzare un indirizzo diverso per ogni transazione.</translation>
+        <source>These are your AXIV addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Questi sono gli indirizzi AXIV per la ricezione di pagamenti. Si raccomanda di utilizzare un indirizzo diverso per ogni transazione.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -176,16 +176,16 @@
         <translation>Conferma cifratura portafoglio</translation>
     </message>
     <message>
-        <source>VITAE will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your VITs from being stolen by malware infecting your computer.</source>
-        <translation>VITAE verrà ora chiuso per completare il processo di cifratura. Ricorda che crittografare il tuo portafoglio non protegge completamente i tuoi VITAE dal furto da parte di software malevoli che potrebbero infettare il tuo computer.</translation>
+        <source>AXIV will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your AXIVs from being stolen by malware infecting your computer.</source>
+        <translation>AXIV verrà ora chiuso per completare il processo di cifratura. Ricorda che crittografare il tuo portafoglio non protegge completamente i tuoi AXIV dal furto da parte di software malevoli che potrebbero infettare il tuo computer.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
         <translation>Confermi di voler crittografare il portafoglio?</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VITAE&lt;/b&gt;!</source>
-        <translation>Attenzione: Se crittografi il portafoglio e poi perdi la parola d'ordine, &lt;b&gt;PERDERAI TUTTI I TUOI VITAE&lt;7b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR AXIV&lt;/b&gt;!</source>
+        <translation>Attenzione: Se crittografi il portafoglio e poi perdi la parola d'ordine, &lt;b&gt;PERDERAI TUTTI I TUOI AXIV&lt;7b&gt;!</translation>
     </message>
     <message>
         <source>Wallet encrypted</source>
@@ -247,8 +247,8 @@
         <translation>Indirizzo:</translation>
     </message>
     <message>
-        <source>The VITAE address to sign the message with</source>
-        <translation>L'indirizzo VITAE per firmare il messaggio con</translation>
+        <source>The AXIV address to sign the message with</source>
+        <translation>L'indirizzo AXIV per firmare il messaggio con</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -279,8 +279,8 @@
         <translation>Copiare la firma corrente negli Appunti di sistema</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this VITAE address</source>
-        <translation>Firmare il messaggio per dimostrare di possedere questo indirizzo VITAE</translation>
+        <source>Sign the message to prove you own this AXIV address</source>
+        <translation>Firmare il messaggio per dimostrare di possedere questo indirizzo AXIV</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -303,12 +303,12 @@
         <translation>Immettere la chiave privata codificata BIP 38. Inserire la passphrase nella casella centrale. Fare clic su Decripta Chiave per calcolare la chiave privata. Dopo che la chiave viene decrittata, cliccando su "Importa indirizzo" verrà aggiunta questa chiave privata al portafoglio.</translation>
     </message>
     <message>
-        <source>The VITAE address the message was signed with</source>
-        <translation>L'indirizzo VITAE con cui è stato firmato il messaggio</translation>
+        <source>The AXIV address the message was signed with</source>
+        <translation>L'indirizzo AXIV con cui è stato firmato il messaggio</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified VITAE address</source>
-        <translation>Verificare il messaggio per assicurarsi che sia stato firmato con l'indirizzo VITAE specificato </translation>
+        <source>Verify the message to ensure it was signed with the specified AXIV address</source>
+        <translation>Verificare il messaggio per assicurarsi che sia stato firmato con l'indirizzo AXIV specificato </translation>
     </message>
     <message>
         <source>Decrypt &amp;Key</source>
@@ -590,12 +590,12 @@
         <translation>Schede degli strumenti</translation>
     </message>
     <message>
-        <source>VITAE Core</source>
-        <translation>VITAE Core</translation>
+        <source>AXIV Core</source>
+        <translation>AXIV Core</translation>
     </message>
     <message>
-        <source>Send coins to a VITAE address</source>
-        <translation>Invia monete all' indirizzo VITAE</translation>
+        <source>Send coins to a AXIV address</source>
+        <translation>Invia monete all' indirizzo AXIV</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and vitae: URIs)</source>
@@ -610,24 +610,24 @@
         <translation>Esplora i masternodes</translation>
     </message>
     <message>
-        <source>&amp;About VITAE Core</source>
-        <translation>&amp;Informazioni VITAE Core</translation>
+        <source>&amp;About AXIV Core</source>
+        <translation>&amp;Informazioni AXIV Core</translation>
     </message>
     <message>
-        <source>Show information about VITAE Core</source>
-        <translation>Visualizza informazioni su VITAE Core</translation>
+        <source>Show information about AXIV Core</source>
+        <translation>Visualizza informazioni su AXIV Core</translation>
     </message>
     <message>
-        <source>Modify configuration options for VITAE</source>
-        <translation>Modifica le opzioni di configurazione per VITAE</translation>
+        <source>Modify configuration options for AXIV</source>
+        <translation>Modifica le opzioni di configurazione per AXIV</translation>
     </message>
     <message>
-        <source>Sign messages with your VITAE addresses to prove you own them</source>
-        <translation>Firma i messaggi con i tuoi indirizzi VITAE per dimostrare di essere il proprietario </translation>
+        <source>Sign messages with your AXIV addresses to prove you own them</source>
+        <translation>Firma i messaggi con i tuoi indirizzi AXIV per dimostrare di essere il proprietario </translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified VITAE addresses</source>
-        <translation>Verifica i messaggi per assicurarsi che siano stati firmati con indirizzi VITAE specifici</translation>
+        <source>Verify messages to ensure they were signed with specified AXIV addresses</source>
+        <translation>Verifica i messaggi per assicurarsi che siano stati firmati con indirizzi AXIV specifici</translation>
     </message>
     <message>
         <source>Encrypt and decrypt private keys using a passphrase</source>
@@ -638,16 +638,16 @@
         <translation>Impostazioni MultiSend</translation>
     </message>
     <message>
-        <source>Open a VITAE: URI or payment request</source>
-        <translation>Apri un VITAE: URI o richiesta di pagamento</translation>
+        <source>Open a AXIV: URI or payment request</source>
+        <translation>Apri un AXIV: URI o richiesta di pagamento</translation>
     </message>
     <message>
         <source>Block explorer window</source>
         <translation>Finestra Block Explorer</translation>
     </message>
     <message>
-        <source>Show the VITAE Core help message to get a list with possible VITAE command-line options</source>
-        <translation>Mostra il messaggio di aiuto VITAE Core per ottenere un elenco con le possibili opzioni di riga di comando VITAE</translation>
+        <source>Show the AXIV Core help message to get a list with possible AXIV command-line options</source>
+        <translation>Mostra il messaggio di aiuto AXIV Core per ottenere un elenco con le possibili opzioni di riga di comando AXIV</translation>
     </message>
     <message>
         <source>Synchronizing with network...</source>
@@ -888,8 +888,8 @@ MultiSend: %1</translation>
         <translation>versione</translation>
     </message>
     <message>
-        <source>VITAE Core</source>
-        <translation>VITAE Core</translation>
+        <source>AXIV Core</source>
+        <translation>AXIV Core</translation>
     </message>
     <message>
         <source>(%1-bit)</source>
@@ -915,8 +915,8 @@ MultiSend: %1</translation>
         <translation>Benvenuto</translation>
     </message>
     <message>
-        <source>VITAE Core</source>
-        <translation>VITAE Core</translation>
+        <source>AXIV Core</source>
+        <translation>AXIV Core</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1144,8 +1144,8 @@ MultiSend: %1</translation>
 <context>
     <name>SignVerifyMessageDialog</name>
     <message>
-        <source>The VITAE address to sign the message with</source>
-        <translation>L'indirizzo VITAE per firmare il messaggio con</translation>
+        <source>The AXIV address to sign the message with</source>
+        <translation>L'indirizzo AXIV per firmare il messaggio con</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -1168,16 +1168,16 @@ MultiSend: %1</translation>
         <translation>Copiare la firma corrente negli Appunti di sistema</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this VITAE address</source>
-        <translation>Firmare il messaggio per dimostrare di possedere questo indirizzo VITAE</translation>
+        <source>Sign the message to prove you own this AXIV address</source>
+        <translation>Firmare il messaggio per dimostrare di possedere questo indirizzo AXIV</translation>
     </message>
     <message>
-        <source>The VITAE address the message was signed with</source>
-        <translation>L'indirizzo VITAE con cui è stato firmato il messaggio</translation>
+        <source>The AXIV address the message was signed with</source>
+        <translation>L'indirizzo AXIV con cui è stato firmato il messaggio</translation>
     </message>
     <message>
-        <source>Verify the message to ensure it was signed with the specified VITAE address</source>
-        <translation>Verificare il messaggio per assicurarsi che sia stato firmato con l'indirizzo VITAE specificato </translation>
+        <source>Verify the message to ensure it was signed with the specified AXIV address</source>
+        <translation>Verificare il messaggio per assicurarsi che sia stato firmato con l'indirizzo AXIV specificato </translation>
     </message>
     <message>
         <source>Reset all sign message fields</source>
@@ -1215,8 +1215,8 @@ MultiSend: %1</translation>
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>VITAE Core</source>
-        <translation>VITAE Core</translation>
+        <source>AXIV Core</source>
+        <translation>AXIV Core</translation>
     </message>
     </context>
 <context>

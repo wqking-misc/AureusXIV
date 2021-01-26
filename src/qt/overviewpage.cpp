@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The VITAE developers
+// Copyright (c) 2015-2017 The AXIV developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -35,7 +35,7 @@ class TxViewDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
 public:
-    TxViewDelegate() : QAbstractItemDelegate(), unit(BitcoinUnits::VITAE)
+    TxViewDelegate() : QAbstractItemDelegate(), unit(BitcoinUnits::AXIV)
     {
     }
 
@@ -161,14 +161,14 @@ OverviewPage::~OverviewPage()
     delete ui;
 }
 
-void OverviewPage::getPercentage(CAmount nUnlockedBalance, QString& sVITPercentage)
+void OverviewPage::getPercentage(CAmount nUnlockedBalance, QString& sAXIVPercentage)
 {
     int nPrecision = 2;
     double dzPercentage = 0.0;
 
     double dPercentage = 100.0 - dzPercentage;
     
-    sVITPercentage = "(" + QLocale(QLocale::system()).toString(dPercentage, 'f', nPrecision) + " %)";
+    sAXIVPercentage = "(" + QLocale(QLocale::system()).toString(dPercentage, 'f', nPrecision) + " %)";
     
 }
 
@@ -188,7 +188,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
         nLockedBalance = pwalletMain->GetLockedCoins();
         nWatchOnlyLockedBalance = pwalletMain->GetLockedWatchOnlyBalance();
     }
-    // VITAE Balance
+    // AXIV Balance
     CAmount nTotalBalance = balance + unconfirmedBalance;
     CAmount vitAvailableBalance = balance - immatureBalance - nLockedBalance;
     CAmount nTotalWatchBalance = watchOnlyBalance + watchUnconfBalance + watchImmatureBalance;    
@@ -201,7 +201,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     CAmount availableTotalBalance = vitAvailableBalance;
     CAmount sumTotalBalance = nTotalBalance;
 
-    // VITAE labels
+    // AXIV labels
     ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, vitAvailableBalance, false, BitcoinUnits::separatorAlways));
     ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedBalance, false, BitcoinUnits::separatorAlways));
     ui->labelImmature->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, immatureBalance, false, BitcoinUnits::separatorAlways));
@@ -220,7 +220,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     ui->labelTotalz->setText(BitcoinUnits::floorHtmlWithUnit(sumTotalBalance, false, BitcoinUnits::separatorAlways));
 
     // Percentage labels
-    ui->labelVITPercent->setText(sPercentage);
+    ui->labelAXIVPercent->setText(sPercentage);
 
 
     // Only show most balances if they are non-zero for the sake of simplicity
@@ -229,29 +229,29 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     bool showSumAvailable = settingShowAllBalances || sumTotalBalance != availableTotalBalance;
     ui->labelBalanceTextz->setVisible(showSumAvailable);
     ui->labelBalancez->setVisible(showSumAvailable);
-    bool showVITAvailable = settingShowAllBalances || vitAvailableBalance != nTotalBalance;
-    bool showWatchOnlyVITAvailable = watchOnlyBalance != nTotalWatchBalance;
-    bool showVITPending = settingShowAllBalances || unconfirmedBalance != 0;
-    bool showWatchOnlyVITPending = watchUnconfBalance != 0;
-    bool showVITLocked = settingShowAllBalances || nLockedBalance != 0;
-    bool showWatchOnlyVITLocked = nWatchOnlyLockedBalance != 0;
+    bool showAXIVAvailable = settingShowAllBalances || vitAvailableBalance != nTotalBalance;
+    bool showWatchOnlyAXIVAvailable = watchOnlyBalance != nTotalWatchBalance;
+    bool showAXIVPending = settingShowAllBalances || unconfirmedBalance != 0;
+    bool showWatchOnlyAXIVPending = watchUnconfBalance != 0;
+    bool showAXIVLocked = settingShowAllBalances || nLockedBalance != 0;
+    bool showWatchOnlyAXIVLocked = nWatchOnlyLockedBalance != 0;
     bool showImmature = settingShowAllBalances || immatureBalance != 0;
     bool showWatchOnlyImmature = watchImmatureBalance != 0;
     bool showWatchOnly = nTotalWatchBalance != 0;
-    ui->labelBalance->setVisible(showVITAvailable || showWatchOnlyVITAvailable);
-    ui->labelBalanceText->setVisible(showVITAvailable || showWatchOnlyVITAvailable);
-    ui->labelWatchAvailable->setVisible(showVITAvailable && showWatchOnly);
-    ui->labelUnconfirmed->setVisible(showVITPending || showWatchOnlyVITPending);
-    ui->labelPendingText->setVisible(showVITPending || showWatchOnlyVITPending);
-    ui->labelWatchPending->setVisible(showVITPending && showWatchOnly);
-    ui->labelLockedBalance->setVisible(showVITLocked || showWatchOnlyVITLocked);
-    ui->labelLockedBalanceText->setVisible(showVITLocked || showWatchOnlyVITLocked);
-    ui->labelWatchLocked->setVisible(showVITLocked && showWatchOnly);
+    ui->labelBalance->setVisible(showAXIVAvailable || showWatchOnlyAXIVAvailable);
+    ui->labelBalanceText->setVisible(showAXIVAvailable || showWatchOnlyAXIVAvailable);
+    ui->labelWatchAvailable->setVisible(showAXIVAvailable && showWatchOnly);
+    ui->labelUnconfirmed->setVisible(showAXIVPending || showWatchOnlyAXIVPending);
+    ui->labelPendingText->setVisible(showAXIVPending || showWatchOnlyAXIVPending);
+    ui->labelWatchPending->setVisible(showAXIVPending && showWatchOnly);
+    ui->labelLockedBalance->setVisible(showAXIVLocked || showWatchOnlyAXIVLocked);
+    ui->labelLockedBalanceText->setVisible(showAXIVLocked || showWatchOnlyAXIVLocked);
+    ui->labelWatchLocked->setVisible(showAXIVLocked && showWatchOnly);
     ui->labelImmature->setVisible(showImmature || showWatchOnlyImmature); // for symmetry reasons also show immature label when the watch-only one is shown
     ui->labelImmatureText->setVisible(showImmature || showWatchOnlyImmature);
     ui->labelWatchImmature->setVisible(showImmature && showWatchOnly); // show watch-only immature balance
     bool showPercentages = ! (nTotalBalance == 0);
-    ui->labelVITPercent->setVisible(showPercentages);
+    ui->labelAXIVPercent->setVisible(showPercentages);
 
     static int cachedTxLocks = 0;
 
@@ -321,7 +321,7 @@ void OverviewPage::setWalletModel(WalletModel* model)
         connect(model, SIGNAL(notifyWatchonlyChanged(bool)), this, SLOT(updateWatchOnlyLabels(bool)));
     }
 
-    // update the display unit, to not use the default ("VITAE")
+    // update the display unit, to not use the default ("AXIV")
     updateDisplayUnit();
 }
 

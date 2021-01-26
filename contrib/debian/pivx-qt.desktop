@@ -1,9 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=VITAE
-Comment=VITAE P2P Cryptocurrency
-Comment[fr]=VITAE, monnaie virtuelle cryptographique pair à pair
-Comment[tr]=VITAE, eşten eşe kriptografik sanal para birimi
+Name=AXIV
+Comment=AXIV P2P Cryptocurrency
+Comment[fr]=AXIV, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=AXIV, eşten eşe kriptografik sanal para birimi
 Exec=vitae-qt %u
 Terminal=false
 Type=Application

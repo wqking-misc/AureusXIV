@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2017 The PIVX developers
-// Copyright (c) 2018 The VITAE developers
+// Copyright (c) 2018 The AXIV developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -264,11 +264,11 @@ UniValue stop(const UniValue& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "stop\n"
-            "\nStop VITAE server.");
+            "\nStop AXIV server.");
     // Event loop will exit after current HTTP requests have been handled, so
     // this reply will get back to the client.
     StartShutdown();
-    return "VITAE server stopping";
+    return "AXIV server stopping";
 }
 
 
@@ -350,7 +350,7 @@ static const CRPCCommand vRPCCommands[] =
         {"hidden", "reconsiderblock", &reconsiderblock, true, true, false},
         {"hidden", "setmocktime", &setmocktime, true, false, false},
 
-        /* VITAE features */
+        /* AXIV features */
         {"vitae", "fundamentalnode", &fundamentalnode, true, true, false},
         {"vitae", "listfundamentalnodes", &listfundamentalnodes, true, true, false},
         {"vitae", "getfundamentalnodecount", &getfundamentalnodecount, true, true, false},

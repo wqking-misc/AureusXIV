@@ -148,8 +148,8 @@
         <translation>Czy na pewno chcesz zakodować portfel?</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VITAE&lt;/b&gt;!</source>
-        <translation>Ostrzeżenie: Jeżeli zakodujesz portfel i stracisz do niego hasło , UTRACISZ WSZYSTKIE VITAE!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR AXIV&lt;/b&gt;!</source>
+        <translation>Ostrzeżenie: Jeżeli zakodujesz portfel i stracisz do niego hasło , UTRACISZ WSZYSTKIE AXIV!</translation>
     </message>
     <message>
         <source>Wallet encrypted</source>
@@ -227,8 +227,8 @@
         <translation>Zakodowany klucz:</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this VITAE address</source>
-        <translation>Zatwierdź wiadomość, aby udowodnić, że podany adres VITAE jest w twoim posiadaniu</translation>
+        <source>Sign the message to prove you own this AXIV address</source>
+        <translation>Zatwierdź wiadomość, aby udowodnić, że podany adres AXIV jest w twoim posiadaniu</translation>
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
@@ -518,12 +518,12 @@
         <translation>&amp;Pomoc</translation>
     </message>
     <message>
-        <source>VITAE Core</source>
-        <translation>&amp;Rdzeń VITAE</translation>
+        <source>AXIV Core</source>
+        <translation>&amp;Rdzeń AXIV</translation>
     </message>
     <message>
-        <source>Send coins to a VITAE address</source>
-        <translation>Wyślij monety do adresu VITAE</translation>
+        <source>Send coins to a AXIV address</source>
+        <translation>Wyślij monety do adresu AXIV</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and vitae: URIs)</source>
@@ -538,24 +538,24 @@
         <translation>Przeglądaj masternodes</translation>
     </message>
     <message>
-        <source>&amp;About VITAE Core</source>
+        <source>&amp;About AXIV Core</source>
         <translation>&amp;O rdzeniu bitcoina</translation>
     </message>
     <message>
-        <source>Show information about VITAE Core</source>
+        <source>Show information about AXIV Core</source>
         <translation>Pokaż informacje o rdzeniu bitcoina</translation>
     </message>
     <message>
-        <source>Modify configuration options for VITAE</source>
-        <translation>Modyfikuj opcje konfiguracji VITAE</translation>
+        <source>Modify configuration options for AXIV</source>
+        <translation>Modyfikuj opcje konfiguracji AXIV</translation>
     </message>
     <message>
-        <source>Sign messages with your VITAE addresses to prove you own them</source>
-        <translation>Zatwierdź wiadomość z twoimi adresami VITAE, by udowodnić, że jesteś w ich posiadaniu</translation>
+        <source>Sign messages with your AXIV addresses to prove you own them</source>
+        <translation>Zatwierdź wiadomość z twoimi adresami AXIV, by udowodnić, że jesteś w ich posiadaniu</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified VITAE addresses</source>
-        <translation>Zweryfikuj wiadomości by upewnić się, że zostały zatwierdzone z podanego adresu VITAE</translation>
+        <source>Verify messages to ensure they were signed with specified AXIV addresses</source>
+        <translation>Zweryfikuj wiadomości by upewnić się, że zostały zatwierdzone z podanego adresu AXIV</translation>
     </message>
     <message>
         <source>&amp;BIP38 tool</source>
@@ -582,8 +582,8 @@
         <translation>Otwórz &amp;Plik konfiguracji Masternode</translation>
     </message>
     <message>
-        <source>Open a VITAE: URI or payment request</source>
-        <translation>Otwórz VITAE: URI i żądanie zapłaty</translation>
+        <source>Open a AXIV: URI or payment request</source>
+        <translation>Otwórz AXIV: URI i żądanie zapłaty</translation>
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
@@ -594,12 +594,12 @@
         <translation>Okno eksplorera bloków</translation>
     </message>
     <message>
-        <source>Show the VITAE Core help message to get a list with possible VITAE command-line options</source>
-        <translation>Pokaż wiadomość pomocy rdzenia VITAE, aby dostać listę możliwych opcji VITAE command-line</translation>
+        <source>Show the AXIV Core help message to get a list with possible AXIV command-line options</source>
+        <translation>Pokaż wiadomość pomocy rdzenia AXIV, aby dostać listę możliwych opcji AXIV command-line</translation>
     </message>
     <message>
-        <source>VITAE Core client</source>
-        <translation>Rdzeń VITAE klient</translation>
+        <source>AXIV Core client</source>
+        <translation>Rdzeń AXIV klient</translation>
     </message>
     <message>
         <source>Synchronizing with network...</source>
@@ -912,8 +912,8 @@ MultiWysyłlka: %1</translation>
 <context>
     <name>HelpMessageDialog</name>
     <message>
-        <source>VITAE Core</source>
-        <translation>&amp;Rdzeń VITAE</translation>
+        <source>AXIV Core</source>
+        <translation>&amp;Rdzeń AXIV</translation>
     </message>
     </context>
 <context>
@@ -927,8 +927,8 @@ MultiWysyłlka: %1</translation>
         <translation>Użyj niestandardowej ścieżki danych</translation>
     </message>
     <message>
-        <source>VITAE Core</source>
-        <translation>&amp;Rdzeń VITAE</translation>
+        <source>AXIV Core</source>
+        <translation>&amp;Rdzeń AXIV</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1188,12 +1188,12 @@ Proszę sprawdzić adres i spróbować ponownie</translation>
         <translation>Zezwól na przychodzące połączenia</translation>
     </message>
     <message>
-        <source>Automatically start VITAE after logging in to the system.</source>
-        <translation>Automatycznie uruchom VITAE po zalogowaniu do systemu</translation>
+        <source>Automatically start AXIV after logging in to the system.</source>
+        <translation>Automatycznie uruchom AXIV po zalogowaniu do systemu</translation>
     </message>
     <message>
-        <source>&amp;Start VITAE on system login</source>
-        <translation>&amp;Uruchom VITAE podczas logowania do systemu</translation>
+        <source>&amp;Start AXIV on system login</source>
+        <translation>&amp;Uruchom AXIV podczas logowania do systemu</translation>
     </message>
     <message>
         <source>Whether to show coin control features or not.</source>
@@ -1212,8 +1212,8 @@ Proszę sprawdzić adres i spróbować ponownie</translation>
         <translation>&amp;Sieć</translation>
     </message>
     <message>
-        <source>The user interface language can be set here. This setting will take effect after restarting VITAE.</source>
-        <translation>Język interfejsu użytkownika może być wybrany tutaj. Ustawienia ulegną zmianie po restarcie VITAE</translation>
+        <source>The user interface language can be set here. This setting will take effect after restarting AXIV.</source>
+        <translation>Język interfejsu użytkownika może być wybrany tutaj. Ustawienia ulegną zmianie po restarcie AXIV</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
@@ -1222,8 +1222,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations</source>
 https://www.transifex.com/vitae-project/vitae-project-translations </translation>
     </message>
     <message>
-        <source>Connect to the VITAE network through a SOCKS5 proxy.</source>
-        <translation>Połącz z siecią VITAE poprzez SOCKS5 proxy.</translation>
+        <source>Connect to the AXIV network through a SOCKS5 proxy.</source>
+        <translation>Połącz z siecią AXIV poprzez SOCKS5 proxy.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -1461,8 +1461,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations </translation
         <translation>Liczba</translation>
     </message>
     <message>
-        <source>Enter a VITAE address (e.g. %1)</source>
-        <translation>Wprowadź adres VITAE (np. %1)</translation>
+        <source>Enter a AXIV address (e.g. %1)</source>
+        <translation>Wprowadź adres AXIV (np. %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -1900,8 +1900,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations </translation
         <translation>Alt+P</translation>
     </message>
     <message>
-        <source>Sign the message to prove you own this VITAE address</source>
-        <translation>Zatwierdź wiadomość, aby udowodnić, że podany adres VITAE jest w twoim posiadaniu</translation>
+        <source>Sign the message to prove you own this AXIV address</source>
+        <translation>Zatwierdź wiadomość, aby udowodnić, że podany adres AXIV jest w twoim posiadaniu</translation>
     </message>
     <message>
         <source>Clear &amp;All</source>
@@ -1935,8 +1935,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations </translation
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>VITAE Core</source>
-        <translation>&amp;Rdzeń VITAE</translation>
+        <source>AXIV Core</source>
+        <translation>&amp;Rdzeń AXIV</translation>
     </message>
     </context>
 <context>

@@ -1148,7 +1148,7 @@ qproperty-alignment: 'AlignVCenter | AlignRight';
 background-repeat: no-repeat;
 }
 
-QWidget .QFrame#frame_Header { /* Header with Page-Title and VITAE-image */
+QWidget .QFrame#frame_Header { /* Header with Page-Title and AXIV-image */
 min-width:400px;
 background-color:transparent;
 }
@@ -1196,7 +1196,7 @@ font-weight:normal;
 /* min-height:30px; */
 }
 
-QWidget .QFrame#frame_Balances .QLabel#label_5 { /* VITAE Balances Label */
+QWidget .QFrame#frame_Balances .QLabel#label_5 { /* AXIV Balances Label */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 min-width:160px;
 background-color:transparent;
@@ -1320,7 +1320,7 @@ font-size:16px;
 margin-left:16px;
 }
 
-QWidget .QFrame#frame_Balances .QLabel#labelLockedBalanceText { /* Available zVITAE Label */
+QWidget .QFrame#frame_Balances .QLabel#labelLockedBalanceText { /* Available zAXIV Label */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 min-width:160px;
 color: #f9ffdc;
@@ -1330,7 +1330,7 @@ font-weight:bold;
 font-size:12px;
 }
 
-QWidget .QFrame#frame_Balances .QLabel#labelLockedBalance { /* Available zVITAE Balance */
+QWidget .QFrame#frame_Balances .QLabel#labelLockedBalance { /* Available zAXIV Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:12px;
 font-weight:bold;
@@ -1338,7 +1338,7 @@ color: #f9ffdc;
 margin-left:0px;
 }
 
-QWidget .QFrame#frame_Balances .QLabel#labelWatchLocked { /* Available zVITAE Balance */
+QWidget .QFrame#frame_Balances .QLabel#labelWatchLocked { /* Available zAXIV Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:12px;
 margin-left:16px;
@@ -1357,7 +1357,7 @@ margin-right:5px;
 padding-right:5px;
 }
 
-QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceText { /* Available zVITAE Label */
+QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceText { /* Available zAXIV Label */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 min-width:160px;
 color: #f9ffdc;
@@ -1367,7 +1367,7 @@ font-weight:bold;
 font-size:12px;
 }
 
-QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalance { /* Available zVITAE Balance */
+QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalance { /* Available zAXIV Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:12px;
 font-weight:bold;
@@ -1375,7 +1375,7 @@ color: #f9ffdc;
 margin-left:0px;
 }
 
-QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceUnconfirmedText { /* Unconfirmed zVITAE Label */
+QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceUnconfirmedText { /* Unconfirmed zAXIV Label */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 min-width:160px;
 color: #f9ffdc;
@@ -1385,7 +1385,7 @@ font-weight:bold;
 font-size:12px;
 }
 
-QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceUnconfirmed { /* Unconfirmed zVITAE Balance */
+QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceUnconfirmed { /* Unconfirmed zAXIV Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:12px;
 font-weight:bold;
@@ -1393,7 +1393,7 @@ color: #f9ffdc;
 margin-left:0px;
 }
 
-QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceMatureText { /* Mature zVITAE Label */
+QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceMatureText { /* Mature zAXIV Label */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 min-width:160px;
 color: #f9ffdc;
@@ -1403,7 +1403,7 @@ font-weight:bold;
 font-size:12px;
 }
 
-QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceMature { /* Mature zVITAE Balance */
+QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceMature { /* Mature zAXIV Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:12px;
 font-weight:bold;
@@ -1411,7 +1411,7 @@ color: #f9ffdc;
 margin-left:0px;
 }
 
-QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceImmatureText { /* Immature zVITAE Label */
+QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceImmatureText { /* Immature zAXIV Label */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 min-width:160px;
 color: #f9ffdc;
@@ -1421,7 +1421,7 @@ font-weight:bold;
 font-size:12px;
 }
 
-QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceImmature { /* Immature zVITAE Balance */
+QWidget .QFrame#frame_ZerocoinBalances .QLabel#labelzBalanceImmature { /* Immature zAXIV Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:12px;
 font-weight:bold;
@@ -1440,7 +1440,7 @@ margin-right:5px;
 padding-right:5px;
 }
 
-QWidget .QFrame#frame_CombinedBalances .QLabel#labelBalanceTextz { /* Available VITAE Label */
+QWidget .QFrame#frame_CombinedBalances .QLabel#labelBalanceTextz { /* Available AXIV Label */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 min-width:160px;
 color: #f9ffdc;
@@ -1450,14 +1450,14 @@ font-weight:bold;
 font-size:12px;
 }
 
-QWidget .QFrame#frame_CombinedBalances .QLabel#labelBalancez { /* Available VITAE Balance */
+QWidget .QFrame#frame_CombinedBalances .QLabel#labelBalancez { /* Available AXIV Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:26px;
 font-weight:normal;
 color: #f9ffdc;
 }
 
-QWidget .QFrame#frame_CombinedBalances .QLabel#labelzBalanceTextz { /* Available zVITAE Label */
+QWidget .QFrame#frame_CombinedBalances .QLabel#labelzBalanceTextz { /* Available zAXIV Label */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 min-width:160px;
 color: #f9ffdc;
@@ -1467,7 +1467,7 @@ font-weight:bold;
 font-size:12px;
 }
 
-QWidget .QFrame#frame_CombinedBalances .QLabel#labelzBalancez { /* Available zVITAE Balance */
+QWidget .QFrame#frame_CombinedBalances .QLabel#labelzBalancez { /* Available zAXIV Balance */
 qproperty-alignment: 'AlignVCenter | AlignLeft';
 font-size:12px;
 font-weight:bold;

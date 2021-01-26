@@ -164,8 +164,8 @@
         <translation>Estàs segur que vols encriptar el moneder?</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VITAE&lt;/b&gt;!</source>
-        <translation>Avís: Si encripteu el vostre moneder i perdeu la contrasenya, &lt;b&gt;PERDREU TOTS ELS VOSTRES VITS&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR AXIV&lt;/b&gt;!</source>
+        <translation>Avís: Si encripteu el vostre moneder i perdeu la contrasenya, &lt;b&gt;PERDREU TOTS ELS VOSTRES AXIVS&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Wallet encrypted</source>
@@ -354,12 +354,12 @@
         <translation>A&amp;juda</translation>
     </message>
     <message>
-        <source>VITAE Core</source>
-        <translation>VITAE Core</translation>
+        <source>AXIV Core</source>
+        <translation>AXIV Core</translation>
     </message>
     <message>
-        <source>&amp;About VITAE Core</source>
-        <translation>&amp;Sobre VITAE Core</translation>
+        <source>&amp;About AXIV Core</source>
+        <translation>&amp;Sobre AXIV Core</translation>
     </message>
     <message>
         <source>&amp;BIP38 tool</source>
@@ -552,12 +552,12 @@
         <translation>versió</translation>
     </message>
     <message>
-        <source>VITAE Core</source>
-        <translation>VITAE Core</translation>
+        <source>AXIV Core</source>
+        <translation>AXIV Core</translation>
     </message>
     <message>
-        <source>About VITAE Core</source>
-        <translation>Sobre VITAE Core</translation>
+        <source>About AXIV Core</source>
+        <translation>Sobre AXIV Core</translation>
     </message>
     <message>
         <source>Usage:</source>
@@ -575,12 +575,12 @@
         <translation>Benvingut</translation>
     </message>
     <message>
-        <source>Welcome to VITAE Core.</source>
-        <translation>Benvingut a VITAE Core.</translation>
+        <source>Welcome to AXIV Core.</source>
+        <translation>Benvingut a AXIV Core.</translation>
     </message>
     <message>
-        <source>VITAE Core</source>
-        <translation>VITAE Core</translation>
+        <source>AXIV Core</source>
+        <translation>AXIV Core</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1147,8 +1147,8 @@
 <context>
     <name>SplashScreen</name>
     <message>
-        <source>VITAE Core</source>
-        <translation>VITAE Core</translation>
+        <source>AXIV Core</source>
+        <translation>AXIV Core</translation>
     </message>
     <message>
         <source>Version %1</source>

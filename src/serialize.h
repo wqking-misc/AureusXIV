@@ -2,12 +2,12 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2017 The PIVX developers
-// Copyright (c) 2018 The VITAE developers
+// Copyright (c) 2018 The AXIV developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef VITAE_SERIALIZE_H
-#define VITAE_SERIALIZE_H
+#ifndef AXIV_SERIALIZE_H
+#define AXIV_SERIALIZE_H
 
 #include <algorithm>
 #include <assert.h>
@@ -931,4 +931,4 @@ public:
     }
 };
 
-#endif // VITAE_SERIALIZE_H
+#endif // AXIV_SERIALIZE_H

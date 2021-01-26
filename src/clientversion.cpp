@@ -13,7 +13,7 @@
  * for both vitaed and vitae-qt, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("VITAE Core");
+const std::string CLIENT_NAME("AXIV Core");
 
 /**
  * Client version number

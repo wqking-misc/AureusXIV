@@ -511,7 +511,7 @@
           </font>
          </property>
          <property name="toolTip">
-          <string>Open the VITAE debug log file from the current data directory. This can take a few seconds for large log files.</string>
+          <string>Open the AXIV debug log file from the current data directory. This can take a few seconds for large log files.</string>
          </property>
          <property name="text">
           <string>&amp;Open</string>

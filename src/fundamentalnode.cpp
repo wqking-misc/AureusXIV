@@ -660,12 +660,12 @@ bool CFundamentalnodeBroadcast::CheckInputsAndAdd(int& nDoS)
     }
 
     // verify that sig time is legit in past
-    // should be at least not earlier than block when 1000 VITAE tx got FUNDAMENTALNODE_MIN_CONFIRMATIONS
+    // should be at least not earlier than block when 1000 AXIV tx got FUNDAMENTALNODE_MIN_CONFIRMATIONS
 
 
     BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
     if (mi != mapBlockIndex.end() && (*mi).second) {
-        CBlockIndex* pMNIndex = (*mi).second;                                                        // block for 1000 VITAE tx -> 1 confirmation
+        CBlockIndex* pMNIndex = (*mi).second;                                                        // block for 1000 AXIV tx -> 1 confirmation
         CBlockIndex* pConfIndex = chainActive[pMNIndex->nHeight + FUNDAMENTALNODE_MIN_CONFIRMATIONS - 1]; // block where tx got FUNDAMENTALNODE_MIN_CONFIRMATIONS
         if (pConfIndex->GetBlockTime() > sigTime) {
             LogPrint("fundamentalnode","mnb - Bad sigTime %d for Fundamentalnode %s (%i conf block is at %d)\n",

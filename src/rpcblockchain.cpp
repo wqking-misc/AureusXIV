@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2017 The PIVX developers
-// Copyright (c) 2018 The VITAE developers
+// Copyright (c) 2018 The AXIV developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -313,17 +313,17 @@ UniValue getblock(const UniValue& params, bool fHelp)
             "  \"previousblockhash\" : \"hash\",  (string) The hash of the previous block\n"
             "  \"nextblockhash\" : \"hash\"       (string) The hash of the next block\n"
             "  \"moneysupply\" : \"supply\"       (numeric) The money supply when this block was added to the blockchain\n"
-            "  \"zVITAEsupply\" :\n"
+            "  \"zAXIVsupply\" :\n"
             "  {\n"
-            "     \"1\" : n,            (numeric) supply of 1 zVITAE denomination\n"
-            "     \"5\" : n,            (numeric) supply of 5 zVITAE denomination\n"
-            "     \"10\" : n,           (numeric) supply of 10 zVITAE denomination\n"
-            "     \"50\" : n,           (numeric) supply of 50 zVITAE denomination\n"
-            "     \"100\" : n,          (numeric) supply of 100 zVITAE denomination\n"
-            "     \"500\" : n,          (numeric) supply of 500 zVITAE denomination\n"
-            "     \"1000\" : n,         (numeric) supply of 1000 zVITAE denomination\n"
-            "     \"5000\" : n,         (numeric) supply of 5000 zVITAE denomination\n"
-            "     \"total\" : n,        (numeric) The total supply of all zVITAE denominations\n"
+            "     \"1\" : n,            (numeric) supply of 1 zAXIV denomination\n"
+            "     \"5\" : n,            (numeric) supply of 5 zAXIV denomination\n"
+            "     \"10\" : n,           (numeric) supply of 10 zAXIV denomination\n"
+            "     \"50\" : n,           (numeric) supply of 50 zAXIV denomination\n"
+            "     \"100\" : n,          (numeric) supply of 100 zAXIV denomination\n"
+            "     \"500\" : n,          (numeric) supply of 500 zAXIV denomination\n"
+            "     \"1000\" : n,         (numeric) supply of 1000 zAXIV denomination\n"
+            "     \"5000\" : n,         (numeric) supply of 5000 zAXIV denomination\n"
+            "     \"total\" : n,        (numeric) The total supply of all zAXIV denominations\n"
             "  }\n"
             "}\n"
 

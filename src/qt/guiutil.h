@@ -30,7 +30,7 @@ class QUrl;
 class QWidget;
 QT_END_NAMESPACE
 
-/** Utility functions used by the VITAE Qt UI.
+/** Utility functions used by the AXIV Qt UI.
  */
 namespace GUIUtil
 {
@@ -38,7 +38,7 @@ namespace GUIUtil
 QString dateTimeStr(const QDateTime& datetime);
 QString dateTimeStr(qint64 nTime);
 
-// Render VITAE addresses in monospace font
+// Render AXIV addresses in monospace font
 QFont bitcoinAddressFont();
 QFont primaryFont();
 QFont secondaryFont();
