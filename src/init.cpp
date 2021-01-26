@@ -515,7 +515,6 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageGroup(_("Staking options:"));
     strUsage += HelpMessageOpt("-staking=<n>", strprintf(_("Enable staking functionality (0-1, default: %u)"), 1));
     strUsage += HelpMessageOpt("-vitstake=<n>", strprintf(_("Enable or disable staking functionality for AXIV inputs (0-1, default: %u)"), 1));
-    strUsage += HelpMessageOpt("-zvitstake=<n>", strprintf(_("Enable or disable staking functionality for zAXIV inputs (0-1, default: %u)"), 1));
     strUsage += HelpMessageOpt("-reservebalance=<amt>", _("Keep the specified amount available for spending at all times (default: 0)"));
     if (GetBoolArg("-help-debug", false)) {
         strUsage += HelpMessageOpt("-printstakemodifier", _("Display the stake modifier calculations in the debug.log file."));
@@ -538,10 +537,6 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-masternodeprivkey=<n>", _("Set the masternode private key"));
     strUsage += HelpMessageOpt("-masternodeaddr=<n>", strprintf(_("Set external address:port to get to this masternode (example: %s)"), "127.0.0.2:8765"));
     strUsage += HelpMessageOpt("-budgetvotemode=<mode>", _("Change automatic finalized budget voting behavior. mode=auto: Vote for only exact finalized budget match to my generated budget. (string, default: auto)"));
-
-
-//    strUsage += "  -anonymizeaxivamount=<n>     " + strprintf(_("Keep N PIV anonymized (default: %u)"), 0) + "\n";
-//    strUsage += "  -liquidityprovider=<n>       " + strprintf(_("Provide liquidity to Obfuscation by infrequently mixing coins on a continual basis (0-100, default: %u, 1=very frequent, high fees, 100=very infrequent, low fees)"), 0) + "\n";
 
     strUsage += HelpMessageGroup(_("SwiftX options:"));
     strUsage += HelpMessageOpt("-enableswifttx=<n>", strprintf(_("Enable SwiftX, show confirmations for locked transactions (bool, default: %s)"), "true"));
@@ -966,7 +961,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         }
     }
     nTxConfirmTarget = GetArg("-txconfirmtarget", 1);
-    bSpendZeroConfChange = GetBoolArg("-spendzeroconfchange", false);
     bdisableSystemnotifications = GetBoolArg("-disablesystemnotifications", false);
     fSendFreeTransactions = GetBoolArg("-sendfreetransactions", false);
 

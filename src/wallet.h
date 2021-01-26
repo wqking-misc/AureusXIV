@@ -39,7 +39,6 @@
 extern CFeeRate payTxFee;
 extern CAmount maxTxFee;
 extern unsigned int nTxConfirmTarget;
-extern bool bSpendZeroConfChange;
 extern bool bdisableSystemnotifications;
 extern bool fSendFreeTransactions;
 extern bool fPayAtLeastCustomFee;
@@ -938,7 +937,7 @@ public:
             return true;
         if (nDepth < 0)
             return false;
-        if (!bSpendZeroConfChange || !IsFromMe(ISMINE_ALL)) // using wtx's cached debit
+        if (!IsFromMe(ISMINE_ALL)) // using wtx's cached debit
             return false;
 
         // Trusted if all inputs are from us and are in the mempool:

@@ -487,8 +487,6 @@ QT_TRANSLATE_NOOP("axiv-core", "Your entries added successfully."),
 QT_TRANSLATE_NOOP("axiv-core", "Your transaction was accepted into the pool!"),
 QT_TRANSLATE_NOOP("axiv-core", "Zapping all transactions from wallet..."),
 QT_TRANSLATE_NOOP("axiv-core", "ZeroMQ notification options:"),
-QT_TRANSLATE_NOOP("axiv-core", "Zerocoin options:"),
-QT_TRANSLATE_NOOP("axiv-core", "failed to validate zerocoin"),
 QT_TRANSLATE_NOOP("axiv-core", "on startup"),
 QT_TRANSLATE_NOOP("axiv-core", "wallet.dat corrupt, salvage failed"),
 };

@@ -73,7 +73,6 @@ OptionsDialog::OptionsDialog(QWidget* parent, bool enableWallet) : QDialog(paren
     ui->spinBoxStakeSplitThreshold->setAttribute(Qt::WA_MacShowFocusRect, 0);
     ui->coinControlFeatures->setAttribute(Qt::WA_MacShowFocusRect, 0);
     //ui->showMasternodesTab->setAttribute(Qt::WA_MacShowFocusRect, 0);
-    ui->spendZeroConfChange->setAttribute(Qt::WA_MacShowFocusRect, 0);
 
     ui->mapPortUpnp->setAttribute(Qt::WA_MacShowFocusRect, 0);
     ui->allowIncoming->setAttribute(Qt::WA_MacShowFocusRect, 0);
@@ -183,8 +182,6 @@ void OptionsDialog::setModel(OptionsModel* model)
     /* Main */
     connect(ui->databaseCache, SIGNAL(valueChanged(int)), this, SLOT(showRestartWarning()));
     connect(ui->threadsScriptVerif, SIGNAL(valueChanged(int)), this, SLOT(showRestartWarning()));
-    /* Wallet */
-    connect(ui->spendZeroConfChange, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
     /* Network */
     connect(ui->allowIncoming, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
     connect(ui->connectSocks, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
@@ -204,7 +201,6 @@ void OptionsDialog::setMapper()
     mapper->addMapping(ui->databaseCache, OptionsModel::DatabaseCache);
 
     /* Wallet */
-    mapper->addMapping(ui->spendZeroConfChange, OptionsModel::SpendZeroConfChange);
     mapper->addMapping(ui->coinControlFeatures, OptionsModel::CoinControlFeatures);
     mapper->addMapping(ui->spinBoxStakeSplitThreshold, OptionsModel::StakeSplitThreshold);
 
