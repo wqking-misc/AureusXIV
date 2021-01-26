@@ -172,14 +172,14 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("dns0", "dns0.vitae.phore.io")); // Primary DNS seeder
-        vSeeds.push_back(CDNSSeedData("dns1", "dns1.vitae.phore.io")); // Secondary DNS seeder
-        vSeeds.push_back(CDNSSeedData("seednode1.vitae.co", "seednode1.vitae.co"));
-        vSeeds.push_back(CDNSSeedData("seednode2.vitae.co", "seednode2.vitae.co"));
-        vSeeds.push_back(CDNSSeedData("seednode1.vitaetoken.io", "seednode1.vitaetoken.io"));
-        vSeeds.push_back(CDNSSeedData("seednode2.vitaetoken.io", "seednode2.vitaetoken.io"));
-        vSeeds.push_back(CDNSSeedData("seednode1.vitaeinfo.co", "seednode1.vitaeinfo.co"));
-        vSeeds.push_back(CDNSSeedData("seednode2.vitaeinfo.co", "seednode2.vitaeinfo.co"));
+        vSeeds.push_back(CDNSSeedData("dns0", "dns0.axiv.phore.io")); // Primary DNS seeder
+        vSeeds.push_back(CDNSSeedData("dns1", "dns1.axiv.phore.io")); // Secondary DNS seeder
+        vSeeds.push_back(CDNSSeedData("seednode1.axiv.co", "seednode1.axiv.co"));
+        vSeeds.push_back(CDNSSeedData("seednode2.axiv.co", "seednode2.axiv.co"));
+        vSeeds.push_back(CDNSSeedData("seednode1.axivtoken.io", "seednode1.axivtoken.io"));
+        vSeeds.push_back(CDNSSeedData("seednode2.axivtoken.io", "seednode2.axivtoken.io"));
+        vSeeds.push_back(CDNSSeedData("seednode1.axivinfo.co", "seednode1.axivinfo.co"));
+        vSeeds.push_back(CDNSSeedData("seednode2.axivinfo.co", "seednode2.axivinfo.co"));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 71);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 13);
@@ -321,20 +321,20 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("209.182.216.144", "209.182.216.144")); // vitae fn
-        vSeeds.push_back(CDNSSeedData("209.182.216.187", "209.182.216.187")); // vitae fn
+        vSeeds.push_back(CDNSSeedData("209.182.216.144", "209.182.216.144")); // axiv fn
+        vSeeds.push_back(CDNSSeedData("209.182.216.187", "209.182.216.187")); // axiv fn
         vSeeds.push_back(CDNSSeedData("198.13.50.121", "198.13.50.121"));     //rasalghul
         vSeeds.push_back(CDNSSeedData("104.238.183.75", "104.238.183.75"));   //rasalghul
 
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 139); // Testnet vitae addresses start with 'x' or 'y'
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 19);  // Testnet vitae script addresses start with '8' or '9'
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 139); // Testnet axiv addresses start with 'x' or 'y'
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 19);  // Testnet axiv script addresses start with '8' or '9'
         base58Prefixes[SECRET_KEY] = std::vector<unsigned char>(1, 239);     // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
-        // Testnet vitae BIP32 pubkeys start with 'DRKV'
+        // Testnet axiv BIP32 pubkeys start with 'DRKV'
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x3a)(0x80)(0x61)(0xa0).convert_to_container<std::vector<unsigned char> >();
-        // Testnet vitae BIP32 prvkeys start with 'DRKP'
+        // Testnet axiv BIP32 prvkeys start with 'DRKP'
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x3a)(0x80)(0x58)(0x37).convert_to_container<std::vector<unsigned char> >();
-        // Testnet vitae BIP44 coin type is '1' (All coin's testnet default)
+        // Testnet axiv BIP44 coin type is '1' (All coin's testnet default)
         base58Prefixes[EXT_COIN_TYPE] = boost::assign::list_of(0x80)(0x00)(0x00)(0x01).convert_to_container<std::vector<unsigned char> >();
 
         convertSeed6(vFixedSeeds, pnSeed6_test, ARRAYLEN(pnSeed6_test));

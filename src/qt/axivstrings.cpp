@@ -8,7 +8,7 @@
 #else
 #define UNUSED
 #endif
-static const char UNUSED *pivx_strings[] = {
+static const char UNUSED *axiv_strings[] = {
 QT_TRANSLATE_NOOP("axiv-core", " mints deleted\n"),
 QT_TRANSLATE_NOOP("axiv-core", " mints updated, "),
 QT_TRANSLATE_NOOP("axiv-core", " unconfirmed transactions removed\n"),
@@ -35,7 +35,7 @@ QT_TRANSLATE_NOOP("axiv-core", ""
 QT_TRANSLATE_NOOP("axiv-core", ""
 "Calculated accumulator checkpoint is not what is recorded by block index"),
 QT_TRANSLATE_NOOP("axiv-core", ""
-"Cannot obtain a lock on data directory %s. PIVX Core is probably already "
+"Cannot obtain a lock on data directory %s. AXIV Core is probably already "
 "running."),
 QT_TRANSLATE_NOOP("axiv-core", ""
 "Change automatic finalized budget voting behavior. mode=auto: Vote for only "
@@ -50,7 +50,7 @@ QT_TRANSLATE_NOOP("axiv-core", ""
 "Delete all wallet transactions and only recover those parts of the "
 "blockchain through -rescan on startup"),
 QT_TRANSLATE_NOOP("axiv-core", ""
-"Disable all PIVX specific functionality (Masternodes, Zerocoin, SwiftX, "
+"Disable all AXIV specific functionality (Fundamentalnodes, Zerocoin, SwiftX, "
 "Budgeting) (0-1, default: %u)"),
 QT_TRANSLATE_NOOP("axiv-core", ""
 "Distributed under the MIT software license, see the accompanying file "
@@ -89,10 +89,10 @@ QT_TRANSLATE_NOOP("axiv-core", ""
 "Execute command when the best block changes (%s in cmd is replaced by block "
 "hash)"),
 QT_TRANSLATE_NOOP("axiv-core", ""
-"Fees (in PIV/Kb) smaller than this are considered zero fee for relaying "
+"Fees (in AXIV/Kb) smaller than this are considered zero fee for relaying "
 "(default: %s)"),
 QT_TRANSLATE_NOOP("axiv-core", ""
-"Fees (in PIV/Kb) smaller than this are considered zero fee for transaction "
+"Fees (in AXIV/Kb) smaller than this are considered zero fee for transaction "
 "creation (default: %s)"),
 QT_TRANSLATE_NOOP("axiv-core", ""
 "Flush database activity from memory pool to disk log every <n> megabytes "
@@ -169,7 +169,7 @@ QT_TRANSLATE_NOOP("axiv-core", ""
 "the OpenSSL Toolkit <https://www.openssl.org/> and cryptographic software "
 "written by Eric Young and UPnP software written by Thomas Bernard."),
 QT_TRANSLATE_NOOP("axiv-core", ""
-"To use pivxd, or the -server option to axiv-qt, you must set an rpcpassword "
+"To use axivd, or the -server option to axiv-qt, you must set an rpcpassword "
 "in the configuration file:\n"
 "%s\n"
 "It is recommended you use the following random password:\n"
@@ -180,17 +180,17 @@ QT_TRANSLATE_NOOP("axiv-core", ""
 "If the file does not exist, create it with owner-readable-only file "
 "permissions.\n"
 "It is also recommended to set alertnotify so you are notified of problems;\n"
-"for example: alertnotify=echo %%s | mail -s \"PIVX Alert\" admin@foo.com\n"),
+"for example: alertnotify=echo %%s | mail -s \"AXIV Alert\" admin@foo.com\n"),
 QT_TRANSLATE_NOOP("axiv-core", ""
-"Unable to bind to %s on this computer. PIVX Core is probably already running."),
+"Unable to bind to %s on this computer. AXIV Core is probably already running."),
 QT_TRANSLATE_NOOP("axiv-core", ""
 "Unable to locate enough Obfuscation denominated funds for this transaction."),
 QT_TRANSLATE_NOOP("axiv-core", ""
 "Unable to locate enough Obfuscation non-denominated funds for this "
-"transaction that are not equal 10000 PIV."),
+"transaction that are not equal 10000 AXIV."),
 QT_TRANSLATE_NOOP("axiv-core", ""
 "Unable to locate enough funds for this transaction that are not equal 10000 "
-"PIV."),
+"AXIV."),
 QT_TRANSLATE_NOOP("axiv-core", ""
 "Use separate SOCKS5 proxy to reach peers via Tor hidden services (default: "
 "%s)"),
@@ -202,7 +202,7 @@ QT_TRANSLATE_NOOP("axiv-core", ""
 "pay if you send a transaction."),
 QT_TRANSLATE_NOOP("axiv-core", ""
 "Warning: Please check that your computer's date and time are correct! If "
-"your clock is wrong PIVX Core will not work properly."),
+"your clock is wrong AXIV Core will not work properly."),
 QT_TRANSLATE_NOOP("axiv-core", ""
 "Warning: The network does not appear to fully agree! Some miners appear to "
 "be experiencing issues."),
@@ -223,12 +223,12 @@ QT_TRANSLATE_NOOP("axiv-core", ""
 "Whitelisted peers cannot be DoS banned and their transactions are always "
 "relayed, even if they are already in the mempool, useful e.g. for a gateway"),
 QT_TRANSLATE_NOOP("axiv-core", ""
-"You must specify a masternodeprivkey in the configuration. Please see "
+"You must specify a fundamentalnodeprivkey in the configuration. Please see "
 "documentation for help."),
-QT_TRANSLATE_NOOP("axiv-core", "(51472 could be used only on mainnet)"),
+QT_TRANSLATE_NOOP("axiv-core", "(8765 could be used only on mainnet)"),
 QT_TRANSLATE_NOOP("axiv-core", "(default: %s)"),
 QT_TRANSLATE_NOOP("axiv-core", "(default: 1)"),
-QT_TRANSLATE_NOOP("axiv-core", "(must be 51472 for mainnet)"),
+QT_TRANSLATE_NOOP("axiv-core", "(must be 8765 for mainnet)"),
 QT_TRANSLATE_NOOP("axiv-core", "<category> can be:"),
 QT_TRANSLATE_NOOP("axiv-core", "Accept command line and JSON-RPC commands"),
 QT_TRANSLATE_NOOP("axiv-core", "Accept connections from outside (default: 1 if no -proxy or -connect)"),
@@ -244,7 +244,7 @@ QT_TRANSLATE_NOOP("axiv-core", "Automatically create Tor hidden service (default
 QT_TRANSLATE_NOOP("axiv-core", "Block creation options:"),
 QT_TRANSLATE_NOOP("axiv-core", "Calculating missing accumulators..."),
 QT_TRANSLATE_NOOP("axiv-core", "Can't denominate: no compatible inputs left."),
-QT_TRANSLATE_NOOP("axiv-core", "Can't find random Masternode."),
+QT_TRANSLATE_NOOP("axiv-core", "Can't find random Fundamentalnode."),
 QT_TRANSLATE_NOOP("axiv-core", "Can't mix while sync in progress."),
 QT_TRANSLATE_NOOP("axiv-core", "Cannot downgrade wallet"),
 QT_TRANSLATE_NOOP("axiv-core", "Cannot resolve -bind address: '%s'"),
@@ -258,10 +258,11 @@ QT_TRANSLATE_NOOP("axiv-core", "Connect to a node to retrieve peer addresses, an
 QT_TRANSLATE_NOOP("axiv-core", "Connection options:"),
 QT_TRANSLATE_NOOP("axiv-core", "Copyright (C) 2009-%i The Bitcoin Core Developers"),
 QT_TRANSLATE_NOOP("axiv-core", "Copyright (C) 2014-%i The Dash Core Developers"),
-QT_TRANSLATE_NOOP("axiv-core", "Copyright (C) 2015-%i The PIVX Core Developers"),
+QT_TRANSLATE_NOOP("axiv-core", "Copyright (C) 2014-%i The PIVX Core Developers"),
+QT_TRANSLATE_NOOP("axiv-core", "Copyright (C) 2018-%i The AXIV Core Developers"),
 QT_TRANSLATE_NOOP("axiv-core", "Corrupted block database detected"),
 QT_TRANSLATE_NOOP("axiv-core", "Could not parse -rpcbind value %s as network address"),
-QT_TRANSLATE_NOOP("axiv-core", "Could not parse masternode.conf"),
+QT_TRANSLATE_NOOP("axiv-core", "Could not parse fundamentalnode.conf"),
 QT_TRANSLATE_NOOP("axiv-core", "Debugging/Testing options:"),
 QT_TRANSLATE_NOOP("axiv-core", "Delete blockchain folders and resync from scratch"),
 QT_TRANSLATE_NOOP("axiv-core", "Disable OS notifications for incoming transactions (default: %u)"),
@@ -280,15 +281,15 @@ QT_TRANSLATE_NOOP("axiv-core", "Enable publish raw block in <address>"),
 QT_TRANSLATE_NOOP("axiv-core", "Enable publish raw transaction (locked via SwiftX) in <address>"),
 QT_TRANSLATE_NOOP("axiv-core", "Enable publish raw transaction in <address>"),
 QT_TRANSLATE_NOOP("axiv-core", "Enable staking functionality (0-1, default: %u)"),
-QT_TRANSLATE_NOOP("axiv-core", "Enable the client to act as a masternode (0-1, default: %u)"),
+QT_TRANSLATE_NOOP("axiv-core", "Enable the client to act as a fundamentalnode (0-1, default: %u)"),
 QT_TRANSLATE_NOOP("axiv-core", "Entries are full."),
-QT_TRANSLATE_NOOP("axiv-core", "Error connecting to Masternode."),
+QT_TRANSLATE_NOOP("axiv-core", "Error connecting to Fundamentalnode."),
 QT_TRANSLATE_NOOP("axiv-core", "Error initializing block database"),
 QT_TRANSLATE_NOOP("axiv-core", "Error initializing wallet database environment %s!"),
 QT_TRANSLATE_NOOP("axiv-core", "Error loading block database"),
 QT_TRANSLATE_NOOP("axiv-core", "Error loading wallet.dat"),
 QT_TRANSLATE_NOOP("axiv-core", "Error loading wallet.dat: Wallet corrupted"),
-QT_TRANSLATE_NOOP("axiv-core", "Error loading wallet.dat: Wallet requires newer version of PIVX Core"),
+QT_TRANSLATE_NOOP("axiv-core", "Error loading wallet.dat: Wallet requires newer version of AXIV Core"),
 QT_TRANSLATE_NOOP("axiv-core", "Error opening block database"),
 QT_TRANSLATE_NOOP("axiv-core", "Error reading from database, shutting down."),
 QT_TRANSLATE_NOOP("axiv-core", "Error recovering public key."),
@@ -304,7 +305,7 @@ QT_TRANSLATE_NOOP("axiv-core", "Failed to listen on any port. Use -listen=0 if y
 QT_TRANSLATE_NOOP("axiv-core", "Failed to read block index"),
 QT_TRANSLATE_NOOP("axiv-core", "Failed to read block"),
 QT_TRANSLATE_NOOP("axiv-core", "Failed to write block index"),
-QT_TRANSLATE_NOOP("axiv-core", "Fee (in PIV/kB) to add to transactions you send (default: %s)"),
+QT_TRANSLATE_NOOP("axiv-core", "Fee (in AXIV/kB) to add to transactions you send (default: %s)"),
 QT_TRANSLATE_NOOP("axiv-core", "Finalizing transaction."),
 QT_TRANSLATE_NOOP("axiv-core", "Force safe mode (default: %u)"),
 QT_TRANSLATE_NOOP("axiv-core", "Found enough users, signing ( waiting %s )"),
@@ -319,7 +320,7 @@ QT_TRANSLATE_NOOP("axiv-core", "Incompatible mode."),
 QT_TRANSLATE_NOOP("axiv-core", "Incompatible version."),
 QT_TRANSLATE_NOOP("axiv-core", "Incorrect or no genesis block found. Wrong datadir for network?"),
 QT_TRANSLATE_NOOP("axiv-core", "Information"),
-QT_TRANSLATE_NOOP("axiv-core", "Initialization sanity check failed. PIVX Core is shutting down."),
+QT_TRANSLATE_NOOP("axiv-core", "Initialization sanity check failed. AXIV Core is shutting down."),
 QT_TRANSLATE_NOOP("axiv-core", "Input is not valid."),
 QT_TRANSLATE_NOOP("axiv-core", "Insufficient funds"),
 QT_TRANSLATE_NOOP("axiv-core", "Insufficient funds."),
@@ -332,9 +333,9 @@ QT_TRANSLATE_NOOP("axiv-core", "Invalid amount for -paytxfee=<amount>: '%s' (mus
 QT_TRANSLATE_NOOP("axiv-core", "Invalid amount for -paytxfee=<amount>: '%s'"),
 QT_TRANSLATE_NOOP("axiv-core", "Invalid amount for -reservebalance=<amount>"),
 QT_TRANSLATE_NOOP("axiv-core", "Invalid amount"),
-QT_TRANSLATE_NOOP("axiv-core", "Invalid masternodeprivkey. Please see documenation."),
+QT_TRANSLATE_NOOP("axiv-core", "Invalid fundamentalnodeprivkey. Please see documenation."),
 QT_TRANSLATE_NOOP("axiv-core", "Invalid netmask specified in -whitelist: '%s'"),
-QT_TRANSLATE_NOOP("axiv-core", "Invalid port detected in masternode.conf"),
+QT_TRANSLATE_NOOP("axiv-core", "Invalid port detected in fundamentalnode.conf"),
 QT_TRANSLATE_NOOP("axiv-core", "Invalid private key."),
 QT_TRANSLATE_NOOP("axiv-core", "Invalid script detected."),
 QT_TRANSLATE_NOOP("axiv-core", "Keep at most <n> unconnectable transactions in memory (default: %u)"),
@@ -347,31 +348,31 @@ QT_TRANSLATE_NOOP("axiv-core", "Listen for connections on <port> (default: %u or
 QT_TRANSLATE_NOOP("axiv-core", "Loading addresses..."),
 QT_TRANSLATE_NOOP("axiv-core", "Loading block index..."),
 QT_TRANSLATE_NOOP("axiv-core", "Loading budget cache..."),
-QT_TRANSLATE_NOOP("axiv-core", "Loading masternode cache..."),
-QT_TRANSLATE_NOOP("axiv-core", "Loading masternode payment cache..."),
+QT_TRANSLATE_NOOP("axiv-core", "Loading fundamentalnode cache..."),
+QT_TRANSLATE_NOOP("axiv-core", "Loading fundamentalnode payment cache..."),
 QT_TRANSLATE_NOOP("axiv-core", "Loading sporks..."),
 QT_TRANSLATE_NOOP("axiv-core", "Loading wallet... (%3.2f %%)"),
 QT_TRANSLATE_NOOP("axiv-core", "Loading wallet..."),
 QT_TRANSLATE_NOOP("axiv-core", "Lock is already in place."),
-QT_TRANSLATE_NOOP("axiv-core", "Lock masternodes from masternode configuration file (default: %u)"),
+QT_TRANSLATE_NOOP("axiv-core", "Lock fundamentalnodes from fundamentalnode configuration file (default: %u)"),
 QT_TRANSLATE_NOOP("axiv-core", "Maintain at most <n> connections to peers (default: %u)"),
-QT_TRANSLATE_NOOP("axiv-core", "Masternode options:"),
-QT_TRANSLATE_NOOP("axiv-core", "Masternode queue is full."),
-QT_TRANSLATE_NOOP("axiv-core", "Masternode:"),
+QT_TRANSLATE_NOOP("axiv-core", "Fundamentalnode options:"),
+QT_TRANSLATE_NOOP("axiv-core", "Fundamentalnode queue is full."),
+QT_TRANSLATE_NOOP("axiv-core", "Fundamentalnode:"),
 QT_TRANSLATE_NOOP("axiv-core", "Maximum per-connection receive buffer, <n>*1000 bytes (default: %u)"),
 QT_TRANSLATE_NOOP("axiv-core", "Maximum per-connection send buffer, <n>*1000 bytes (default: %u)"),
 QT_TRANSLATE_NOOP("axiv-core", "Missing input transaction information."),
 QT_TRANSLATE_NOOP("axiv-core", "Mixing in progress..."),
 QT_TRANSLATE_NOOP("axiv-core", "Need to specify a port with -whitebind: '%s'"),
-QT_TRANSLATE_NOOP("axiv-core", "No Masternodes detected."),
-QT_TRANSLATE_NOOP("axiv-core", "No compatible Masternode found."),
+QT_TRANSLATE_NOOP("axiv-core", "No Fundamentalnodes detected."),
+QT_TRANSLATE_NOOP("axiv-core", "No compatible Fundamentalnode found."),
 QT_TRANSLATE_NOOP("axiv-core", "No funds detected in need of denominating."),
 QT_TRANSLATE_NOOP("axiv-core", "No matching denominations found for mixing."),
 QT_TRANSLATE_NOOP("axiv-core", "Node relay options:"),
 QT_TRANSLATE_NOOP("axiv-core", "Non-standard public key detected."),
 QT_TRANSLATE_NOOP("axiv-core", "Not compatible with existing transactions."),
 QT_TRANSLATE_NOOP("axiv-core", "Not enough file descriptors available."),
-QT_TRANSLATE_NOOP("axiv-core", "Not in the Masternode list."),
+QT_TRANSLATE_NOOP("axiv-core", "Not in the Fundamentalnode list."),
 QT_TRANSLATE_NOOP("axiv-core", "Number of automatic wallet backups (default: 10)"),
 QT_TRANSLATE_NOOP("axiv-core", "Obfuscation is idle."),
 QT_TRANSLATE_NOOP("axiv-core", "Obfuscation request complete:"),
@@ -408,12 +409,12 @@ QT_TRANSLATE_NOOP("axiv-core", "Server private key (default: %s)"),
 QT_TRANSLATE_NOOP("axiv-core", "Session not complete!"),
 QT_TRANSLATE_NOOP("axiv-core", "Session timed out."),
 QT_TRANSLATE_NOOP("axiv-core", "Set database cache size in megabytes (%d to %d, default: %d)"),
-QT_TRANSLATE_NOOP("axiv-core", "Set external address:port to get to this masternode (example: %s)"),
+QT_TRANSLATE_NOOP("axiv-core", "Set external address:port to get to this fundamentalnode (example: %s)"),
 QT_TRANSLATE_NOOP("axiv-core", "Set key pool size to <n> (default: %u)"),
 QT_TRANSLATE_NOOP("axiv-core", "Set maximum block size in bytes (default: %d)"),
 QT_TRANSLATE_NOOP("axiv-core", "Set minimum block size in bytes (default: %u)"),
 QT_TRANSLATE_NOOP("axiv-core", "Set the Maximum reorg depth (default: %u)"),
-QT_TRANSLATE_NOOP("axiv-core", "Set the masternode private key"),
+QT_TRANSLATE_NOOP("axiv-core", "Set the fundamentalnode private key"),
 QT_TRANSLATE_NOOP("axiv-core", "Set the number of threads to service RPC calls (default: %d)"),
 QT_TRANSLATE_NOOP("axiv-core", "Sets the DB_PRIVATE flag in the wallet db environment (default: %u)"),
 QT_TRANSLATE_NOOP("axiv-core", "Show all debugging options (usage: --help -help-debug)"),
@@ -424,28 +425,28 @@ QT_TRANSLATE_NOOP("axiv-core", "Signing transaction failed"),
 QT_TRANSLATE_NOOP("axiv-core", "Specify configuration file (default: %s)"),
 QT_TRANSLATE_NOOP("axiv-core", "Specify connection timeout in milliseconds (minimum: 1, default: %d)"),
 QT_TRANSLATE_NOOP("axiv-core", "Specify data directory"),
-QT_TRANSLATE_NOOP("axiv-core", "Specify masternode configuration file (default: %s)"),
+QT_TRANSLATE_NOOP("axiv-core", "Specify fundamentalnode configuration file (default: %s)"),
 QT_TRANSLATE_NOOP("axiv-core", "Specify pid file (default: %s)"),
 QT_TRANSLATE_NOOP("axiv-core", "Specify wallet file (within data directory)"),
 QT_TRANSLATE_NOOP("axiv-core", "Specify your own public address"),
 QT_TRANSLATE_NOOP("axiv-core", "Spend unconfirmed change when sending transactions (default: %u)"),
 QT_TRANSLATE_NOOP("axiv-core", "Staking options:"),
 QT_TRANSLATE_NOOP("axiv-core", "Stop running after importing blocks from disk (default: %u)"),
-QT_TRANSLATE_NOOP("axiv-core", "Submitted following entries to masternode: %u / %d"),
-QT_TRANSLATE_NOOP("axiv-core", "Submitted to masternode, waiting for more entries ( %u / %d ) %s"),
-QT_TRANSLATE_NOOP("axiv-core", "Submitted to masternode, waiting in queue %s"),
+QT_TRANSLATE_NOOP("axiv-core", "Submitted following entries to fundamentalnode: %u / %d"),
+QT_TRANSLATE_NOOP("axiv-core", "Submitted to fundamentalnode, waiting for more entries ( %u / %d ) %s"),
+QT_TRANSLATE_NOOP("axiv-core", "Submitted to fundamentalnode, waiting in queue %s"),
 QT_TRANSLATE_NOOP("axiv-core", "SwiftX options:"),
 QT_TRANSLATE_NOOP("axiv-core", "Synchronization failed"),
 QT_TRANSLATE_NOOP("axiv-core", "Synchronization finished"),
 QT_TRANSLATE_NOOP("axiv-core", "Synchronization pending..."),
 QT_TRANSLATE_NOOP("axiv-core", "Synchronizing budgets..."),
-QT_TRANSLATE_NOOP("axiv-core", "Synchronizing masternode winners..."),
-QT_TRANSLATE_NOOP("axiv-core", "Synchronizing masternodes..."),
+QT_TRANSLATE_NOOP("axiv-core", "Synchronizing fundamentalnode winners..."),
+QT_TRANSLATE_NOOP("axiv-core", "Synchronizing fundamentalnodes..."),
 QT_TRANSLATE_NOOP("axiv-core", "Synchronizing sporks..."),
 QT_TRANSLATE_NOOP("axiv-core", "This help message"),
 QT_TRANSLATE_NOOP("axiv-core", "This is experimental software."),
 QT_TRANSLATE_NOOP("axiv-core", "This is intended for regression testing tools and app development."),
-QT_TRANSLATE_NOOP("axiv-core", "This is not a Masternode."),
+QT_TRANSLATE_NOOP("axiv-core", "This is not a Fundamentalnode."),
 QT_TRANSLATE_NOOP("axiv-core", "Threshold for disconnecting misbehaving peers (default: %u)"),
 QT_TRANSLATE_NOOP("axiv-core", "Tor control port password (default: empty)"),
 QT_TRANSLATE_NOOP("axiv-core", "Tor control port to use if onion listening enabled (default: %s)"),
@@ -473,7 +474,7 @@ QT_TRANSLATE_NOOP("axiv-core", "Verifying blocks..."),
 QT_TRANSLATE_NOOP("axiv-core", "Verifying wallet..."),
 QT_TRANSLATE_NOOP("axiv-core", "Wallet %s resides outside data directory %s"),
 QT_TRANSLATE_NOOP("axiv-core", "Wallet is locked."),
-QT_TRANSLATE_NOOP("axiv-core", "Wallet needed to be rewritten: restart PIVX Core to complete"),
+QT_TRANSLATE_NOOP("axiv-core", "Wallet needed to be rewritten: restart AXIV Core to complete"),
 QT_TRANSLATE_NOOP("axiv-core", "Wallet options:"),
 QT_TRANSLATE_NOOP("axiv-core", "Wallet window title"),
 QT_TRANSLATE_NOOP("axiv-core", "Warning"),

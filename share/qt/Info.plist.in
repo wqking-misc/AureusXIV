@@ -32,7 +32,7 @@
   <string>AXIV-Qt</string>
 
   <key>CFBundleIdentifier</key>
-  <string>io.vitae.Axiv-Qt</string>
+  <string>io.axiv.Axiv-Qt</string>
 
   <key>CFBundleURLTypes</key>
   <array>
@@ -40,10 +40,10 @@
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
       <key>CFBundleURLName</key>
-      <string>io.vitae.AxivPayment</string>
+      <string>io.axiv.AxivPayment</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>vitae</string>
+        <string>axiv</string>
       </array>
     </dict>
   </array>
@@ -52,7 +52,7 @@
   <array>
     <dict>
       <key>UTTypeIdentifier</key>
-      <string>io.vitae.paymentrequest</string>
+      <string>io.axiv.paymentrequest</string>
       <key>UTTypeDescription</key>
       <string>Axiv payment request</string>
       <key>UTTypeConformsTo</key>
@@ -62,10 +62,10 @@
       <key>UTTypeTagSpecification</key>
       <dict>
         <key>public.mime-type</key>
-        <string>application/x-vitae-payment-request</string>
+        <string>application/x-axiv-payment-request</string>
         <key>public.filename-extension</key>
         <array>
-          <string>vitaepaymentrequest</string>
+          <string>axivpaymentrequest</string>
         </array>
       </dict>
     </dict>
@@ -78,7 +78,7 @@
       <string>Editor</string>
       <key>LSItemContentTypes</key>
       <array>
-        <string>io.vitae.paymentrequest</string>
+        <string>io.axiv.paymentrequest</string>
       </array>
       <key>LSHandlerRank</key>
       <string>Owner</string>

@@ -67,8 +67,8 @@ UniValue obfuscation(const UniValue& params, bool fHelp)
 
     if (fHelp || params.size() == 0)
         throw runtime_error(
-            "obfuscation <vitaeaddress> <amount>\n"
-            "vitaeaddress, reset, or auto (AutoDenominate)"
+            "obfuscation <axivaddress> <amount>\n"
+            "axivaddress, reset, or auto (AutoDenominate)"
             "<amount> is a real and will be rounded to the next 0.1" +
             HelpRequiringPassphrase());
 
@@ -89,8 +89,8 @@ UniValue obfuscation(const UniValue& params, bool fHelp)
 
     if (params.size() != 2)
         throw runtime_error(
-            "obfuscation <vitaeaddress> <amount>\n"
-            "vitaeaddress, denominate, or auto (AutoDenominate)"
+            "obfuscation <axivaddress> <amount>\n"
+            "axivaddress, denominate, or auto (AutoDenominate)"
             "<amount> is a real and will be rounded to the next 0.1" +
             HelpRequiringPassphrase());
 
@@ -165,7 +165,7 @@ UniValue fundamentalnode(const UniValue& params, bool fHelp)
             "  debug        - Print fundamentalnode status\n"
             "  genkey       - Generate new fundamentalnodeprivkey\n"
             "  outputs      - Print fundamentalnode compatible outputs\n"
-            "  start        - Start fundamentalnode configured in vitae.conf\n"
+            "  start        - Start fundamentalnode configured in axiv.conf\n"
             "  start-alias  - Start single fundamentalnode by assigned alias configured in fundamentalnode.conf\n"
             "  start-<mode> - Start fundamentalnodes configured in fundamentalnode.conf (<mode>: 'all', 'missing', 'disabled')\n"
             "  status       - Print fundamentalnode status information\n"

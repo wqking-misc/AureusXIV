@@ -504,7 +504,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
 {
     LogPrintf("AXIVMiner started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
-    RenameThread("vitae-miner");
+    RenameThread("axiv-miner");
 
     // Each thread has its own key and counter
     CReserveKey reservekey(pwallet);

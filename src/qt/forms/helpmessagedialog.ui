@@ -28,7 +28,7 @@
       </sizepolicy>
      </property>
      <property name="pixmap">
-      <pixmap resource="../vitae.qrc">:/images/about</pixmap>
+      <pixmap resource="../axiv.qrc">:/images/about</pixmap>
      </property>
     </widget>
    </item>
@@ -97,7 +97,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../vitae.qrc"/>
+  <include location="../axiv.qrc"/>
  </resources>
  <connections>
   <connection>

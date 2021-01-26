@@ -1,4 +1,4 @@
-Source: vitae
+Source: axiv
 Section: utils
 Priority: optional
 Maintainer: Jonas Smedegaard <dr@jones.dk> ***TODO***
@@ -22,11 +22,11 @@ Build-Depends: debhelper,
  libqrencode-dev,
  libprotobuf-dev, protobuf-compiler
 Standards-Version: 3.9.2
-Homepage: http://www.vitae.org
+Homepage: http://www.axiv.org
 Vcs-Git: git://github.com/AXIV-Project/AXIV.git
 Vcs-Browser: http://github.com/AXIV-Project/AXIV
 
-Package: vitaed
+Package: axivd
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - daemon
@@ -39,10 +39,10 @@ Description: peer-to-peer network based digital currency - daemon
  Full transaction history is stored locally at each client.  This
  requires 1+ GB of space, slowly growing.
  .
- This package provides the daemon, vitaed, and the CLI tool
- vitae-cli to interact with the daemon.
+ This package provides the daemon, axivd, and the CLI tool
+ axiv-cli to interact with the daemon.
 
-Package: vitae-qt
+Package: axiv-qt
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - Qt GUI

@@ -13,7 +13,7 @@
 #define BITCOIN_UTIL_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/vitae-config.h"
+#include "config/axiv-config.h"
 #endif
 
 #include "compat.h"
@@ -216,7 +216,7 @@ void RenameThread(const char* name);
 template <typename Callable>
 void TraceThread(const char* name, Callable func)
 {
-    std::string s = strprintf("vitae-%s", name);
+    std::string s = strprintf("axiv-%s", name);
     RenameThread(s.c_str());
     try {
         LogPrintf("%s thread start\n", name);

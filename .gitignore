@@ -24,12 +24,12 @@ reset-files.bash
 *.tar.gz
 
 *.exe
-src/vitae
-src/vitaed
-src/vitae-cli
-src/vitae-tx
-src/test/test_vitae
-src/qt/test/test_vitae-qt
+src/axiv
+src/axivd
+src/axiv-cli
+src/axiv-tx
+src/test/test_axiv
+src/qt/test/test_axiv-qt
 
 # autoreconf
 Makefile.in
@@ -55,8 +55,8 @@ confdefs.h
 conftest.cpp
 conftest.err
 libtool
-src/config/vitae-config.h
-src/config/vitae-config.h.in
+src/config/axiv-config.h
+src/config/axiv-config.h.in
 src/config/stamp-h1
 share/setup.nsi
 share/qt/Info.plist
@@ -83,7 +83,7 @@ src/qt/test/moc*.cpp
 *.o
 *.o-*
 *.patch
-.vitae
+.axiv
 *.a
 *.pb.cc
 *.pb.h
@@ -102,13 +102,13 @@ src/qt/test/moc*.cpp
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
-vitae-qt
+axiv-qt
 VITAE-Qt.app
 background.tiff*
 
 # Unit-tests
 Makefile.test
-vitae-qt_test
+axiv-qt_test
 src/test/buildenv.py
 
 # Resources cpp
@@ -124,7 +124,7 @@ build
 #lcov
 *.gcno
 /*.info
-test_vitae.coverage/
+test_axiv.coverage/
 total.coverage/
 coverage_percent.txt
 
@@ -150,6 +150,6 @@ libbitcoinconsensus.pc
 CMakeLists.txt
 cmake-build-debug
 
-vitae-qt.pro
-src/config/vitae-config.h
-src/config/vitae-config.h.in
+axiv-qt.pro
+src/config/axiv-config.h
+src/config/axiv-config.h.in

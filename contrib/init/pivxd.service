@@ -3,17 +3,17 @@ Description=AXIV's distributed currency daemon
 After=network.target
 
 [Service]
-User=vitae
-Group=vitae
+User=axiv
+Group=axiv
 
 Type=forking
-PIDFile=/var/lib/vitaed/vitaed.pid
+PIDFile=/var/lib/axivd/axivd.pid
 
-ExecStart=/usr/bin/vitaed -daemon -pid=/var/lib/vitaed/vitaed.pid \
-          -conf=/etc/vitae/vitae.conf -datadir=/var/lib/vitaed
+ExecStart=/usr/bin/axivd -daemon -pid=/var/lib/axivd/axivd.pid \
+          -conf=/etc/axiv/axiv.conf -datadir=/var/lib/axivd
 
-ExecStop=-/usr/bin/vitae-cli -conf=/etc/vitae/vitae.conf \
-         -datadir=/var/lib/vitaed stop
+ExecStop=-/usr/bin/axiv-cli -conf=/etc/axiv/axiv.conf \
+         -datadir=/var/lib/axivd stop
 
 Restart=always
 PrivateTmp=true

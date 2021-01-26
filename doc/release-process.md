@@ -3,7 +3,7 @@ Release Process
 
 Before every release candidate:
 
-* Update translations (ping Fuzzbawls on Slack) see [translation_process.md](https://github.com/vitaeteam/AXIV/blob/master/doc/translation_process.md#synchronising-translations).
+* Update translations (ping Fuzzbawls on Slack) see [translation_process.md](https://github.com/axivteam/AXIV/blob/master/doc/translation_process.md#synchronising-translations).
 
 Before every minor and major release:
 
@@ -24,10 +24,10 @@ If you're using the automated script (found in [contrib/gitian-build.sh](/contri
 Check out the source code in the following directory hierarchy.
 
     cd /path/to/your/toplevel/build
-    git clone https://github.com/vitaeteam/gitian.sigs.git
-    git clone https://github.com/vitaeteam/vitae-detached-sigs.git
+    git clone https://github.com/axivteam/gitian.sigs.git
+    git clone https://github.com/axivteam/axiv-detached-sigs.git
     git clone https://github.com/devrandom/gitian-builder.git
-    git clone https://github.com/vitaeteam/vitae.git
+    git clone https://github.com/axivteam/axiv.git
 
 ### AXIV maintainers/release engineers, suggestion for writing release notes
 
@@ -50,7 +50,7 @@ If you're using the automated script (found in [contrib/gitian-build.sh](/contri
 
 Setup Gitian descriptors:
 
-    pushd ./vitae
+    pushd ./axiv
     export SIGNER=(your Gitian key, ie bluematt, sipa, etc)
     export VERSION=(new version, e.g. 0.8.0)
     git fetch
@@ -84,7 +84,7 @@ Create the OS X SDK tarball, see the [OS X readme](README_osx.md) for details, a
 By default, Gitian will fetch source files as needed. To cache them ahead of time:
 
     pushd ./gitian-builder
-    make -C ../vitae/depends download SOURCES_PATH=`pwd`/cache/common
+    make -C ../axiv/depends download SOURCES_PATH=`pwd`/cache/common
     popd
 
 Only missing files will be fetched, so this is safe to re-run for each build.
@@ -92,7 +92,7 @@ Only missing files will be fetched, so this is safe to re-run for each build.
 NOTE: Offline builds must use the --url flag to ensure Gitian fetches only from local URLs. For example:
 
     pushd ./gitian-builder
-    ./bin/gbuild --url vitae=/path/to/vitae,signature=/path/to/sigs {rest of arguments}
+    ./bin/gbuild --url axiv=/path/to/axiv,signature=/path/to/sigs {rest of arguments}
     popd
 
 The gbuild invocations below <b>DO NOT DO THIS</b> by default.
@@ -100,47 +100,47 @@ The gbuild invocations below <b>DO NOT DO THIS</b> by default.
 ### Build and sign AXIV Core for Linux, Windows, and OS X:
 
     pushd ./gitian-builder
-    ./bin/gbuild --memory 3000 --commit vitae=v${VERSION} ../vitae/contrib/gitian-descriptors/gitian-linux.yml
-    ./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-linux.yml
-    mv build/out/vitae-*.tar.gz build/out/src/vitae-*.tar.gz ../
+    ./bin/gbuild --memory 3000 --commit axiv=v${VERSION} ../axiv/contrib/gitian-descriptors/gitian-linux.yml
+    ./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../axiv/contrib/gitian-descriptors/gitian-linux.yml
+    mv build/out/axiv-*.tar.gz build/out/src/axiv-*.tar.gz ../
 
-    ./bin/gbuild --memory 3000 --commit vitae=v${VERSION} ../vitae/contrib/gitian-descriptors/gitian-win.yml
-    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-win.yml
-    mv build/out/vitae-*-win-unsigned.tar.gz inputs/vitae-win-unsigned.tar.gz
-    mv build/out/vitae-*.zip build/out/vitae-*.exe ../
+    ./bin/gbuild --memory 3000 --commit axiv=v${VERSION} ../axiv/contrib/gitian-descriptors/gitian-win.yml
+    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../axiv/contrib/gitian-descriptors/gitian-win.yml
+    mv build/out/axiv-*-win-unsigned.tar.gz inputs/axiv-win-unsigned.tar.gz
+    mv build/out/axiv-*.zip build/out/axiv-*.exe ../
 
-    ./bin/gbuild --memory 3000 --commit vitae=v${VERSION} ../vitae/contrib/gitian-descriptors/gitian-osx.yml
-    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-osx.yml
-    mv build/out/vitae-*-osx-unsigned.tar.gz inputs/vitae-osx-unsigned.tar.gz
-    mv build/out/vitae-*.tar.gz build/out/vitae-*.dmg ../
+    ./bin/gbuild --memory 3000 --commit axiv=v${VERSION} ../axiv/contrib/gitian-descriptors/gitian-osx.yml
+    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../axiv/contrib/gitian-descriptors/gitian-osx.yml
+    mv build/out/axiv-*-osx-unsigned.tar.gz inputs/axiv-osx-unsigned.tar.gz
+    mv build/out/axiv-*.tar.gz build/out/axiv-*.dmg ../
 
-    ./bin/gbuild --memory 3000 --commit vitae=v${VERSION} ../vitae/contrib/gitian-descriptors/gitian-aarch64.yml
-    ./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-aarch64.yml
-    mv build/out/vitae-*.tar.gz build/out/src/vitae-*.tar.gz ../
+    ./bin/gbuild --memory 3000 --commit axiv=v${VERSION} ../axiv/contrib/gitian-descriptors/gitian-aarch64.yml
+    ./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../axiv/contrib/gitian-descriptors/gitian-aarch64.yml
+    mv build/out/axiv-*.tar.gz build/out/src/axiv-*.tar.gz ../
     popd
 
 Build output expected:
 
-  1. source tarball (`vitae-${VERSION}.tar.gz`)
-  2. linux 32-bit and 64-bit dist tarballs (`vitae-${VERSION}-linux[32|64].tar.gz`)
-  3. windows 32-bit and 64-bit unsigned installers and dist zips (`vitae-${VERSION}-win[32|64]-setup-unsigned.exe`, `vitae-${VERSION}-win[32|64].zip`)
-  4. OS X unsigned installer and dist tarball (`vitae-${VERSION}-osx-unsigned.dmg`, `vitae-${VERSION}-osx64.tar.gz`)
+  1. source tarball (`axiv-${VERSION}.tar.gz`)
+  2. linux 32-bit and 64-bit dist tarballs (`axiv-${VERSION}-linux[32|64].tar.gz`)
+  3. windows 32-bit and 64-bit unsigned installers and dist zips (`axiv-${VERSION}-win[32|64]-setup-unsigned.exe`, `axiv-${VERSION}-win[32|64].zip`)
+  4. OS X unsigned installer and dist tarball (`axiv-${VERSION}-osx-unsigned.dmg`, `axiv-${VERSION}-osx64.tar.gz`)
   5. Gitian signatures (in `gitian.sigs/${VERSION}-<linux|{win,osx}-unsigned>/(your Gitian key)/`)
 
 ### Verify other gitian builders signatures to your own. (Optional)
 
 Add other gitian builders keys to your gpg keyring, and/or refresh keys.
 
-    gpg --import vitae/contrib/gitian-keys/*.pgp
+    gpg --import axiv/contrib/gitian-keys/*.pgp
     gpg --refresh-keys
 
 Verify the signatures
 
     pushd ./gitian-builder
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../vitae/contrib/gitian-descriptors/gitian-linux.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../vitae/contrib/gitian-descriptors/gitian-win.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../vitae/contrib/gitian-descriptors/gitian-osx.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-aarch64 ../vitae/contrib/gitian-descriptors/gitian-aarch64.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../axiv/contrib/gitian-descriptors/gitian-linux.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../axiv/contrib/gitian-descriptors/gitian-win.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../axiv/contrib/gitian-descriptors/gitian-osx.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-aarch64 ../axiv/contrib/gitian-descriptors/gitian-aarch64.yml
     popd
 
 ### Next steps:
@@ -162,22 +162,22 @@ Codesigner only: Create Windows/OS X detached signatures:
 
 Codesigner only: Sign the osx binary:
 
-    transfer vitae-osx-unsigned.tar.gz to osx for signing
-    tar xf vitae-osx-unsigned.tar.gz
+    transfer axiv-osx-unsigned.tar.gz to osx for signing
+    tar xf axiv-osx-unsigned.tar.gz
     ./detached-sig-create.sh -s "Key ID"
     Enter the keychain password and authorize the signature
     Move signature-osx.tar.gz back to the gitian host
 
 Codesigner only: Sign the windows binaries:
 
-    tar xf vitae-win-unsigned.tar.gz
+    tar xf axiv-win-unsigned.tar.gz
     ./detached-sig-create.sh -key /path/to/codesign.key
     Enter the passphrase for the key when prompted
     signature-win.tar.gz will be created
 
 Codesigner only: Commit the detached codesign payloads:
 
-    cd ~/vitae-detached-sigs
+    cd ~/axiv-detached-sigs
     checkout the appropriate branch for this release series
     rm -rf *
     tar xf signature-osx.tar.gz
@@ -190,25 +190,25 @@ Codesigner only: Commit the detached codesign payloads:
 Non-codesigners: wait for Windows/OS X detached signatures:
 
 - Once the Windows/OS X builds each have 3 matching signatures, they will be signed with their respective release keys.
-- Detached signatures will then be committed to the [vitae-detached-sigs](https://github.com/vitaeteam/vitae-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
+- Detached signatures will then be committed to the [axiv-detached-sigs](https://github.com/axivteam/axiv-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
 
 Create (and optionally verify) the signed OS X binary:
 
     pushd ./gitian-builder
-    ./bin/gbuild -i --commit signature=v${VERSION} ../vitae/contrib/gitian-descriptors/gitian-osx-signer.yml
-    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-osx-signer.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../vitae/contrib/gitian-descriptors/gitian-osx-signer.yml
-    mv build/out/vitae-osx-signed.dmg ../vitae-${VERSION}-osx.dmg
+    ./bin/gbuild -i --commit signature=v${VERSION} ../axiv/contrib/gitian-descriptors/gitian-osx-signer.yml
+    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../axiv/contrib/gitian-descriptors/gitian-osx-signer.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../axiv/contrib/gitian-descriptors/gitian-osx-signer.yml
+    mv build/out/axiv-osx-signed.dmg ../axiv-${VERSION}-osx.dmg
     popd
 
 Create (and optionally verify) the signed Windows binaries:
 
     pushd ./gitian-builder
-    ./bin/gbuild -i --commit signature=v${VERSION} ../vitae/contrib/gitian-descriptors/gitian-win-signer.yml
-    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-win-signer.yml
-    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-signed ../vitae/contrib/gitian-descriptors/gitian-win-signer.yml
-    mv build/out/vitae-*win64-setup.exe ../vitae-${VERSION}-win64-setup.exe
-    mv build/out/vitae-*win32-setup.exe ../vitae-${VERSION}-win32-setup.exe
+    ./bin/gbuild -i --commit signature=v${VERSION} ../axiv/contrib/gitian-descriptors/gitian-win-signer.yml
+    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../axiv/contrib/gitian-descriptors/gitian-win-signer.yml
+    ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-signed ../axiv/contrib/gitian-descriptors/gitian-win-signer.yml
+    mv build/out/axiv-*win64-setup.exe ../axiv-${VERSION}-win64-setup.exe
+    mv build/out/axiv-*win32-setup.exe ../axiv-${VERSION}-win32-setup.exe
     popd
 
 Commit your signature for the signed OS X/Windows binaries:
@@ -230,23 +230,23 @@ sha256sum * > SHA256SUMS
 
 The list of files should be:
 ```
-vitae-${VERSION}-aarch64-linux-gnu.tar.gz
-vitae-${VERSION}-arm-linux-gnueabihf.tar.gz
-vitae-${VERSION}-i686-pc-linux-gnu.tar.gz
-vitae-${VERSION}-x86_64-linux-gnu.tar.gz
-vitae-${VERSION}-osx64.tar.gz
-vitae-${VERSION}-osx.dmg
-vitae-${VERSION}.tar.gz
-vitae-${VERSION}-win32-setup.exe
-vitae-${VERSION}-win32.zip
-vitae-${VERSION}-win64-setup.exe
-vitae-${VERSION}-win64.zip
+axiv-${VERSION}-aarch64-linux-gnu.tar.gz
+axiv-${VERSION}-arm-linux-gnueabihf.tar.gz
+axiv-${VERSION}-i686-pc-linux-gnu.tar.gz
+axiv-${VERSION}-x86_64-linux-gnu.tar.gz
+axiv-${VERSION}-osx64.tar.gz
+axiv-${VERSION}-osx.dmg
+axiv-${VERSION}.tar.gz
+axiv-${VERSION}-win32-setup.exe
+axiv-${VERSION}-win32.zip
+axiv-${VERSION}-win64-setup.exe
+axiv-${VERSION}-win64.zip
 ```
 The `*-debug*` files generated by the gitian build contain debug symbols
 for troubleshooting by developers. It is assumed that anyone that is interested
 in debugging can run gitian to generate the files for themselves. To avoid
 end-user confusion about which file to pick, as well as save storage
-space *do not upload these to the vitae.org server*.
+space *do not upload these to the axiv.org server*.
 
 - GPG-sign it, delete the unsigned file:
 ```
@@ -262,10 +262,10 @@ Note: check that SHA256SUMS itself doesn't end up in SHA256SUMS, which is a spur
 
   - bitcointalk announcement thread
 
-  - Optionally twitter, reddit /r/vitae, ... but this will usually sort out itself
+  - Optionally twitter, reddit /r/axiv, ... but this will usually sort out itself
 
   - Archive release notes for the new version to `doc/release-notes/` (branch `master` and branch of the release)
 
-  - Create a [new GitHub release](https://github.com/vitaeteam/AXIV/releases/new) with a link to the archived release notes.
+  - Create a [new GitHub release](https://github.com/axivteam/AXIV/releases/new) with a link to the archived release notes.
 
   - Celebrate

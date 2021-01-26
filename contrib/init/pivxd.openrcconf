@@ -1,25 +1,25 @@
-# /etc/conf.d/vitaed: config file for /etc/init.d/vitaed
+# /etc/conf.d/axivd: config file for /etc/init.d/axivd
 
 # Config file location
-#BITCOIND_CONFIGFILE="/etc/vitae/vitae.conf"
+#BITCOIND_CONFIGFILE="/etc/axiv/axiv.conf"
 
 # What directory to write pidfile to?  (created and owned by $BITCOIND_USER)
-#BITCOIND_PIDDIR="/var/run/vitaed"
+#BITCOIND_PIDDIR="/var/run/axivd"
 
 # What filename to give the pidfile
-#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/vitaed.pid"
+#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/axivd.pid"
 
-# Where to write vitaed data (be mindful that the blockchain is large)
-#BITCOIND_DATADIR="/var/lib/vitaed"
+# Where to write axivd data (be mindful that the blockchain is large)
+#BITCOIND_DATADIR="/var/lib/axivd"
 
-# User and group to own vitaed process
-#BITCOIND_USER="vitae"
-#BITCOIND_GROUP="vitae"
+# User and group to own axivd process
+#BITCOIND_USER="axiv"
+#BITCOIND_GROUP="axiv"
 
-# Path to vitaed executable
-#BITCOIND_BIN="/usr/bin/vitaed"
+# Path to axivd executable
+#BITCOIND_BIN="/usr/bin/axivd"
 
-# Nice value to run vitaed under
+# Nice value to run axivd under
 #BITCOIND_NICE=0
 
 # Additional options (avoid -conf and -datadir, use flags above)

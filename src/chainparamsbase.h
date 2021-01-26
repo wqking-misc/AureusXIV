@@ -10,7 +10,7 @@
 #include <vector>
 
 /**
- * CBaseChainParams defines the base parameters (shared between vitae-cli and vitaed)
+ * CBaseChainParams defines the base parameters (shared between axiv-cli and axivd)
  * of a given instance of the Axiv system.
  */
 class CBaseChainParams

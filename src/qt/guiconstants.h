@@ -51,7 +51,7 @@ static const int MAX_URI_LENGTH = 255;
 #define SPINNER_FRAMES 35
 
 #define QAPP_ORG_NAME "AXIV"
-#define QAPP_ORG_DOMAIN "vitae.org"
+#define QAPP_ORG_DOMAIN "axiv.org"
 #define QAPP_APP_NAME_DEFAULT "AXIV-Qt"
 #define QAPP_APP_NAME_TESTNET "AXIV-Qt-testnet"
 

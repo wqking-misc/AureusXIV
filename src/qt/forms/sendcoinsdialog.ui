@@ -1747,7 +1747,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../vitae.qrc"/>
+  <include location="../axiv.qrc"/>
  </resources>
  <connections/>
  <buttongroups>

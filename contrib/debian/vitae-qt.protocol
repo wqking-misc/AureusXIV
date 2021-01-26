@@ -1,6 +1,6 @@
 [Protocol]
-exec=vitae-qt '%u'
-protocol=vitae
+exec=axiv-qt '%u'
+protocol=axiv
 input=none
 output=none
 helper=true

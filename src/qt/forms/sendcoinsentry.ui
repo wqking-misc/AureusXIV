@@ -70,7 +70,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../vitae.qrc">
+         <iconset resource="../axiv.qrc">
           <normaloff>:/icons/address-book</normaloff>:/icons/address-book</iconset>
         </property>
         <property name="shortcut">
@@ -87,7 +87,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../vitae.qrc">
+         <iconset resource="../axiv.qrc">
           <normaloff>:/icons/editpaste</normaloff>:/icons/editpaste</iconset>
         </property>
         <property name="shortcut">
@@ -104,7 +104,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../vitae.qrc">
+         <iconset resource="../axiv.qrc">
           <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
         </property>
        </widget>
@@ -646,7 +646,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../vitae.qrc">
+         <iconset resource="../axiv.qrc">
           <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
         </property>
        </widget>
@@ -1182,7 +1182,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../vitae.qrc">
+         <iconset resource="../axiv.qrc">
           <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
         </property>
        </widget>
@@ -1255,7 +1255,7 @@
   <tabstop>deleteButton_s</tabstop>
  </tabstops>
  <resources>
-  <include location="../vitae.qrc"/>
+  <include location="../axiv.qrc"/>
  </resources>
  <connections/>
 </ui>

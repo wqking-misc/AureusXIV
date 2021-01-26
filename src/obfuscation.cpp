@@ -2263,7 +2263,7 @@ void ThreadCheckObfuScationPool()
     if (fLiteMode) return; //disable all Obfuscation/Fundamentalnode related functionality
 
     // Make this thread recognisable as the wallet flushing thread
-    RenameThread("vitae-obfuscation");
+    RenameThread("axiv-obfuscation");
 
     unsigned int c = 0;
 

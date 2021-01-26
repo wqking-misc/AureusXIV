@@ -2,24 +2,24 @@
 
 # backward compatibility for existing gentoo layout
 #
-if [ -d "/var/lib/vitae/.vitae" ]; then
-	BITCOIND_DEFAULT_DATADIR="/var/lib/vitae/.vitae"
+if [ -d "/var/lib/axiv/.axiv" ]; then
+	BITCOIND_DEFAULT_DATADIR="/var/lib/axiv/.axiv"
 else
-	BITCOIND_DEFAULT_DATADIR="/var/lib/vitaed"
+	BITCOIND_DEFAULT_DATADIR="/var/lib/axivd"
 fi
 
-BITCOIND_CONFIGFILE=${BITCOIND_CONFIGFILE:-/etc/vitae/vitae.conf}
-BITCOIND_PIDDIR=${BITCOIND_PIDDIR:-/var/run/vitaed}
-BITCOIND_PIDFILE=${BITCOIND_PIDFILE:-${BITCOIND_PIDDIR}/vitaed.pid}
+BITCOIND_CONFIGFILE=${BITCOIND_CONFIGFILE:-/etc/axiv/axiv.conf}
+BITCOIND_PIDDIR=${BITCOIND_PIDDIR:-/var/run/axivd}
+BITCOIND_PIDFILE=${BITCOIND_PIDFILE:-${BITCOIND_PIDDIR}/axivd.pid}
 BITCOIND_DATADIR=${BITCOIND_DATADIR:-${BITCOIND_DEFAULT_DATADIR}}
-BITCOIND_USER=${BITCOIND_USER:-vitae}
-BITCOIND_GROUP=${BITCOIND_GROUP:-vitae}
-BITCOIND_BIN=${BITCOIND_BIN:-/usr/bin/vitaed}
+BITCOIND_USER=${BITCOIND_USER:-axiv}
+BITCOIND_GROUP=${BITCOIND_GROUP:-axiv}
+BITCOIND_BIN=${BITCOIND_BIN:-/usr/bin/axivd}
 
 name="AXIV Core Daemon"
 description="AXIV crypto-currency p2p network daemon"
 
-command="/usr/bin/vitaed"
+command="/usr/bin/axivd"
 command_args="-pid=\"${BITCOIND_PIDFILE}\" \
 		-conf=\"${BITCOIND_CONFIGFILE}\" \
 		-datadir=\"${BITCOIND_DATADIR}\" \
@@ -65,7 +65,7 @@ checkconfig()
 {
 	if ! grep -qs '^rpcpassword=' "${BITCOIND_CONFIGFILE}" ; then
 		eerror ""
-		eerror "ERROR: You must set a secure rpcpassword to run vitaed."
+		eerror "ERROR: You must set a secure rpcpassword to run axivd."
 		eerror "The setting must appear in ${BITCOIND_CONFIGFILE}"
 		eerror ""
 		eerror "This password is security critical to securing wallets "
