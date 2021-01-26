@@ -358,7 +358,7 @@ public:
     bool GetBlockPayee(int nBlockHeight, CScript& payee);
 };
 
-// This class was removed by original Vitae.
+// This class was removed by original Axiv.
 // Now put it back partially to try to keep align with the upstream
 class CMasternodeBroadcast
 {

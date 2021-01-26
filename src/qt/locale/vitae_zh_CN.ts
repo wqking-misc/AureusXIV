@@ -239,8 +239,8 @@
         <translation>&amp;BIP 38 加密</translation>
     </message>
     <message>
-        <source>Enter a Vitae Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
-        <translation>输入您要使用BIP 38加密的Vitae地址。在中间框中输入密码。按加密计算加密私钥。</translation>
+        <source>Enter a Axiv Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
+        <translation>输入您要使用BIP 38加密的Axiv地址。在中间框中输入密码。按加密计算加密私钥。</translation>
     </message>
     <message>
         <source>Address:</source>
@@ -1515,7 +1515,7 @@ Address: %4
     </message>
     </context>
 <context>
-    <name>ZVitControlDialog</name>
+    <name>ZAxivControlDialog</name>
     </context>
 <context>
     <name>vitae-core</name>

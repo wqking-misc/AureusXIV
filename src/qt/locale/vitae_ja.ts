@@ -263,7 +263,7 @@
     </message>
     </context>
 <context>
-    <name>ZVitControlDialog</name>
+    <name>ZAxivControlDialog</name>
     </context>
 <context>
     <name>vitae-core</name>

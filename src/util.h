@@ -35,7 +35,7 @@ extern bool fFundamentalNode;
 extern bool fLiteMode;
 extern bool fEnableSwiftTX;
 extern int nSwiftTXDepth;
-extern int nAnonymizeVitaeAmount;
+extern int nAnonymizeAxivAmount;
 extern int nLiquidityProvider;
 extern int64_t enforceFundamentalnodePaymentsTime;
 extern std::string strFundamentalNodeAddr;

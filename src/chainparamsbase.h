@@ -11,7 +11,7 @@
 
 /**
  * CBaseChainParams defines the base parameters (shared between vitae-cli and vitaed)
- * of a given instance of the Vitae system.
+ * of a given instance of the Axiv system.
  */
 class CBaseChainParams
 {

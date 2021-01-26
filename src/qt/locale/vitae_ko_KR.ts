@@ -239,8 +239,8 @@
         <translation>&amp;BIP 38 암호화</translation>
     </message>
     <message>
-        <source>Enter a Vitae Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
-        <translation>BIP 38을 사용하여 암호화 할 Vitae 주소를 입력하십시오. 중간 입력창에 암호를 입력하십시오. 암호화를 누르면 암호화된 개인 키가 계산됩니다.</translation>
+        <source>Enter a Axiv Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
+        <translation>BIP 38을 사용하여 암호화 할 Axiv 주소를 입력하십시오. 중간 입력창에 암호를 입력하십시오. 암호화를 누르면 암호화된 개인 키가 계산됩니다.</translation>
     </message>
     <message>
         <source>Address:</source>
@@ -3775,7 +3775,7 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
     </message>
 </context>
 <context>
-    <name>ZVitControlDialog</name>
+    <name>ZAxivControlDialog</name>
     <message>
         <source>0</source>
         <translation>0</translation>

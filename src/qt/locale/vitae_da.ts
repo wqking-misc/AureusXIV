@@ -239,7 +239,7 @@
         <translation>BIP 38 kryptografering</translation>
     </message>
     <message>
-        <source>Enter a Vitae Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
+        <source>Enter a Axiv Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
         <translation>Indtast den AXIV adresse De ønsker at kryptografere ved hjælp af BIP 38. Indtast et kodeord i den midterste boks. Klik på krypter for at generere den kryptograferede private nøgle.</translation>
     </message>
     <message>
@@ -3765,7 +3765,7 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
     </message>
 </context>
 <context>
-    <name>ZVitControlDialog</name>
+    <name>ZAxivControlDialog</name>
     <message>
         <source>0</source>
         <translation>0</translation>

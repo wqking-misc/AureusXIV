@@ -14,7 +14,7 @@
 - (NSString *)__bundleIdentifier
 {
     if (self == [NSBundle mainBundle]) {
-        return @"io.vitae.Vitae-Qt";
+        return @"io.vitae.Axiv-Qt";
     } else {
         return [self __bundleIdentifier];
     }

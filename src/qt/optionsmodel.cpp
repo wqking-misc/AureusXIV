@@ -78,10 +78,10 @@ void OptionsModel::Init()
         settings.setValue("fCoinControlFeatures", false);
     fCoinControlFeatures = settings.value("fCoinControlFeatures", false).toBool();
     
-    if (!settings.contains("nAnonymizeVitaeAmount"))
-        settings.setValue("nAnonymizeVitaeAmount", 1000);
+    if (!settings.contains("nAnonymizeAxivAmount"))
+        settings.setValue("nAnonymizeAxivAmount", 1000);
 
-    nAnonymizeVitaeAmount = settings.value("nAnonymizeVitaeAmount").toLongLong();
+    nAnonymizeAxivAmount = settings.value("nAnonymizeAxivAmount").toLongLong();
 
     if (!settings.contains("fShowFundamentalnodesTab"))
         settings.setValue("fShowFundamentalnodesTab", fundamentalnodeConfig.getCount());
@@ -152,8 +152,8 @@ void OptionsModel::Init()
     if (!SoftSetArg("-lang", settings.value("language").toString().toStdString()))
         addOverriddenOption("-lang");
 
-    if (settings.contains("nAnonymizeVitaeAmount"))
-        SoftSetArg("-anonymizevitaeamount", settings.value("nAnonymizeVitaeAmount").toString().toStdString());
+    if (settings.contains("nAnonymizeAxivAmount"))
+        SoftSetArg("-anonymizevitaeamount", settings.value("nAnonymizeAxivAmount").toString().toStdString());
 
     language = settings.value("language").toString();
 }
@@ -241,8 +241,8 @@ QVariant OptionsModel::data(const QModelIndex& index, int role) const
             return settings.value("nThreadsScriptVerif");
         case HideZeroBalances:
             return settings.value("fHideZeroBalances");
-        case AnonymizeVitaeAmount:
-            return QVariant(nAnonymizeVitaeAmount);
+        case AnonymizeAxivAmount:
+            return QVariant(nAnonymizeAxivAmount);
         case Listen:
             return settings.value("fListen");
         default:
@@ -362,10 +362,10 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
             emit hideZeroBalancesChanged(fHideZeroBalances);
             break;
 
-        case AnonymizeVitaeAmount:
-            nAnonymizeVitaeAmount = value.toInt();
-            settings.setValue("nAnonymizeVitaeAmount", nAnonymizeVitaeAmount);
-            emit anonymizeVitaeAmountChanged(nAnonymizeVitaeAmount);
+        case AnonymizeAxivAmount:
+            nAnonymizeAxivAmount = value.toInt();
+            settings.setValue("nAnonymizeAxivAmount", nAnonymizeAxivAmount);
+            emit anonymizeAxivAmountChanged(nAnonymizeAxivAmount);
             break;
         case CoinControlFeatures:
             fCoinControlFeatures = value.toBool();

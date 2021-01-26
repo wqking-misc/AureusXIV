@@ -307,7 +307,7 @@
     </message>
     <message>
         <location line="+6"/>
-        <source>Enter a Vitae Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
+        <source>Enter a Axiv Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3496,7 +3496,7 @@ Please be patient...</source>
     </message>
     <message>
         <location line="+4"/>
-        <source>Invalid Vitae Address</source>
+        <source>Invalid Axiv Address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5926,9 +5926,9 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     </message>
 </context>
 <context>
-    <name>ZVitControlDialog</name>
+    <name>ZAxivControlDialog</name>
     <message>
-        <location filename="../forms/zVitcontroldialog.ui" line="+20"/>
+        <location filename="../forms/zAxivcontroldialog.ui" line="+20"/>
         <source>Select zAXIV to Spend</source>
         <translation type="unfinished"></translation>
     </message>

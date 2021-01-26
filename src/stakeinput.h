@@ -27,13 +27,13 @@ public:
 };
 
 
-class CVitStake : public CStakeInput
+class CAxivStake : public CStakeInput
 {
 private:
     CTransaction txFrom;
     unsigned int nPosition;
 public:
-    CVitStake()
+    CAxivStake()
     {
         this->pindexFrom = nullptr;
     }

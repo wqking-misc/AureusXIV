@@ -38,7 +38,7 @@ void SendMoney(const CTxDestination& address, CAmount nValue, CWalletTx& wtxNew,
         throw JSONRPCError(RPC_WALLET_ERROR, strError);
     }
 
-    // Parse Vitae address
+    // Parse Axiv address
     CScript scriptPubKey = GetScriptForDestination(address);
 
     // Create and send the transaction
@@ -89,7 +89,7 @@ UniValue obfuscation(const UniValue& params, bool fHelp)
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Vitae address");
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Axiv address");
 
     // Amount
     CAmount nAmount = AmountFromValue(params[1]);

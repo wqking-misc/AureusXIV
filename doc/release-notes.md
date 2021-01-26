@@ -7,7 +7,7 @@ Please report bugs using the issue tracker at github: <https://github.com/vitaet
 Mandatory Update
 ==============
 
-AXIV Core v4.5.0 is a mandatory update for all wallets, fundamental nodes, and masternodes. It includes changes to consensus rules that require every node to update in order to stay compatible with the rest of the Vitae network.
+AXIV Core v4.5.0 is a mandatory update for all wallets, fundamental nodes, and masternodes. It includes changes to consensus rules that require every node to update in order to stay compatible with the rest of the Axiv network.
 
 How to Upgrade
 ==============

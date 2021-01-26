@@ -47,7 +47,7 @@ static bool AppInitRawTx(int argc, char* argv[])
 
     if (argc < 2 || mapArgs.count("-?") || mapArgs.count("-help")) {
         // First part of help message is specific to this utility
-        std::string strUsage = _("Vitae Core vitae-tx utility version") + " " + FormatFullVersion() + "\n\n" +
+        std::string strUsage = _("Axiv Core vitae-tx utility version") + " " + FormatFullVersion() + "\n\n" +
                                _("Usage:") + "\n" +
                                "  vitae-tx [options] <hex-tx> [commands]  " + _("Update hex-encoded vitae transaction") + "\n" +
                                "  vitae-tx [options] -create [commands]   " + _("Create hex-encoded vitae transaction") + "\n" +
