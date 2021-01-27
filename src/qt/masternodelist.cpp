@@ -248,7 +248,7 @@ void MasternodeList::updateNodeList()
     // or MASTERNODELIST_FILTER_COOLDOWN_SECONDS seconds after filter was last changed
     int64_t nSecondsToWait = fFilterUpdated ? nTimeFilterUpdated - GetTime() + MASTERNODELIST_FILTER_COOLDOWN_SECONDS : nTimeListUpdated - GetTime() + MASTERNODELIST_UPDATE_SECONDS;
 
-    if (fFilterUpdated) ui->countLabel->setText(QString::fromStdString(strprintf("Please wait... %d", nSecondsToWait)));
+    //if (fFilterUpdated) ui->countLabel->setText(QString::fromStdString(strprintf("Please wait... %d", nSecondsToWait)));
     if (nSecondsToWait > 0) return;
 
     nTimeListUpdated = GetTime();
@@ -258,7 +258,7 @@ void MasternodeList::updateNodeList()
     if (!lockMasternodes) return;
 
     QString strToFilter;
-    ui->countLabel->setText("Updating...");
+    //ui->countLabel->setText("Updating...");
     ui->tableWidgetMasternodes->setSortingEnabled(false);
     ui->tableWidgetMasternodes->clearContents();
     ui->tableWidgetMasternodes->setRowCount(0);
@@ -298,7 +298,7 @@ void MasternodeList::updateNodeList()
         ui->tableWidgetMasternodes->setItem(0, 5, pubkeyItem);
     }
 
-    ui->countLabel->setText(QString::number(ui->tableWidgetMasternodes->rowCount()));
+    //ui->countLabel->setText(QString::number(ui->tableWidgetMasternodes->rowCount()));
     ui->tableWidgetMasternodes->setSortingEnabled(true);
 }
 
@@ -307,7 +307,7 @@ void MasternodeList::on_filterLineEdit_textChanged(const QString& strFilterIn)
     strCurrentFilter = strFilterIn;
     nTimeFilterUpdated = GetTime();
     fFilterUpdated = true;
-    ui->countLabel->setText(QString::fromStdString(strprintf("Please wait... %d", MASTERNODELIST_FILTER_COOLDOWN_SECONDS)));
+    //ui->countLabel->setText(QString::fromStdString(strprintf("Please wait... %d", MASTERNODELIST_FILTER_COOLDOWN_SECONDS)));
 }
 
 void MasternodeList::on_startButton_clicked()
