@@ -225,10 +225,10 @@ QT_TRANSLATE_NOOP("axiv-core", ""
 QT_TRANSLATE_NOOP("axiv-core", ""
 "You must specify a fundamentalnodeprivkey in the configuration. Please see "
 "documentation for help."),
-QT_TRANSLATE_NOOP("axiv-core", "(8765 could be used only on mainnet)"),
+QT_TRANSLATE_NOOP("axiv-core", "(10135 could be used only on mainnet)"),
 QT_TRANSLATE_NOOP("axiv-core", "(default: %s)"),
 QT_TRANSLATE_NOOP("axiv-core", "(default: 1)"),
-QT_TRANSLATE_NOOP("axiv-core", "(must be 8765 for mainnet)"),
+QT_TRANSLATE_NOOP("axiv-core", "(must be 10135 for mainnet)"),
 QT_TRANSLATE_NOOP("axiv-core", "<category> can be:"),
 QT_TRANSLATE_NOOP("axiv-core", "Accept command line and JSON-RPC commands"),
 QT_TRANSLATE_NOOP("axiv-core", "Accept connections from outside (default: 1 if no -proxy or -connect)"),
