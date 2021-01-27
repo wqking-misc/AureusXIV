@@ -18,22 +18,13 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="topLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
+  <layout class="QVBoxLayout" name="topLayout" stretch="0">
+   <property name="margin">
+    <number>9</number>
    </property>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <property name="bottomMargin">
+    <layout class="QVBoxLayout" name="verticalLayout_Master" stretch="0,1">
+     <property name="spacing">
       <number>0</number>
      </property>
      <item>
@@ -326,10 +317,6 @@
              </size>
             </property>
             <property name="font">
-            <property name="text">
-             <string>Address</string>
-            </property>
-           </column>
              <font>
               <pointsize>20</pointsize>
               <weight>75</weight>
@@ -594,9 +581,9 @@
             </layout>
            </item>
           </layout>
-         </item>
-        </layout>
-       </widget>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
     </layout>
