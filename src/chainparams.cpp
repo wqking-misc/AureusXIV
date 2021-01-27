@@ -304,9 +304,9 @@ public:
         nRejectOldSporkKey = 1601510400; //!> Fully reject old spork key after (GMT): October 1, 2020 12:00:00 AM
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
-        genesis = CreateGenesisBlock(1603311280, 1758014, 0x1e0ffff0, 1, 250 * COIN);
+        genesis = CreateGenesisBlock(1603311280, 973214, 0x1e0ffff0, 1, 250 * COIN);
         
-        const uint256 checkHash("00000162df75e983b7386f6cc8d730ce70e6c394a6ab7d8fa240e21a91303bca");
+        const uint256 checkHash("00000748c41291fbc42a0fcffbcb1ec9a559d74e091f40524adffd8f2dcba7f4");
 
         // To mine new genesis block, change the 'false' to 'true', and change hashGenesisBlock to "0x001"
         hashGenesisBlock = checkHash;
