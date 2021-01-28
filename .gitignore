@@ -156,3 +156,6 @@ cmake-build-debug
 axiv-qt.pro
 src/config/axiv-config.h
 src/config/axiv-config.h.in
+
+.DS_Store
+*.autosave
