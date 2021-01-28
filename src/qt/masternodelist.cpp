@@ -46,12 +46,6 @@ MasternodeList::MasternodeList(QWidget* parent) : QWidget(parent),
     ui->tableWidgetMyMasternodes->setColumnWidth(4, columnActiveWidth);
     ui->tableWidgetMyMasternodes->setColumnWidth(5, columnLastSeenWidth);
 
-   /* ui->tableWidgetMasternodes->setColumnWidth(0, columnAddressWidth);
-    ui->tableWidgetMasternodes->setColumnWidth(1, columnProtocolWidth);
-    ui->tableWidgetMasternodes->setColumnWidth(2, columnStatusWidth);
-    ui->tableWidgetMasternodes->setColumnWidth(3, columnActiveWidth);
-    ui->tableWidgetMasternodes->setColumnWidth(4, columnLastSeenWidth);*/
-
     ui->tableWidgetMyMasternodes->setContextMenuPolicy(Qt::CustomContextMenu);
 
     ui->tableWidgetMyFundamentalnodes->setAlternatingRowColors(true);
@@ -78,7 +72,6 @@ MasternodeList::MasternodeList(QWidget* parent) : QWidget(parent),
     connect(startAliasActionFundamentalNode, SIGNAL(triggered()), this, SLOT(on_startButtonFundamentalNode_clicked()));
 
     timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(updateNodeList()));
     connect(timer, SIGNAL(timeout()), this, SLOT(updateMyNodeList()));
     connect(timer, SIGNAL(timeout()), this, SLOT(updateMyNodeListFundamentalNode()));
     timer->start(1000);
@@ -86,7 +79,6 @@ MasternodeList::MasternodeList(QWidget* parent) : QWidget(parent),
     // Fill MN list
     fFilterUpdated = true;
     nTimeFilterUpdated = GetTime();
-    updateNodeList();
 }
 
 MasternodeList::~MasternodeList()
@@ -97,10 +89,6 @@ MasternodeList::~MasternodeList()
 void MasternodeList::setClientModel(ClientModel* model)
 {
     this->clientModel = model;
-    if (model) {
-        // try to update list when masternode count changes
-        //connect(clientModel, SIGNAL(strMasternodesChanged(QString)), this, SLOT(updateNodeList()));
-    }
 }
 
 void MasternodeList::setWalletModel(WalletModel* model)
@@ -245,7 +233,7 @@ void MasternodeList::updateMyNodeList(bool fForce)
     if (nSecondsTillUpdate > 0 && !fForce) return;
     nTimeMyListUpdated = GetTime();
 
-    ui->tableWidgetMasternodes->setSortingEnabled(false);
+    ui->tableWidgetMyMasternodes->setSortingEnabled(false);
     BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
         int32_t nOutputIndex = 0;
         if(!ParseInt32(mne.getOutputIndex(), &nOutputIndex)) {
@@ -257,7 +245,7 @@ void MasternodeList::updateMyNodeList(bool fForce)
                 if(pmn != NULL){
         updateMyMasternodeInfo(QString::fromStdString(mne.getAlias()), QString::fromStdString(mne.getIp()), pmn);}
     }
-    ui->tableWidgetMasternodes->setSortingEnabled(true);
+    ui->tableWidgetMyMasternodes->setSortingEnabled(true);
 
     // reset "timer"
     ui->secondsLabel->setText("0");
@@ -605,3 +593,4 @@ void MasternodeList::updateMyNodeListFundamentalNode(bool fForce)
 
     // reset "timer"
     ui->secondsLabelFundamentalNode->setText("0");
+}
