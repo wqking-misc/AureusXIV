@@ -85,7 +85,6 @@ CFundamentalnode::CFundamentalnode()
     cacheInputAgeBlock = 0;
     unitTest = false;
     allowFreeTx = true;
-    nActiveState = FUNDAMENTALNODE_ENABLED,
     protocolVersion = PROTOCOL_VERSION;
     nLastDsq = 0;
     nScanningErrorCount = 0;
@@ -110,7 +109,6 @@ CFundamentalnode::CFundamentalnode(const CFundamentalnode& other)
     cacheInputAgeBlock = other.cacheInputAgeBlock;
     unitTest = other.unitTest;
     allowFreeTx = other.allowFreeTx;
-    nActiveState = FUNDAMENTALNODE_ENABLED,
     protocolVersion = other.protocolVersion;
     nLastDsq = other.nLastDsq;
     nScanningErrorCount = other.nScanningErrorCount;
@@ -135,7 +133,6 @@ CFundamentalnode::CFundamentalnode(const CFundamentalnodeBroadcast& mnb)
     cacheInputAgeBlock = 0;
     unitTest = false;
     allowFreeTx = true;
-    nActiveState = FUNDAMENTALNODE_ENABLED,
     protocolVersion = mnb.protocolVersion;
     nLastDsq = mnb.nLastDsq;
     nScanningErrorCount = 0;
@@ -313,9 +310,9 @@ int64_t CFundamentalnode::GetLastPaid()
     return 0;
 }
 
-std::string CFundamentalnode::GetStatus()
+std::string CFundamentalnode::Status()
 {
-    switch (nActiveState) {
+    switch (activeState) {
     case CFundamentalnode::FUNDAMENTALNODE_PRE_ENABLED:
         return "PRE_ENABLED";
     case CFundamentalnode::FUNDAMENTALNODE_ENABLED:
@@ -330,6 +327,10 @@ std::string CFundamentalnode::GetStatus()
         return "WATCHDOG_EXPIRED";
     case CFundamentalnode::FUNDAMENTALNODE_POSE_BAN:
         return "POSE_BAN";
+    case CFundamentalnode::FUNDAMENTALNODE_VIN_SPENT:
+        return "VIN_SPENT";
+    case CFundamentalnode::FUNDAMENTALNODE_POS_ERROR:
+        return "POS_ERROR";
     default:
         return "UNKNOWN";
     }
