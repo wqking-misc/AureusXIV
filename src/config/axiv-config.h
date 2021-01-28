@@ -220,7 +220,7 @@
 #define HAVE_PTHREAD_PRIO_INHERIT 1
 
 /* Define to 1 to enable trading dialog */
-#define HAVE_QT5 1
+/* #undef HAVE_QT5 */
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
