@@ -71,7 +71,6 @@ void ThreadBitPool()
                             m_nodeman.DsegUpdate(pnode);
 
                             pnode->PushMessage("mnget"); //sync payees
-                            pnode->PushMessage("getmn_sporks"); //get current network sporks
                             //g_connman->PushMessage(pnode, CNetMsgMaker(PROTOCOL_VERSION).Make(SERIALIZE_TRANSACTION_NO_WITNESS, "mnget"));
                             //g_connman->PushMessage(pnode, CNetMsgMaker(PROTOCOL_VERSION).Make(SERIALIZE_TRANSACTION_NO_WITNESS, "getsporks"));
                             RequestedMasterNodeList++;

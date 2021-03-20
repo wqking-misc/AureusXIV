@@ -20,7 +20,7 @@ CFundamentalnodeMan mnodeman;
 
 struct CompareLastPaid {
     bool operator()(const pair<int64_t, CTxIn>& t1,
-        const pair<int64_t, CTxIn>& t2) const
+                    const pair<int64_t, CTxIn>& t2) const
     {
         return t1.first < t2.first;
     }
@@ -28,7 +28,7 @@ struct CompareLastPaid {
 
 struct CompareScoreTxIn {
     bool operator()(const pair<int64_t, CTxIn>& t1,
-        const pair<int64_t, CTxIn>& t2) const
+                    const pair<int64_t, CTxIn>& t2) const
     {
         return t1.first < t2.first;
     }
@@ -36,7 +36,7 @@ struct CompareScoreTxIn {
 
 struct CompareScoreMN {
     bool operator()(const pair<int64_t, CFundamentalnode>& t1,
-        const pair<int64_t, CFundamentalnode>& t2) const
+                    const pair<int64_t, CFundamentalnode>& t2) const
     {
         return t1.first < t2.first;
     }
@@ -851,12 +851,12 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
             LogPrint("fundamentalnode", "obseg - Sent %d Fundamentalnode entries to peer %i\n", nInvCount, pfrom->GetId());
         }
     }
-    /*
-     * IT'S SAFE TO REMOVE THIS IN FURTHER VERSIONS
-     * AFTER MIGRATION TO V12 IS DONE
-     */
+        /*
+         * IT'S SAFE TO REMOVE THIS IN FURTHER VERSIONS
+         * AFTER MIGRATION TO V12 IS DONE
+         */
 
-    // Light version for OLD MASSTERNODES - fake pings, no self-activation
+        // Light version for OLD MASSTERNODES - fake pings, no self-activation
     else if (strCommand == "obsee") { //ObfuScation Election Entry
 
         if (IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return;
@@ -957,8 +957,8 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
                         TRY_LOCK(cs_vNodes, lockNodes);
                         if (!lockNodes) return;
                         BOOST_FOREACH (CNode* pnode, vNodes)
-                            if (pnode->nVersion >= fundamentalnodePayments.GetMinFundamentalnodePaymentsProto())
-                                pnode->PushMessage("obsee", vin, addr, vchSig, sigTime, pubkey, pubkey2, count, current, lastUpdated, protocolVersion, donationAddress, donationPercentage);
+                        if (pnode->nVersion >= fundamentalnodePayments.GetMinFundamentalnodePaymentsProto())
+                            pnode->PushMessage("obsee", vin, addr, vchSig, sigTime, pubkey, pubkey2, count, current, lastUpdated, protocolVersion, donationAddress, donationPercentage);
                     }
                 }
             }
@@ -1022,7 +1022,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
                 CBlockIndex* pConfIndex = chainActive[pMNIndex->nHeight + FUNDAMENTALNODE_MIN_CONFIRMATIONS - 1]; // block where tx got FUNDAMENTALNODE_MIN_CONFIRMATIONS
                 if (pConfIndex->GetBlockTime() > sigTime) {
                     LogPrint("fundamentalnode","fnb - Bad sigTime %d for Fundamentalnode %s (%i conf block is at %d)\n",
-                        sigTime, vin.prevout.hash.ToString(), FUNDAMENTALNODE_MIN_CONFIRMATIONS, pConfIndex->GetBlockTime());
+                             sigTime, vin.prevout.hash.ToString(), FUNDAMENTALNODE_MIN_CONFIRMATIONS, pConfIndex->GetBlockTime());
                     return;
                 }
             }
@@ -1051,8 +1051,8 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
                 TRY_LOCK(cs_vNodes, lockNodes);
                 if (!lockNodes) return;
                 BOOST_FOREACH (CNode* pnode, vNodes)
-                    if (pnode->nVersion >= fundamentalnodePayments.GetMinFundamentalnodePaymentsProto())
-                        pnode->PushMessage("obsee", vin, addr, vchSig, sigTime, pubkey, pubkey2, count, current, lastUpdated, protocolVersion, donationAddress, donationPercentage);
+                if (pnode->nVersion >= fundamentalnodePayments.GetMinFundamentalnodePaymentsProto())
+                    pnode->PushMessage("obsee", vin, addr, vchSig, sigTime, pubkey, pubkey2, count, current, lastUpdated, protocolVersion, donationAddress, donationPercentage);
             }
         } else {
             LogPrint("fundamentalnode","obsee - Rejected Fundamentalnode entry %s\n", vin.prevout.hash.ToString());
@@ -1060,7 +1060,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
             int nDoS = 0;
             if (state.IsInvalid(nDoS)) {
                 LogPrint("fundamentalnode","obsee - %s from %i %s was not accepted into the memory pool\n", tx.GetHash().ToString().c_str(),
-                    pfrom->GetId(), pfrom->cleanSubVer.c_str());
+                         pfrom->GetId(), pfrom->cleanSubVer.c_str());
                 if (nDoS > 0)
                     Misbehaving(pfrom->GetId(), nDoS);
             }
@@ -1121,8 +1121,8 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
                     if (!lockNodes) return;
                     LogPrint("fundamentalnode", "obseep - relaying %s \n", vin.prevout.hash.ToString());
                     BOOST_FOREACH (CNode* pnode, vNodes)
-                        if (pnode->nVersion >= fundamentalnodePayments.GetMinFundamentalnodePaymentsProto())
-                            pnode->PushMessage("obseep", vin, vchSig, sigTime, stop);
+                    if (pnode->nVersion >= fundamentalnodePayments.GetMinFundamentalnodePaymentsProto())
+                        pnode->PushMessage("obseep", vin, vchSig, sigTime, stop);
                 }
             }
             return;
@@ -1157,7 +1157,7 @@ void CFundamentalnodeMan::UpdateFundamentalnodeList(CFundamentalnodeBroadcast fn
 {
     mapSeenFundamentalnodePing.insert(std::make_pair(fnb.lastPing.GetHash(), fnb.lastPing));
     mapSeenFundamentalnodeBroadcast.insert(std::make_pair(fnb.GetHash(), fnb));
-	fundamentalnodeSync.AddedFundamentalnodeList(fnb.GetHash());
+    fundamentalnodeSync.AddedFundamentalnodeList(fnb.GetHash());
 
     LogPrint("fundamentalnode","CFundamentalnodeMan::UpdateFundamentalnodeList() -- fundamentalnode=%s\n", fnb.vin.prevout.ToString());
 

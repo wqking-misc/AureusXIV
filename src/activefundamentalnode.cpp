@@ -86,12 +86,6 @@ void CActiveFundamentalnode::ManageStatus()
         CKey keyCollateralAddress;
 
         if (GetFundamentalNodeVin(vin, pubKeyCollateralAddress, keyCollateralAddress)) {
-            if(! isVinValidFundamentalNode(vin)) {
-                status = ACTIVE_FUNDAMENTALNODE_NEW_NODE_DISABLED;
-                notCapableReason = strprintf("%s", GetStatus());
-                LogPrintf("CActiveFundamentalnode::ManageStatus() - %s\n", notCapableReason);
-                return;
-            }  
             if (GetInputAge(vin) < FUNDAMENTALNODE_MIN_CONFIRMATIONS) {
                 status = ACTIVE_FUNDAMENTALNODE_INPUT_TOO_NEW;
                 notCapableReason = strprintf("%s - %d confirmations", GetStatus(), GetInputAge(vin));
@@ -147,20 +141,18 @@ void CActiveFundamentalnode::ManageStatus()
 std::string CActiveFundamentalnode::GetStatus()
 {
     switch (status) {
-    case ACTIVE_FUNDAMENTALNODE_INITIAL:
-        return "Node just started, not yet activated";
-    case ACTIVE_FUNDAMENTALNODE_SYNC_IN_PROCESS:
-        return "Sync in progress. Must wait until sync is complete to start Fundamentalnode";
-    case ACTIVE_FUNDAMENTALNODE_INPUT_TOO_NEW:
-        return strprintf("Fundamentalnode input must have at least %d confirmations", FUNDAMENTALNODE_MIN_CONFIRMATIONS);
-    case ACTIVE_FUNDAMENTALNODE_NOT_CAPABLE:
-        return "Not capable fundamentalnode: " + notCapableReason;
-    case ACTIVE_FUNDAMENTALNODE_STARTED:
-        return "Fundamentalnode successfully started";
-    case ACTIVE_FUNDAMENTALNODE_NEW_NODE_DISABLED:
-        return "New fundamentalnode is disabled";        
-    default:
-        return "unknown";
+        case ACTIVE_FUNDAMENTALNODE_INITIAL:
+            return "Node just started, not yet activated";
+        case ACTIVE_FUNDAMENTALNODE_SYNC_IN_PROCESS:
+            return "Sync in progress. Must wait until sync is complete to start Fundamentalnode";
+        case ACTIVE_FUNDAMENTALNODE_INPUT_TOO_NEW:
+            return strprintf("Fundamentalnode input must have at least %d confirmations", FUNDAMENTALNODE_MIN_CONFIRMATIONS);
+        case ACTIVE_FUNDAMENTALNODE_NOT_CAPABLE:
+            return "Not capable fundamentalnode: " + notCapableReason;
+        case ACTIVE_FUNDAMENTALNODE_STARTED:
+            return "Fundamentalnode successfully started";
+        default:
+            return "unknown";
     }
 }
 
@@ -231,7 +223,7 @@ bool CActiveFundamentalnode::SendFundamentalnodePing(std::string& errorMessage)
         LogPrint("fundamentalnode", "dseep - relaying from active mn, %s \n", vin.ToString().c_str());
         LOCK(cs_vNodes);
         BOOST_FOREACH (CNode* pnode, vNodes)
-            pnode->PushMessage("obseep", vin, vchFundamentalNodeSignature, fundamentalNodeSignatureTime, false);
+        pnode->PushMessage("obseep", vin, vchFundamentalNodeSignature, fundamentalNodeSignatureTime, false);
 
         /*
          * END OF "REMOVE"
@@ -285,8 +277,8 @@ bool CActiveFundamentalnode::CreateBroadcast(std::string strService, std::string
 
 bool CActiveFundamentalnode::CreateBroadcast(CTxIn vin, CService service, CKey keyCollateralAddress, CPubKey pubKeyCollateralAddress, CKey keyFundamentalnode, CPubKey pubKeyFundamentalnode, std::string& errorMessage, CFundamentalnodeBroadcast &mnb)
 {
-	// wait for reindex and/or import to finish
-	if (fImporting || fReindex) return false;
+    // wait for reindex and/or import to finish
+    if (fImporting || fReindex) return false;
 
     CFundamentalnodePing mnp(vin);
     if (!mnp.Sign(keyFundamentalnode, pubKeyFundamentalnode)) {
@@ -337,7 +329,7 @@ bool CActiveFundamentalnode::CreateBroadcast(CTxIn vin, CService service, CKey k
 
     LOCK(cs_vNodes);
     BOOST_FOREACH (CNode* pnode, vNodes)
-        pnode->PushMessage("obsee", vin, service, vchFundamentalNodeSignature, fundamentalNodeSignatureTime, pubKeyCollateralAddress, pubKeyFundamentalnode, -1, -1, fundamentalNodeSignatureTime, PROTOCOL_VERSION, donationAddress, donationPercantage);
+    pnode->PushMessage("obsee", vin, service, vchFundamentalNodeSignature, fundamentalNodeSignatureTime, pubKeyCollateralAddress, pubKeyFundamentalnode, -1, -1, fundamentalNodeSignatureTime, PROTOCOL_VERSION, donationAddress, donationPercantage);
 
     /*
      * END OF "REMOVE"
@@ -353,8 +345,8 @@ bool CActiveFundamentalnode::GetFundamentalNodeVin(CTxIn& vin, CPubKey& pubkey, 
 
 bool CActiveFundamentalnode::GetFundamentalNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secretKey, std::string strTxHash, std::string strOutputIndex)
 {
-	// wait for reindex and/or import to finish
-	if (fImporting || fReindex) return false;
+    // wait for reindex and/or import to finish
+    if (fImporting || fReindex) return false;
 
     // Find possible candidates
     TRY_LOCK(pwalletMain->cs_wallet, fWallet);
@@ -405,8 +397,8 @@ bool CActiveFundamentalnode::GetFundamentalNodeVin(CTxIn& vin, CPubKey& pubkey, 
 // Extract Fundamentalnode vin information from output
 bool CActiveFundamentalnode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubkey, CKey& secretKey)
 {
-	// wait for reindex and/or import to finish
-	if (fImporting || fReindex) return false;
+    // wait for reindex and/or import to finish
+    if (fImporting || fReindex) return false;
 
     CScript pubScript;
 
@@ -461,7 +453,7 @@ vector<COutput> CActiveFundamentalnode::SelectCoinsFundamentalnode()
     // Lock MN coins from fundamentalnode.conf back if they where temporary unlocked
     if (!confLockedCoins.empty()) {
         BOOST_FOREACH (COutPoint outpoint, confLockedCoins)
-            pwalletMain->LockCoin(outpoint);
+        pwalletMain->LockCoin(outpoint);
     }
 
     // Filter

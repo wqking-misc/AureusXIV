@@ -153,14 +153,17 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
             return NULL;
     }
 
+    CBlockIndex* pindexPrev2 = chainActive.Tip();
+    const int nHeight2 = pindexPrev2->nHeight + 1;
+
     bool bMasterNodePayment = false;
 
-    if ( Params().NetworkID() == CBaseChainParams::TESTNET ){
-        if (GetTimeMicros() > START_MASTERNODE_PAYMENTS_TESTNET ){
+    if ( Params().NetworkID() == CBaseChainParams::TESTNET){
+        if (nHeight2 > Params().START_MASTERNODE_PAYMENTS()){
             bMasterNodePayment = true;
         }
     }else{
-        if (GetTimeMicros() > START_MASTERNODE_PAYMENTS){
+        if (nHeight2 > Params().START_MASTERNODE_PAYMENTS()){
             bMasterNodePayment = true;
         }
     }//

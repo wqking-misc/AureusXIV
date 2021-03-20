@@ -1869,7 +1869,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
 
 // XX42 Remove/refactor code below. Until then provide safe defaults
-    nAnonymizeVitaeAmount = 2;
 
     fEnableSwiftTX = GetBoolArg("-enableswifttx", fEnableSwiftTX);
     nSwiftTXDepth = GetArg("-swifttxdepth", nSwiftTXDepth);
@@ -1883,7 +1882,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
     LogPrintf("fLiteMode %d\n", fLiteMode);
     LogPrintf("nSwiftTXDepth %d\n", nSwiftTXDepth);
-    LogPrintf("Anonymize VITAE Amount %d\n", nAnonymizeVitaeAmount);
     LogPrintf("Budget Mode %s\n", strBudgetMode.c_str());
 
     /* Denominations

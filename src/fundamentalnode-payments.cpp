@@ -236,19 +236,14 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
         return true;
     }
 
-	bool MasternodePayments = false;
+    bool MasternodePayments = false;
 
 
     if(nBlockHeight > Params().START_MASTERNODE_PAYMENTS()) MasternodePayments = true;
 
-    if(!IsMNSporkActive(MN_SPORK_1_MASTERNODE_PAYMENTS_ENFORCEMENT)){
+    if(!IsSporkActive(SPORK_25_MASTERNODE_PAYMENTS_ENFORCEMENT)){
         MasternodePayments = false; //
         if(fDebug) LogPrintf("CheckBlock() : Masternode payment enforcement is off\n");
-    }
-    
-    if(block.vtx.size() < 2) {
-        MasternodePayments = false; //
-        if(fDebug) LogPrintf("CheckBlock() : There is no masternode payment\n");
     }
 
     if(MasternodePayments)
@@ -445,21 +440,7 @@ void CFundamentalnodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_
                 txNew.vout[i + 1].nValue = masternodepayment;
 
                 //subtract mn payment from the stake reward
-                CAmount sub = fundamentalnodePayment;
-                if (i == 2) {
-                    // Majority of cases; do it quick and move on
-                    txNew.vout[i - 1].nValue -= sub;
-                } else if (i > 2) {
-                    // special case, stake is split between (i-1) outputs
-                    unsigned int outputs = i-1;
-                    CAmount paymentSplit = sub / outputs;
-                    CAmount paymentRemainder = sub - (paymentSplit * outputs);
-                    for (unsigned int j=1; j<=outputs; j++) {
-                        txNew.vout[j].nValue -= paymentSplit;
-                    }
-                    // in case it's not an even division, take the last bit of dust from the last one
-                    txNew.vout[outputs].nValue -= paymentRemainder;
-                }
+                txNew.vout[i - 1].nValue -= (fundamentalnodePayment + masternodepayment);
             } else {
                 txNew.vout.resize(3);
                 txNew.vout[2].scriptPubKey = mn_payee;
@@ -496,21 +477,7 @@ void CFundamentalnodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_
                 txNew.vout[i].nValue = fundamentalnodePayment;
 
                 //subtract mn payment from the stake reward
-                CAmount sub = fundamentalnodePayment;
-                if (i == 2) {
-                    // Majority of cases; do it quick and move on
-                    txNew.vout[i - 1].nValue -= sub;
-                } else if (i > 2) {
-                    // special case, stake is split between (i-1) outputs
-                    unsigned int outputs = i-1;
-                    CAmount paymentSplit = sub / outputs;
-                    CAmount paymentRemainder = sub - (paymentSplit * outputs);
-                    for (unsigned int j=1; j<=outputs; j++) {
-                        txNew.vout[j].nValue -= paymentSplit;
-                    }
-                    // in case it's not an even division, take the last bit of dust from the last one
-                    txNew.vout[outputs].nValue -= paymentRemainder;
-                }
+                txNew.vout[i - 1].nValue -= fundamentalnodePayment;
             } else {
                 txNew.vout.resize(2);
                 txNew.vout[1].scriptPubKey = payee;
@@ -731,11 +698,6 @@ bool CFundamentalnodePayments::IsScheduled(CFundamentalnode& mn, int nNotBlockHe
 
 bool CFundamentalnodePayments::AddWinningFundamentalnode(CFundamentalnodePaymentWinner& winnerIn)
 {
-    if(! isVinValidFundamentalNode(winnerIn.vinFundamentalnode)) {
-        LogPrint("mnpayments", "AddWinningFundamentalnode - new fundamentalnode is disabled\n");
-        return false;
-    }
-
     uint256 blockHash = 0;
     if (!GetBlockHash(blockHash, winnerIn.nBlockHeight - 100)) {
         return false;
@@ -771,24 +733,12 @@ bool CFundamentalnodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
     std::string strPayeesPossible = "";
 
     CAmount nReward = GetBlockValue(nBlockHeight);
-
-    if (IsSporkActive(SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT)) {
-        // Get a stable number of fundamentalnodes by ignoring newly activated (< 8000 sec old) fundamentalnodes
-        nFundamentalnode_Drift_Count = mnodeman.stable_size() + Params().FundamentalnodeCountDrift();
-    }
-    else {
-        //account for the fact that all peers do not see the same fundamentalnode count. A allowance of being off our fundamentalnode count is given
-        //we only need to look at an increased fundamentalnode count because as count increases, the reward decreases. This code only checks
-        //for mnPayment >= required, so it only makes sense to check the max node count allowed.
-        nFundamentalnode_Drift_Count = mnodeman.size() + Params().FundamentalnodeCountDrift();
-    }
-
     CAmount requiredFundamentalnodePayment = GetFundamentalnodePayment(nBlockHeight, nReward, nFundamentalnode_Drift_Count);
 
     //require at least 6 signatures
     BOOST_FOREACH (CFundamentalnodePayee& payee, vecPayments)
-        if (payee.nVotes >= nMaxSignatures && payee.nVotes >= MNPAYMENTS_SIGNATURES_REQUIRED)
-            nMaxSignatures = payee.nVotes;
+    if (payee.nVotes >= nMaxSignatures && payee.nVotes >= MNPAYMENTS_SIGNATURES_REQUIRED)
+        nMaxSignatures = payee.nVotes;
 
     // if we don't have at least 6 signatures on a payee, approve whichever is the longest chain
     if (nMaxSignatures < MNPAYMENTS_SIGNATURES_REQUIRED) return true;

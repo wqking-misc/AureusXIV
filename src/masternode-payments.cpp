@@ -271,7 +271,7 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
 }
 
 
-void FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake, bool fZPIVStake)
+void FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake)
 {
     CBlockIndex* pindexPrev = chainActive.Tip();
     if (!pindexPrev) return;
@@ -279,7 +279,7 @@ void FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStak
     if (IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS) && budget.IsBudgetPaymentBlock(pindexPrev->nHeight + 1)) {
         budget.FillBlockPayee(txNew, nFees, fProofOfStake);
     } else {
-        masternodePayments.FillBlockPayee(txNew, nFees, fProofOfStake, fZPIVStake);
+        masternodePayments.FillBlockPayee(txNew, nFees, fProofOfStake);
     }
 }
 
@@ -292,7 +292,7 @@ std::string GetRequiredPaymentsString(int nBlockHeight)
     }
 }
 
-void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFees, bool fProofOfStake, bool fZPIVStake)
+void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFees, bool fProofOfStake)
 {
     CBlockIndex* pindexPrev = chainActive.Tip();
     if (!pindexPrev) return;
@@ -328,20 +328,8 @@ void CMasternodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_t nFe
             txNew.vout[i].nValue = masternodePayment;
 
             //subtract mn payment from the stake reward
-            if (i == 2) {
-                // Majority of cases; do it quick and move on
+            if (!txNew.vout[1].IsZerocoinMint())
                 txNew.vout[i - 1].nValue -= masternodePayment;
-            } else if (i > 2) {
-                // special case, stake is split between (i-1) outputs
-                unsigned int outputs = i-1;
-                CAmount mnPaymentSplit = masternodePayment / outputs;
-                CAmount mnPaymentRemainder = masternodePayment - (mnPaymentSplit * outputs);
-                for (unsigned int j=1; j<=outputs; j++) {
-                    txNew.vout[j].nValue -= mnPaymentSplit;
-                }
-                // in case it's not an even division, take the last bit of dust from the last one
-                txNew.vout[outputs].nValue -= mnPaymentRemainder;
-            }
         } else {
             txNew.vout.resize(2);
             txNew.vout[1].scriptPubKey = payee;
@@ -543,17 +531,29 @@ bool CMasternodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
     LOCK(cs_vecPayments);
 
     int nMaxSignatures = 0;
+    int nMasternode_Drift_Count = 0;
 
     std::string strPayeesPossible = "";
 
     CAmount nReward = GetBlockValue(nBlockHeight);
-    
-    CAmount requiredMasternodePayment = GetMasternodePayment(nBlockHeight, nReward);
+
+    if (IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
+        // Get a stable number of masternodes by ignoring newly activated (< 8000 sec old) masternodes
+        nMasternode_Drift_Count = mnodeman.stable_size() + Params().MasternodeCountDrift();
+    }
+    else {
+        //account for the fact that all peers do not see the same masternode count. A allowance of being off our masternode count is given
+        //we only need to look at an increased masternode count because as count increases, the reward decreases. This code only checks
+        //for mnPayment >= required, so it only makes sense to check the max node count allowed.
+        nMasternode_Drift_Count = mnodeman.size() + Params().MasternodeCountDrift();
+    }
+
+    CAmount requiredMasternodePayment = GetMasternodePayment(nBlockHeight, nReward, nMasternode_Drift_Count);
 
     //require at least 6 signatures
     BOOST_FOREACH (CMasternodePayee& payee, vecPayments)
-        if (payee.nVotes >= nMaxSignatures && payee.nVotes >= MNPAYMENTS_SIGNATURES_REQUIRED)
-            nMaxSignatures = payee.nVotes;
+    if (payee.nVotes >= nMaxSignatures && payee.nVotes >= MNPAYMENTS_SIGNATURES_REQUIRED)
+        nMaxSignatures = payee.nVotes;
 
     // if we don't have at least 6 signatures on a payee, approve whichever is the longest chain
     if (nMaxSignatures < MNPAYMENTS_SIGNATURES_REQUIRED) return true;

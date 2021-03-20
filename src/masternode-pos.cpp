@@ -15,7 +15,7 @@
 #include "protocol.h"
 #include "activemasternode.h"
 #include "masternodeman.h"
-#include "mn-spork.h"
+#include "spork.h"
 #include <boost/lexical_cast.hpp>
 #include "masternodeman.h"
 
@@ -58,7 +58,7 @@ CActiveMasternode activeMasternode;
 void ProcessMessageMasternodePOS(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
     if(fMNLiteMode) return; //disable all darksend/masternode related functionality
-    if(!IsMNSporkActive(MN_SPORK_7_MASTERNODE_SCANNING)) return;
+    if(!IsSporkActive(SPORK_24_MASTERNODE_SCANNING)) return;
     if(IsInitialBlockDownload()) return;
 
     if (strCommand == "mnse") //Masternode Scanning Error
@@ -152,7 +152,7 @@ void CMasternodeScanning::DoMasternodePOSChecks()
 {
     if(!fMasterNode) return;
     if(fMNLiteMode) return; //disable all darksend/masternode related functionality
-    if(!IsMNSporkActive(MN_SPORK_7_MASTERNODE_SCANNING)) return;
+    if(!IsSporkActive(SPORK_24_MASTERNODE_SCANNING)) return;
     if(IsInitialBlockDownload()) return;
 
     int nBlockHeight = chainActive.Tip()->nHeight-5;

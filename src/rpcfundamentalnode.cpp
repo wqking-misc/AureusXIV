@@ -15,7 +15,6 @@
 #include "fundamentalnodeman.h"
 #include "rpcserver.h"
 #include "utilmoneystr.h"
-#include "spork.h"
 
 #include "masternode-pos.h"
 #include "masternodeconfig.h"
@@ -67,10 +66,10 @@ UniValue obfuscation(const UniValue& params, bool fHelp)
 
     if (fHelp || params.size() == 0)
         throw runtime_error(
-            "obfuscation <vitaeaddress> <amount>\n"
-            "vitaeaddress, reset, or auto (AutoDenominate)"
-            "<amount> is a real and will be rounded to the next 0.1" +
-            HelpRequiringPassphrase());
+                "obfuscation <vitaeaddress> <amount>\n"
+                "vitaeaddress, reset, or auto (AutoDenominate)"
+                "<amount> is a real and will be rounded to the next 0.1" +
+                HelpRequiringPassphrase());
 
     if (pwalletMain->IsLocked())
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
@@ -89,10 +88,10 @@ UniValue obfuscation(const UniValue& params, bool fHelp)
 
     if (params.size() != 2)
         throw runtime_error(
-            "obfuscation <vitaeaddress> <amount>\n"
-            "vitaeaddress, denominate, or auto (AutoDenominate)"
-            "<amount> is a real and will be rounded to the next 0.1" +
-            HelpRequiringPassphrase());
+                "obfuscation <vitaeaddress> <amount>\n"
+                "vitaeaddress, denominate, or auto (AutoDenominate)"
+                "<amount> is a real and will be rounded to the next 0.1" +
+                HelpRequiringPassphrase());
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
@@ -116,19 +115,19 @@ UniValue getpoolinfo(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
         throw runtime_error(
-            "getpoolinfo\n"
-            "\nReturns anonymous pool-related information\n"
+                "getpoolinfo\n"
+                "\nReturns anonymous pool-related information\n"
 
-            "\nResult:\n"
-            "{\n"
-            "  \"current\": \"addr\",    (string) VITAE address of current fundamentalnode\n"
-            "  \"state\": xxxx,        (string) unknown\n"
-            "  \"entries\": xxxx,      (numeric) Number of entries\n"
-            "  \"accepted\": xxxx,     (numeric) Number of entries accepted\n"
-            "}\n"
+                "\nResult:\n"
+                "{\n"
+                "  \"current\": \"addr\",    (string) VITAE address of current fundamentalnode\n"
+                "  \"state\": xxxx,        (string) unknown\n"
+                "  \"entries\": xxxx,      (numeric) Number of entries\n"
+                "  \"accepted\": xxxx,     (numeric) Number of entries accepted\n"
+                "}\n"
 
-            "\nExamples:\n" +
-            HelpExampleCli("getpoolinfo", "") + HelpExampleRpc("getpoolinfo", ""));
+                "\nExamples:\n" +
+                HelpExampleCli("getpoolinfo", "") + HelpExampleRpc("getpoolinfo", ""));
 
     UniValue obj(UniValue::VOBJ);
     obj.push_back(Pair("current_fundamentalnode", mnodeman.GetCurrentFundamentalNode()->addr.ToString()));
@@ -148,30 +147,30 @@ UniValue fundamentalnode(const UniValue& params, bool fHelp)
 
     if (fHelp ||
         (strCommand != "start" && strCommand != "start-alias" && strCommand != "start-many" && strCommand != "start-all" && strCommand != "start-missing" &&
-            strCommand != "start-disabled" && strCommand != "list" && strCommand != "list-conf" && strCommand != "count" && strCommand != "enforce" &&
-            strCommand != "debug" && strCommand != "current" && strCommand != "winners" && strCommand != "genkey" && strCommand != "connect" &&
-            strCommand != "outputs" && strCommand != "status" && strCommand != "calcscore"))
+         strCommand != "start-disabled" && strCommand != "list" && strCommand != "list-conf" && strCommand != "count" && strCommand != "enforce" &&
+         strCommand != "debug" && strCommand != "current" && strCommand != "winners" && strCommand != "genkey" && strCommand != "connect" &&
+         strCommand != "outputs" && strCommand != "status" && strCommand != "calcscore"))
         throw runtime_error(
-            "fundamentalnode \"command\"...\n"
-            "\nSet of commands to execute fundamentalnode related actions\n"
-            "This command is depreciated, please see individual command documentation for future reference\n\n"
+                "fundamentalnode \"command\"...\n"
+                "\nSet of commands to execute fundamentalnode related actions\n"
+                "This command is depreciated, please see individual command documentation for future reference\n\n"
 
-            "\nArguments:\n"
-            "1. \"command\"        (string or set of strings, required) The command to execute\n"
+                "\nArguments:\n"
+                "1. \"command\"        (string or set of strings, required) The command to execute\n"
 
-            "\nAvailable commands:\n"
-            "  count        - Print count information of all known fundamentalnodes\n"
-            "  current      - Print info on current fundamentalnode winner\n"
-            "  debug        - Print fundamentalnode status\n"
-            "  genkey       - Generate new fundamentalnodeprivkey\n"
-            "  outputs      - Print fundamentalnode compatible outputs\n"
-            "  start        - Start fundamentalnode configured in vitae.conf\n"
-            "  start-alias  - Start single fundamentalnode by assigned alias configured in fundamentalnode.conf\n"
-            "  start-<mode> - Start fundamentalnodes configured in fundamentalnode.conf (<mode>: 'all', 'missing', 'disabled')\n"
-            "  status       - Print fundamentalnode status information\n"
-            "  list         - Print list of all known fundamentalnodes (see fundamentalnodelist for more info)\n"
-            "  list-conf    - Print fundamentalnode.conf in JSON format\n"
-            "  winners      - Print list of fundamentalnode winners\n");
+                "\nAvailable commands:\n"
+                "  count        - Print count information of all known fundamentalnodes\n"
+                "  current      - Print info on current fundamentalnode winner\n"
+                "  debug        - Print fundamentalnode status\n"
+                "  genkey       - Generate new fundamentalnodeprivkey\n"
+                "  outputs      - Print fundamentalnode compatible outputs\n"
+                "  start        - Start fundamentalnode configured in vitae.conf\n"
+                "  start-alias  - Start single fundamentalnode by assigned alias configured in fundamentalnode.conf\n"
+                "  start-<mode> - Start fundamentalnodes configured in fundamentalnode.conf (<mode>: 'all', 'missing', 'disabled')\n"
+                "  status       - Print fundamentalnode status information\n"
+                "  list         - Print list of all known fundamentalnodes (see fundamentalnodelist for more info)\n"
+                "  list-conf    - Print fundamentalnode.conf in JSON format\n"
+                "  winners      - Print list of fundamentalnode winners\n");
 
     if (strCommand == "list") {
         UniValue newParams(UniValue::VARR);
@@ -286,8 +285,8 @@ UniValue masternode(const UniValue& params, bool fHelp)
         strCommand = params[0].get_str();
 
     if (fHelp  ||
-            (strCommand != "start" && strCommand != "start-alias" && strCommand != "start-many" && strCommand != "stop" && strCommand != "stop-alias" && strCommand != "stop-many" && strCommand != "list-conf" && strCommand != "count"  && strCommand != "enforce"
-             && strCommand != "debug" && strCommand != "current" && strCommand != "winners" && strCommand != "genkey" && strCommand != "connect" && strCommand != "outputs" /* && strCommand != "vote-many" && strCommand != "vote" */))
+        (strCommand != "start" && strCommand != "start-alias" && strCommand != "start-many" && strCommand != "stop" && strCommand != "stop-alias" && strCommand != "stop-many" && strCommand != "list-conf" && strCommand != "count"  && strCommand != "enforce"
+         && strCommand != "debug" && strCommand != "current" && strCommand != "winners" && strCommand != "genkey" && strCommand != "connect" && strCommand != "outputs" /* && strCommand != "vote-many" && strCommand != "vote" */))
         throw runtime_error(
                 "masternode \"command\"... ( \"passphrase\" )\n"
                 "Set of commands to execute masternode related actions\n"
@@ -312,7 +311,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
                 "  winners      - Print list of masternode winners\n"
                 "  vote-many    - Not implemented\n"
                 "  vote         - Not implemented\n"
-                );
+        );
 
     if (strCommand == "stop")
     {
@@ -326,7 +325,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
                 strWalletPass = params[1].get_str().c_str();
             } else {
                 throw runtime_error(
-                            "Your wallet is locked, passphrase is required\n");
+                        "Your wallet is locked, passphrase is required\n");
             }
 
             if(!pwalletMain->Unlock(strWalletPass)){
@@ -354,7 +353,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
     {
         if (params.size() < 2){
             throw runtime_error(
-                        "command needs at least 2 parameters\n");
+                    "command needs at least 2 parameters\n");
         }
 
         std::string alias = params[1].get_str().c_str();
@@ -367,7 +366,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
                 strWalletPass = params[2].get_str().c_str();
             } else {
                 throw runtime_error(
-                            "Your wallet is locked, passphrase is required\n");
+                        "Your wallet is locked, passphrase is required\n");
             }
 
             if(!pwalletMain->Unlock(strWalletPass)){
@@ -414,7 +413,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
                 strWalletPass = params[1].get_str().c_str();
             } else {
                 throw runtime_error(
-                            "Your wallet is locked, passphrase is required\n");
+                        "Your wallet is locked, passphrase is required\n");
             }
 
             if(!pwalletMain->Unlock(strWalletPass)){
@@ -455,7 +454,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         //Object returnObj;
         UniValue returnObj(UniValue::VOBJ);
         returnObj.push_back(Pair("overall", "Successfully stopped " + boost::lexical_cast<std::string>(successful) + " masternodes, failed to stop " +
-                                 boost::lexical_cast<std::string>(fail) + ", total " + boost::lexical_cast<std::string>(total)));
+                                            boost::lexical_cast<std::string>(fail) + ", total " + boost::lexical_cast<std::string>(total)));
         returnObj.push_back(Pair("detail", resultsObj));
 
         return returnObj;
@@ -466,7 +465,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
     {
         if (params.size() > 2){
             throw runtime_error(
-                        "too many parameters\n");
+                    "too many parameters\n");
         }
         UniValue rtnStr(UniValue::VSTR);
         if (params.size() == 2)
@@ -513,7 +512,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
                 strWalletPass = params[1].get_str().c_str();
             } else {
                 throw runtime_error(
-                            "Your wallet is locked, passphrase is required\n");
+                        "Your wallet is locked, passphrase is required\n");
             }
 
             if(!pwalletMain->Unlock(strWalletPass)){
@@ -542,7 +541,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
     {
         if (params.size() < 2){
             throw runtime_error(
-                        "command needs at least 2 parameters\n");
+                    "command needs at least 2 parameters\n");
         }
 
         std::string alias = params[1].get_str().c_str();
@@ -555,7 +554,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
                 strWalletPass = params[2].get_str().c_str();
             } else {
                 throw runtime_error(
-                            "Your wallet is locked, passphrase is required\n");
+                        "Your wallet is locked, passphrase is required\n");
             }
 
             if(!pwalletMain->Unlock(strWalletPass)){
@@ -607,7 +606,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
                 strWalletPass = params[1].get_str().c_str();
             } else {
                 throw runtime_error(
-                            "Your wallet is locked, passphrase is required\n");
+                        "Your wallet is locked, passphrase is required\n");
             }
 
             if(!pwalletMain->Unlock(strWalletPass)){
@@ -654,7 +653,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         //Object returnObj;
         UniValue returnObj(UniValue::VOBJ);
         returnObj.push_back(Pair("overall", "Successfully started " + boost::lexical_cast<std::string>(successful) + " masternodes, failed to start " +
-                                 boost::lexical_cast<std::string>(fail) + ", total " + boost::lexical_cast<std::string>(total)));
+                                            boost::lexical_cast<std::string>(fail) + ", total " + boost::lexical_cast<std::string>(total)));
         returnObj.push_back(Pair("detail", resultsObj));
 
         return returnObj;
@@ -752,7 +751,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
             strAddress = params[1].get_str().c_str();
         } else {
             throw runtime_error(
-                        "Masternode address required\n");
+                    "Masternode address required\n");
         }
 
         CService addr = CService(strAddress);
@@ -887,15 +886,15 @@ UniValue masternode(const UniValue& params, bool fHelp)
 
 UniValue masternodelist(const UniValue& params, bool fHelp)
 {
-        std::string strMode = "status";
+    std::string strMode = "status";
     std::string strFilter = "";
 
     if (params.size() >= 1) strMode = params[0].get_str();
     if (params.size() == 2) strFilter = params[1].get_str();
 
     if (fHelp ||
-            (strMode != "status" && strMode != "vin" && strMode != "pubkey" && strMode != "lastseen" && strMode != "activeseconds" && strMode != "rank"
-                && strMode != "protocol" && strMode != "full" && strMode != "votes" && strMode != "donation" && strMode != "pose"))
+        (strMode != "status" && strMode != "vin" && strMode != "pubkey" && strMode != "lastseen" && strMode != "activeseconds" && strMode != "rank"
+         && strMode != "protocol" && strMode != "full" && strMode != "votes" && strMode != "donation" && strMode != "pose"))
     {
         throw runtime_error(
                 "masternodelist ( \"mode\" \"filter\" )\n"
@@ -915,11 +914,11 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                 "  status         - Print masternode status: ENABLED / EXPIRED / VIN_SPENT / REMOVE / POS_ERROR (can be additionally filtered, partial match)\n"
                 "  vin            - Print vin associated with a masternode (can be additionally filtered, partial match)\n"
                 "  votes          - Print all masternode votes for a Bitsend initiative (can be additionally filtered, partial match)\n"
-                );
+        );
     }
 
     //Object obj;
-        UniValue obj(UniValue::VOBJ);
+    UniValue obj(UniValue::VOBJ);
     if (strMode == "rank") {
         std::vector<pair<int, CMasternode> > vMasternodeRanks = m_nodeman.GetMasternodeRanks(chainActive.Tip()->nHeight);
         BOOST_FOREACH(PAIRTYPE(int, CMasternode)& s, vMasternodeRanks) {
@@ -940,7 +939,7 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                 CBitcoinAddress address2(address1);
 
                 if(strFilter !="" && address2.ToString().find(strFilter) == string::npos &&
-                    strAddr.find(strFilter) == string::npos) continue;
+                   strAddr.find(strFilter) == string::npos) continue;
 
                 std::string strOut = "";
 
@@ -962,23 +961,23 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
 
                 std::ostringstream stringStream;
                 stringStream << setw(10) <<
-                               mn.Status() << " " <<
-                               mn.protocolVersion << " " <<
-                               address2.ToString() << " " <<
-                               addrStream.str() << " " <<
-                               mn.lastTimeSeen << " " << setw(8) <<
-                               (mn.lastTimeSeen - mn.sigTime);
+                             mn.Status() << " " <<
+                             mn.protocolVersion << " " <<
+                             address2.ToString() << " " <<
+                             addrStream.str() << " " <<
+                             mn.lastTimeSeen << " " << setw(8) <<
+                             (mn.lastTimeSeen - mn.sigTime);
                 std::string output = stringStream.str();
                 stringStream << " " << strAddr;
                 if(strFilter !="" && stringStream.str().find(strFilter) == string::npos &&
-                        strAddr.find(strFilter) == string::npos) continue;
+                   strAddr.find(strFilter) == string::npos) continue;
                 obj.push_back(Pair(mn.vin.prevout.hash.ToString(), output));
             } else if (strMode == "lastseen") {
                 if(strFilter !="" && strAddr.find(strFilter) == string::npos) continue;
                 obj.push_back(Pair(strAddr,       (int64_t)mn.lastTimeSeen));
             } else if (strMode == "protocol") {
                 if(strFilter !="" && strFilter != boost::lexical_cast<std::string>(mn.protocolVersion) &&
-                    strAddr.find(strFilter) == string::npos) continue;
+                   strAddr.find(strFilter) == string::npos) continue;
                 obj.push_back(Pair(strAddr,       (int64_t)mn.protocolVersion));
             } else if (strMode == "pubkey") {
                 CScript pubkey;
@@ -988,7 +987,7 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                 CBitcoinAddress address2(address1);
 
                 if(strFilter !="" && address2.ToString().find(strFilter) == string::npos &&
-                    strAddr.find(strFilter) == string::npos) continue;
+                   strAddr.find(strFilter) == string::npos) continue;
                 obj.push_back(Pair(strAddr,       address2.ToString().c_str()));
             } else if (strMode == "pose") {
                 if(strFilter !="" && strAddr.find(strFilter) == string::npos) continue;
@@ -1000,7 +999,7 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                 obj.push_back(Pair(strAddr,       strStatus.c_str()));
             } else if (strMode == "vin") {
                 if(strFilter !="" && mn.vin.prevout.hash.ToString().find(strFilter) == string::npos &&
-                    strAddr.find(strFilter) == string::npos) continue;
+                   strAddr.find(strFilter) == string::npos) continue;
                 obj.push_back(Pair(strAddr,       mn.vin.prevout.hash.ToString().c_str()));
             } else if(strMode == "votes"){
                 std::string strStatus = "ABSTAIN";
@@ -1024,21 +1023,21 @@ UniValue getmasternodestatus (const UniValue& params, bool fHelp)
 {
     if (fHelp || (params.size() != 0))
         throw runtime_error(
-            "getmasternodestatus\n"
-            "\nPrint masternode status\n"
+                "getmasternodestatus\n"
+                "\nPrint masternode status\n"
 
-            "\nResult:\n"
-            "{\n"
-            "  \"txhash\": \"xxxx\",      (string) Collateral transaction hash\n"
-            "  \"outputidx\": n,        (numeric) Collateral transaction output index number\n"
-            "  \"netaddr\": \"xxxx\",     (string) Masternode network address\n"
-            "  \"addr\": \"xxxx\",        (string) VITAE address for masternode payments\n"
-            "  \"status\": \"xxxx\",      (string) Masternode status\n"
-            "  \"message\": \"xxxx\"      (string) Masternode status message\n"
-            "}\n"
+                "\nResult:\n"
+                "{\n"
+                "  \"txhash\": \"xxxx\",      (string) Collateral transaction hash\n"
+                "  \"outputidx\": n,        (numeric) Collateral transaction output index number\n"
+                "  \"netaddr\": \"xxxx\",     (string) Masternode network address\n"
+                "  \"addr\": \"xxxx\",        (string) VITAE address for masternode payments\n"
+                "  \"status\": \"xxxx\",      (string) Masternode status\n"
+                "  \"message\": \"xxxx\"      (string) Masternode status message\n"
+                "}\n"
 
-            "\nExamples:\n" +
-            HelpExampleCli("getmasternodestatus", "") + HelpExampleRpc("getmasternodestatus", ""));
+                "\nExamples:\n" +
+                HelpExampleCli("getmasternodestatus", "") + HelpExampleRpc("getmasternodestatus", ""));
 
     if (!fMasterNode) throw runtime_error("This is not a masternode");
 
@@ -1067,29 +1066,29 @@ UniValue listfundamentalnodes(const UniValue& params, bool fHelp)
 
     if (fHelp || (params.size() > 1))
         throw runtime_error(
-            "listfundamentalnodes ( \"filter\" )\n"
-            "\nGet a ranked list of fundamentalnodes\n"
+                "listfundamentalnodes ( \"filter\" )\n"
+                "\nGet a ranked list of fundamentalnodes\n"
 
-            "\nArguments:\n"
-            "1. \"filter\"    (string, optional) Filter search text. Partial match by txhash, status, or addr.\n"
+                "\nArguments:\n"
+                "1. \"filter\"    (string, optional) Filter search text. Partial match by txhash, status, or addr.\n"
 
-            "\nResult:\n"
-            "[\n"
-            "  {\n"
-            "    \"rank\": n,           (numeric) Fundamentalnode Rank (or 0 if not enabled)\n"
-            "    \"txhash\": \"hash\",    (string) Collateral transaction hash\n"
-            "    \"outidx\": n,         (numeric) Collateral transaction output index\n"
-            "    \"status\": s,         (string) Status (ENABLED/EXPIRED/REMOVE/etc)\n"
-            "    \"addr\": \"addr\",      (string) Fundamentalnode VITAE address\n"
-            "    \"version\": v,        (numeric) Fundamentalnode protocol version\n"
-            "    \"lastseen\": ttt,     (numeric) The time in seconds since epoch (Jan 1 1970 GMT) of the last seen\n"
-            "    \"activetime\": ttt,   (numeric) The time in seconds since epoch (Jan 1 1970 GMT) fundamentalnode has been active\n"
-            "    \"lastpaid\": ttt,     (numeric) The time in seconds since epoch (Jan 1 1970 GMT) fundamentalnode was last paid\n"
-            "  }\n"
-            "  ,...\n"
-            "]\n"
-            "\nExamples:\n" +
-            HelpExampleCli("fundamentalnodelist", "") + HelpExampleRpc("fundamentalnodelist", ""));
+                "\nResult:\n"
+                "[\n"
+                "  {\n"
+                "    \"rank\": n,           (numeric) Fundamentalnode Rank (or 0 if not enabled)\n"
+                "    \"txhash\": \"hash\",    (string) Collateral transaction hash\n"
+                "    \"outidx\": n,         (numeric) Collateral transaction output index\n"
+                "    \"status\": s,         (string) Status (ENABLED/EXPIRED/REMOVE/etc)\n"
+                "    \"addr\": \"addr\",      (string) Fundamentalnode VITAE address\n"
+                "    \"version\": v,        (numeric) Fundamentalnode protocol version\n"
+                "    \"lastseen\": ttt,     (numeric) The time in seconds since epoch (Jan 1 1970 GMT) of the last seen\n"
+                "    \"activetime\": ttt,   (numeric) The time in seconds since epoch (Jan 1 1970 GMT) fundamentalnode has been active\n"
+                "    \"lastpaid\": ttt,     (numeric) The time in seconds since epoch (Jan 1 1970 GMT) fundamentalnode was last paid\n"
+                "  }\n"
+                "  ,...\n"
+                "]\n"
+                "\nExamples:\n" +
+                HelpExampleCli("fundamentalnodelist", "") + HelpExampleRpc("fundamentalnodelist", ""));
 
     UniValue ret(UniValue::VARR);
     int nHeight;
@@ -1142,14 +1141,14 @@ UniValue fundamentalnodeconnect(const UniValue& params, bool fHelp)
 {
     if (fHelp || (params.size() != 1))
         throw runtime_error(
-            "fundamentalnodeconnect \"address\"\n"
-            "\nAttempts to connect to specified fundamentalnode address\n"
+                "fundamentalnodeconnect \"address\"\n"
+                "\nAttempts to connect to specified fundamentalnode address\n"
 
-            "\nArguments:\n"
-            "1. \"address\"     (string, required) IP or net address to connect to\n"
+                "\nArguments:\n"
+                "1. \"address\"     (string, required) IP or net address to connect to\n"
 
-            "\nExamples:\n" +
-            HelpExampleCli("fundamentalnodeconnect", "\"192.168.0.6:8765\"") + HelpExampleRpc("fundamentalnodeconnect", "\"192.168.0.6:8765\""));
+                "\nExamples:\n" +
+                HelpExampleCli("fundamentalnodeconnect", "\"192.168.0.6:8765\"") + HelpExampleRpc("fundamentalnodeconnect", "\"192.168.0.6:8765\""));
 
     std::string strAddress = params[0].get_str();
 
@@ -1168,19 +1167,19 @@ UniValue getfundamentalnodecount (const UniValue& params, bool fHelp)
 {
     if (fHelp || (params.size() > 0))
         throw runtime_error(
-            "getfundamentalnodecount\n"
-            "\nGet fundamentalnode count values\n"
+                "getfundamentalnodecount\n"
+                "\nGet fundamentalnode count values\n"
 
-            "\nResult:\n"
-            "{\n"
-            "  \"total\": n,        (numeric) Total fundamentalnodes\n"
-            "  \"stable\": n,       (numeric) Stable count\n"
-            "  \"obfcompat\": n,    (numeric) Obfuscation Compatible\n"
-            "  \"enabled\": n,      (numeric) Enabled fundamentalnodes\n"
-            "  \"inqueue\": n       (numeric) Fundamentalnodes in queue\n"
-            "}\n"
-            "\nExamples:\n" +
-            HelpExampleCli("getfundamentalnodecount", "") + HelpExampleRpc("getfundamentalnodecount", ""));
+                "\nResult:\n"
+                "{\n"
+                "  \"total\": n,        (numeric) Total fundamentalnodes\n"
+                "  \"stable\": n,       (numeric) Stable count\n"
+                "  \"obfcompat\": n,    (numeric) Obfuscation Compatible\n"
+                "  \"enabled\": n,      (numeric) Enabled fundamentalnodes\n"
+                "  \"inqueue\": n       (numeric) Fundamentalnodes in queue\n"
+                "}\n"
+                "\nExamples:\n" +
+                HelpExampleCli("getfundamentalnodecount", "") + HelpExampleRpc("getfundamentalnodecount", ""));
 
     UniValue obj(UniValue::VOBJ);
     int nCount = 0;
@@ -1207,19 +1206,19 @@ UniValue fundamentalnodecurrent (const UniValue& params, bool fHelp)
 {
     if (fHelp || (params.size() != 0))
         throw runtime_error(
-            "fundamentalnodecurrent\n"
-            "\nGet current fundamentalnode winner\n"
+                "fundamentalnodecurrent\n"
+                "\nGet current fundamentalnode winner\n"
 
-            "\nResult:\n"
-            "{\n"
-            "  \"protocol\": xxxx,        (numeric) Protocol version\n"
-            "  \"txhash\": \"xxxx\",      (string) Collateral transaction hash\n"
-            "  \"pubkey\": \"xxxx\",      (string) FN Public key\n"
-            "  \"lastseen\": xxx,       (numeric) Time since epoch of last seen\n"
-            "  \"activeseconds\": xxx,  (numeric) Seconds FN has been active\n"
-            "}\n"
-            "\nExamples:\n" +
-            HelpExampleCli("fundamentalnodecurrent", "") + HelpExampleRpc("fundamentalnodecurrent", ""));
+                "\nResult:\n"
+                "{\n"
+                "  \"protocol\": xxxx,        (numeric) Protocol version\n"
+                "  \"txhash\": \"xxxx\",      (string) Collateral transaction hash\n"
+                "  \"pubkey\": \"xxxx\",      (string) FN Public key\n"
+                "  \"lastseen\": xxx,       (numeric) Time since epoch of last seen\n"
+                "  \"activeseconds\": xxx,  (numeric) Seconds FN has been active\n"
+                "}\n"
+                "\nExamples:\n" +
+                HelpExampleCli("fundamentalnodecurrent", "") + HelpExampleRpc("fundamentalnodecurrent", ""));
 
     CFundamentalnode* winner = mnodeman.GetCurrentFundamentalNode(1);
     if (winner) {
@@ -1240,13 +1239,13 @@ UniValue fundamentalnodedebug (const UniValue& params, bool fHelp)
 {
     if (fHelp || (params.size() != 0))
         throw runtime_error(
-            "fundamentalnodedebug\n"
-            "\nPrint fundamentalnode status\n"
+                "fundamentalnodedebug\n"
+                "\nPrint fundamentalnode status\n"
 
-            "\nResult:\n"
-            "\"status\"     (string) Fundamentalnode status message\n"
-            "\nExamples:\n" +
-            HelpExampleCli("fundamentalnodedebug", "") + HelpExampleRpc("fundamentalnodedebug", ""));
+                "\nResult:\n"
+                "\"status\"     (string) Fundamentalnode status message\n"
+                "\nExamples:\n" +
+                HelpExampleCli("fundamentalnodedebug", "") + HelpExampleRpc("fundamentalnodedebug", ""));
 
     if (activeFundamentalnode.status != ACTIVE_FUNDAMENTALNODE_INITIAL || !fundamentalnodeSync.IsSynced())
         return activeFundamentalnode.GetStatus();
@@ -1279,31 +1278,31 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
         (params.size() == 2 && (strCommand != "local" && strCommand != "all" && strCommand != "many" && strCommand != "missing" && strCommand != "disabled")) ||
         (params.size() == 3 && strCommand != "alias"))
         throw runtime_error(
-            "startfundamentalnode \"local|all|many|missing|disabled|alias\" lockwallet ( \"alias\" )\n"
-            "\nAttempts to start one or more fundamentalnode(s)\n"
+                "startfundamentalnode \"local|all|many|missing|disabled|alias\" lockwallet ( \"alias\" )\n"
+                "\nAttempts to start one or more fundamentalnode(s)\n"
 
-            "\nArguments:\n"
-            "1. set         (string, required) Specify which set of fundamentalnode(s) to start.\n"
-            "2. lockwallet  (boolean, required) Lock wallet after completion.\n"
-            "3. alias       (string) Fundamentalnode alias. Required if using 'alias' as the set.\n"
+                "\nArguments:\n"
+                "1. set         (string, required) Specify which set of fundamentalnode(s) to start.\n"
+                "2. lockwallet  (boolean, required) Lock wallet after completion.\n"
+                "3. alias       (string) Fundamentalnode alias. Required if using 'alias' as the set.\n"
 
-            "\nResult: (for 'local' set):\n"
-            "\"status\"     (string) Fundamentalnode status message\n"
+                "\nResult: (for 'local' set):\n"
+                "\"status\"     (string) Fundamentalnode status message\n"
 
-            "\nResult: (for other sets):\n"
-            "{\n"
-            "  \"overall\": \"xxxx\",     (string) Overall status message\n"
-            "  \"detail\": [\n"
-            "    {\n"
-            "      \"node\": \"xxxx\",    (string) Node name or alias\n"
-            "      \"result\": \"xxxx\",  (string) 'success' or 'failed'\n"
-            "      \"error\": \"xxxx\"    (string) Error message, if failed\n"
-            "    }\n"
-            "    ,...\n"
-            "  ]\n"
-            "}\n"
-            "\nExamples:\n" +
-            HelpExampleCli("startfundamentalnode", "\"alias\" \"0\" \"my_mn\"") + HelpExampleRpc("startfundamentalnode", "\"alias\" \"0\" \"my_mn\""));
+                "\nResult: (for other sets):\n"
+                "{\n"
+                "  \"overall\": \"xxxx\",     (string) Overall status message\n"
+                "  \"detail\": [\n"
+                "    {\n"
+                "      \"node\": \"xxxx\",    (string) Node name or alias\n"
+                "      \"result\": \"xxxx\",  (string) 'success' or 'failed'\n"
+                "      \"error\": \"xxxx\"    (string) Error message, if failed\n"
+                "    }\n"
+                "    ,...\n"
+                "  ]\n"
+                "}\n"
+                "\nExamples:\n" +
+                HelpExampleCli("startfundamentalnode", "\"alias\" \"0\" \"my_mn\"") + HelpExampleRpc("startfundamentalnode", "\"alias\" \"0\" \"my_mn\""));
 
     bool fLock = (params[1].get_str() == "true" ? true : false);
 
@@ -1329,7 +1328,7 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
 
         if ((strCommand == "missing" || strCommand == "disabled") &&
             (fundamentalnodeSync.RequestedFundamentalnodeAssets <= FUNDAMENTALNODE_SYNC_LIST ||
-                fundamentalnodeSync.RequestedFundamentalnodeAssets == FUNDAMENTALNODE_SYNC_FAILED)) {
+             fundamentalnodeSync.RequestedFundamentalnodeAssets == FUNDAMENTALNODE_SYNC_FAILED)) {
             throw runtime_error("You can't use this command until fundamentalnode list is synced\n");
         }
 
@@ -1439,19 +1438,15 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
 
 UniValue createfundamentalnodekey (const UniValue& params, bool fHelp)
 {
-    if(sporkManager.GetSporkValue(SPORK_14_DISABLE_NEW_FUNDAMENTALNODE) > 0) {
-        throw runtime_error("Fundamental node creation is disabled.");
-    }
-
     if (fHelp || (params.size() != 0))
         throw runtime_error(
-            "createfundamentalnodekey\n"
-            "\nCreate a new fundamentalnode private key\n"
+                "createfundamentalnodekey\n"
+                "\nCreate a new fundamentalnode private key\n"
 
-            "\nResult:\n"
-            "\"key\"    (string) Fundamentalnode private key\n"
-            "\nExamples:\n" +
-            HelpExampleCli("createfundamentalnodekey", "") + HelpExampleRpc("createfundamentalnodekey", ""));
+                "\nResult:\n"
+                "\"key\"    (string) Fundamentalnode private key\n"
+                "\nExamples:\n" +
+                HelpExampleCli("createfundamentalnodekey", "") + HelpExampleRpc("createfundamentalnodekey", ""));
 
     CKey secret;
     secret.MakeNewKey(false);
@@ -1463,20 +1458,20 @@ UniValue getfundamentalnodeoutputs (const UniValue& params, bool fHelp)
 {
     if (fHelp || (params.size() != 0))
         throw runtime_error(
-            "getfundamentalnodeoutputs\n"
-            "\nPrint all fundamentalnode transaction outputs\n"
+                "getfundamentalnodeoutputs\n"
+                "\nPrint all fundamentalnode transaction outputs\n"
 
-            "\nResult:\n"
-            "[\n"
-            "  {\n"
-            "    \"txhash\": \"xxxx\",    (string) output transaction hash\n"
-            "    \"outputidx\": n       (numeric) output index number\n"
-            "  }\n"
-            "  ,...\n"
-            "]\n"
+                "\nResult:\n"
+                "[\n"
+                "  {\n"
+                "    \"txhash\": \"xxxx\",    (string) output transaction hash\n"
+                "    \"outputidx\": n       (numeric) output index number\n"
+                "  }\n"
+                "  ,...\n"
+                "]\n"
 
-            "\nExamples:\n" +
-            HelpExampleCli("getfundamentalnodeoutputs", "") + HelpExampleRpc("getfundamentalnodeoutputs", ""));
+                "\nExamples:\n" +
+                HelpExampleCli("getfundamentalnodeoutputs", "") + HelpExampleRpc("getfundamentalnodeoutputs", ""));
 
     // Find possible candidates
     vector<COutput> possibleCoins = activeFundamentalnode.SelectCoinsFundamentalnode();
@@ -1500,27 +1495,27 @@ UniValue listfundamentalnodeconf (const UniValue& params, bool fHelp)
 
     if (fHelp || (params.size() > 1))
         throw runtime_error(
-            "listfundamentalnodeconf ( \"filter\" )\n"
-            "\nPrint fundamentalnode.conf in JSON format\n"
+                "listfundamentalnodeconf ( \"filter\" )\n"
+                "\nPrint fundamentalnode.conf in JSON format\n"
 
-            "\nArguments:\n"
-            "1. \"filter\"    (string, optional) Filter search text. Partial match on alias, address, txHash, or status.\n"
+                "\nArguments:\n"
+                "1. \"filter\"    (string, optional) Filter search text. Partial match on alias, address, txHash, or status.\n"
 
-            "\nResult:\n"
-            "[\n"
-            "  {\n"
-            "    \"alias\": \"xxxx\",        (string) fundamentalnode alias\n"
-            "    \"address\": \"xxxx\",      (string) fundamentalnode IP address\n"
-            "    \"privateKey\": \"xxxx\",   (string) fundamentalnode private key\n"
-            "    \"txHash\": \"xxxx\",       (string) transaction hash\n"
-            "    \"outputIndex\": n,       (numeric) transaction output index\n"
-            "    \"status\": \"xxxx\"        (string) fundamentalnode status\n"
-            "  }\n"
-            "  ,...\n"
-            "]\n"
+                "\nResult:\n"
+                "[\n"
+                "  {\n"
+                "    \"alias\": \"xxxx\",        (string) fundamentalnode alias\n"
+                "    \"address\": \"xxxx\",      (string) fundamentalnode IP address\n"
+                "    \"privateKey\": \"xxxx\",   (string) fundamentalnode private key\n"
+                "    \"txHash\": \"xxxx\",       (string) transaction hash\n"
+                "    \"outputIndex\": n,       (numeric) transaction output index\n"
+                "    \"status\": \"xxxx\"        (string) fundamentalnode status\n"
+                "  }\n"
+                "  ,...\n"
+                "]\n"
 
-            "\nExamples:\n" +
-            HelpExampleCli("listfundamentalnodeconf", "") + HelpExampleRpc("listfundamentalnodeconf", ""));
+                "\nExamples:\n" +
+                HelpExampleCli("listfundamentalnodeconf", "") + HelpExampleRpc("listfundamentalnodeconf", ""));
 
     std::vector<CFundamentalnodeConfig::CFundamentalnodeEntry> mnEntries;
     mnEntries = fundamentalnodeConfig.getEntries();
@@ -1558,21 +1553,21 @@ UniValue getfundamentalnodestatus (const UniValue& params, bool fHelp)
 {
     if (fHelp || (params.size() != 0))
         throw runtime_error(
-            "getfundamentalnodestatus\n"
-            "\nPrint fundamentalnode status\n"
+                "getfundamentalnodestatus\n"
+                "\nPrint fundamentalnode status\n"
 
-            "\nResult:\n"
-            "{\n"
-            "  \"txhash\": \"xxxx\",      (string) Collateral transaction hash\n"
-            "  \"outputidx\": n,        (numeric) Collateral transaction output index number\n"
-            "  \"netaddr\": \"xxxx\",     (string) Fundamentalnode network address\n"
-            "  \"addr\": \"xxxx\",        (string) VITAE address for fundamentalnode payments\n"
-            "  \"status\": \"xxxx\",      (string) Fundamentalnode status\n"
-            "  \"message\": \"xxxx\"      (string) Fundamentalnode status message\n"
-            "}\n"
+                "\nResult:\n"
+                "{\n"
+                "  \"txhash\": \"xxxx\",      (string) Collateral transaction hash\n"
+                "  \"outputidx\": n,        (numeric) Collateral transaction output index number\n"
+                "  \"netaddr\": \"xxxx\",     (string) Fundamentalnode network address\n"
+                "  \"addr\": \"xxxx\",        (string) VITAE address for fundamentalnode payments\n"
+                "  \"status\": \"xxxx\",      (string) Fundamentalnode status\n"
+                "  \"message\": \"xxxx\"      (string) Fundamentalnode status message\n"
+                "}\n"
 
-            "\nExamples:\n" +
-            HelpExampleCli("getfundamentalnodestatus", "") + HelpExampleRpc("getfundamentalnodestatus", ""));
+                "\nExamples:\n" +
+                HelpExampleCli("getfundamentalnodestatus", "") + HelpExampleRpc("getfundamentalnodestatus", ""));
 
     if (!fFundamentalNode) throw runtime_error("This is not a fundamentalnode");
 
@@ -1596,41 +1591,41 @@ UniValue getfundamentalnodewinners (const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() > 3)
         throw runtime_error(
-            "getfundamentalnodewinners ( blocks \"filter\" )\n"
-            "\nPrint the fundamentalnode winners for the last n blocks\n"
+                "getfundamentalnodewinners ( blocks \"filter\" )\n"
+                "\nPrint the fundamentalnode winners for the last n blocks\n"
 
-            "\nArguments:\n"
-            "1. blocks      (numeric, optional) Number of previous blocks to show (default: 10)\n"
-            "2. filter      (string, optional) Search filter matching MN address\n"
+                "\nArguments:\n"
+                "1. blocks      (numeric, optional) Number of previous blocks to show (default: 10)\n"
+                "2. filter      (string, optional) Search filter matching MN address\n"
 
-            "\nResult (single winner):\n"
-            "[\n"
-            "  {\n"
-            "    \"nHeight\": n,           (numeric) block height\n"
-            "    \"winner\": {\n"
-            "      \"address\": \"xxxx\",    (string) VITAE MN Address\n"
-            "      \"nVotes\": n,          (numeric) Number of votes for winner\n"
-            "    }\n"
-            "  }\n"
-            "  ,...\n"
-            "]\n"
+                "\nResult (single winner):\n"
+                "[\n"
+                "  {\n"
+                "    \"nHeight\": n,           (numeric) block height\n"
+                "    \"winner\": {\n"
+                "      \"address\": \"xxxx\",    (string) VITAE MN Address\n"
+                "      \"nVotes\": n,          (numeric) Number of votes for winner\n"
+                "    }\n"
+                "  }\n"
+                "  ,...\n"
+                "]\n"
 
-            "\nResult (multiple winners):\n"
-            "[\n"
-            "  {\n"
-            "    \"nHeight\": n,           (numeric) block height\n"
-            "    \"winner\": [\n"
-            "      {\n"
-            "        \"address\": \"xxxx\",  (string) VITAE MN Address\n"
-            "        \"nVotes\": n,        (numeric) Number of votes for winner\n"
-            "      }\n"
-            "      ,...\n"
-            "    ]\n"
-            "  }\n"
-            "  ,...\n"
-            "]\n"
-            "\nExamples:\n" +
-            HelpExampleCli("getfundamentalnodewinners", "") + HelpExampleRpc("getfundamentalnodewinners", ""));
+                "\nResult (multiple winners):\n"
+                "[\n"
+                "  {\n"
+                "    \"nHeight\": n,           (numeric) block height\n"
+                "    \"winner\": [\n"
+                "      {\n"
+                "        \"address\": \"xxxx\",  (string) VITAE MN Address\n"
+                "        \"nVotes\": n,        (numeric) Number of votes for winner\n"
+                "      }\n"
+                "      ,...\n"
+                "    ]\n"
+                "  }\n"
+                "  ,...\n"
+                "]\n"
+                "\nExamples:\n" +
+                HelpExampleCli("getfundamentalnodewinners", "") + HelpExampleRpc("getfundamentalnodewinners", ""));
 
     int nHeight;
     {
@@ -1687,7 +1682,7 @@ UniValue getfundamentalnodewinners (const UniValue& params, bool fHelp)
             obj.push_back(Pair("winner", winner));
         }
 
-            ret.push_back(obj);
+        ret.push_back(obj);
     }
 
     return ret;
@@ -1697,19 +1692,19 @@ UniValue getfundamentalnodescores (const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
         throw runtime_error(
-            "getfundamentalnodescores ( blocks )\n"
-            "\nPrint list of winning fundamentalnode by score\n"
+                "getfundamentalnodescores ( blocks )\n"
+                "\nPrint list of winning fundamentalnode by score\n"
 
-            "\nArguments:\n"
-            "1. blocks      (numeric, optional) Show the last n blocks (default 10)\n"
+                "\nArguments:\n"
+                "1. blocks      (numeric, optional) Show the last n blocks (default 10)\n"
 
-            "\nResult:\n"
-            "{\n"
-            "  xxxx: \"xxxx\"   (numeric : string) Block height : Fundamentalnode hash\n"
-            "  ,...\n"
-            "}\n"
-            "\nExamples:\n" +
-            HelpExampleCli("getfundamentalnodescores", "") + HelpExampleRpc("getfundamentalnodescores", ""));
+                "\nResult:\n"
+                "{\n"
+                "  xxxx: \"xxxx\"   (numeric : string) Block height : Fundamentalnode hash\n"
+                "  ,...\n"
+                "}\n"
+                "\nExamples:\n" +
+                HelpExampleCli("getfundamentalnodescores", "") + HelpExampleRpc("getfundamentalnodescores", ""));
 
     int nLast = 10;
 
@@ -1759,17 +1754,17 @@ bool DecodeHexMnb(CFundamentalnodeBroadcast& mnb, std::string strHexMnb) {
 
 UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
 {
-	string strCommand;
-	if (params.size() >= 1)
-		strCommand = params[0].get_str();
-	if (fHelp || (strCommand != "alias" && strCommand != "all") || (strCommand == "alias" && params.size() < 2))
-		throw runtime_error(
-				"createfundamentalnodebroadcast \"command\" ( \"alias\")\n"
-				"Creates a fundamentalnode broadcast message for one or all fundamentalnodes configured in fundamentalnode.conf\n"
-				"\nArguments:\n"
-				"1. \"command\"      (string, required) \"alias\" for single fundamentalnode, \"all\" for all fundamentalnodes\n"
-				"2. \"alias\"        (string, required if command is \"alias\") Alias of the fundamentalnode\n"
-				+ HelpRequiringPassphrase());
+    string strCommand;
+    if (params.size() >= 1)
+        strCommand = params[0].get_str();
+    if (fHelp || (strCommand != "alias" && strCommand != "all") || (strCommand == "alias" && params.size() < 2))
+        throw runtime_error(
+                "createfundamentalnodebroadcast \"command\" ( \"alias\")\n"
+                "Creates a fundamentalnode broadcast message for one or all fundamentalnodes configured in fundamentalnode.conf\n"
+                "\nArguments:\n"
+                "1. \"command\"      (string, required) \"alias\" for single fundamentalnode, \"all\" for all fundamentalnodes\n"
+                "2. \"alias\"        (string, required if command is \"alias\") Alias of the fundamentalnode\n"
+                + HelpRequiringPassphrase());
 
     if (strCommand == "alias")
     {
@@ -1868,37 +1863,37 @@ UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
 
         return returnObj;
     }
-    
+
     return NullUniValue;
 }
 
 UniValue decodefundamentalnodebroadcast(const UniValue& params, bool fHelp)
 {
-	if (fHelp || params.size() != 1)
-		throw runtime_error(
-				"decodefundamentalnodebroadcast \"hexstring\"\n"
-				"Command to decode fundamentalnode broadcast messages\n"
-				"\nArgument:\n"
-				"1. \"hexstring\"        (hex string) The fundamentalnode broadcast message\n"
-		        "\nResult:\n"
-		        "{\n"
-		        "  \"vin\": \"xxxx\"                (COutPoint) The unspent output which is holding the fundamentalnode collateral\n"
-		        "  \"addr\": \"xxxx\"               (string) IP address of the fundamentalnode\n"
-		        "  \"pubkeycollateral\": \"xxxx\"   (string) Collateral address's public key\n"
-		        "  \"pubkeymasternode\": \"xxxx\"   (string) Fundamentalnode's public key\n"
-		        "  \"vchsig\": \"xxxx\"             (string) Base64-encoded signature of this message (verifiable via pubkeycollateral)\n"
-		        "  \"sigtime\": \"nnn\"             (numeric) Signature timestamp\n"
-		        "  \"protocolversion\": \"nnn\"     (numeric) Fundamentalnode's protocol version\n"
-		        "  \"nlastdsq\": \"nnn\"            (numeric) The last time the fundamentalnode sent a DSQ message (for mixing) (DEPRECATED)\n"
-		        "  \"lastping\" : {                 (json object) information about the fundamentalnode's last ping\n"
-		        "      \"vin\": \"xxxx\"            (COutPoint) The unspent output of the fundamentalnode which is signing the message\n"
-		        "      \"blockhash\": \"xxxx\"      (string) Current chaintip blockhash minus 12\n"
-		        "      \"sigtime\": \"nnn\"         (numeric) Signature time for this ping\n"
-		        "      \"vchsig\": \"xxxx\"         (string) Base64-encoded signature of this ping (verifiable via pubkeyfundamentalnode)\n"
-		        "}\n"
-				"\nExamples:\n" +
-				        HelpExampleCli("decodefundamentalnodebroadcast", "hexstring") +
-						HelpExampleRpc("decodefundamentalnodebroadcast", "hexstring"));
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+                "decodefundamentalnodebroadcast \"hexstring\"\n"
+                "Command to decode fundamentalnode broadcast messages\n"
+                "\nArgument:\n"
+                "1. \"hexstring\"        (hex string) The fundamentalnode broadcast message\n"
+                "\nResult:\n"
+                "{\n"
+                "  \"vin\": \"xxxx\"                (COutPoint) The unspent output which is holding the fundamentalnode collateral\n"
+                "  \"addr\": \"xxxx\"               (string) IP address of the fundamentalnode\n"
+                "  \"pubkeycollateral\": \"xxxx\"   (string) Collateral address's public key\n"
+                "  \"pubkeymasternode\": \"xxxx\"   (string) Fundamentalnode's public key\n"
+                "  \"vchsig\": \"xxxx\"             (string) Base64-encoded signature of this message (verifiable via pubkeycollateral)\n"
+                "  \"sigtime\": \"nnn\"             (numeric) Signature timestamp\n"
+                "  \"protocolversion\": \"nnn\"     (numeric) Fundamentalnode's protocol version\n"
+                "  \"nlastdsq\": \"nnn\"            (numeric) The last time the fundamentalnode sent a DSQ message (for mixing) (DEPRECATED)\n"
+                "  \"lastping\" : {                 (json object) information about the fundamentalnode's last ping\n"
+                "      \"vin\": \"xxxx\"            (COutPoint) The unspent output of the fundamentalnode which is signing the message\n"
+                "      \"blockhash\": \"xxxx\"      (string) Current chaintip blockhash minus 12\n"
+                "      \"sigtime\": \"nnn\"         (numeric) Signature time for this ping\n"
+                "      \"vchsig\": \"xxxx\"         (string) Base64-encoded signature of this ping (verifiable via pubkeyfundamentalnode)\n"
+                "}\n"
+                "\nExamples:\n" +
+                HelpExampleCli("decodefundamentalnodebroadcast", "hexstring") +
+                HelpExampleRpc("decodefundamentalnodebroadcast", "hexstring"));
 
     CFundamentalnodeBroadcast mnb;
 
@@ -1935,12 +1930,12 @@ UniValue relayfundamentalnodebroadcast(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
         throw runtime_error(
-        		"relayfundamentalnodebroadcast \"hexstring\"\n"
-        		"Command to relay fundamentalnode broadcast messages\n"
-        		"1. \"hexstring\"        (hex string) The fundamentalnode broadcast message\n"
-        		"\nExamples:\n" +
-				HelpExampleCli("relayfundamentalnodebroadcast", "hexstring") +
-				HelpExampleRpc("relayfundamentalnodebroadcast", "hexstring"));
+                "relayfundamentalnodebroadcast \"hexstring\"\n"
+                "Command to relay fundamentalnode broadcast messages\n"
+                "1. \"hexstring\"        (hex string) The fundamentalnode broadcast message\n"
+                "\nExamples:\n" +
+                HelpExampleCli("relayfundamentalnodebroadcast", "hexstring") +
+                HelpExampleRpc("relayfundamentalnodebroadcast", "hexstring"));
 
     CFundamentalnodeBroadcast mnb;
 

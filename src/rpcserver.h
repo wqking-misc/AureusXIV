@@ -316,7 +316,6 @@ extern UniValue verifymessage(const UniValue& params, bool fHelp);
 extern UniValue setmocktime(const UniValue& params, bool fHelp);
 extern UniValue getstakingstatus(const UniValue& params, bool fHelp);
 
-extern UniValue mnspork(const UniValue& params, bool fHelp);
 extern UniValue masternode(const UniValue& params, bool fHelp);
 extern UniValue masternodelist(const UniValue& params, bool fHelp);
 extern UniValue getmasternodestatus(const UniValue& params, bool fHelp);

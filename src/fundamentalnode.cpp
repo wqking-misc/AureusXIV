@@ -9,7 +9,6 @@
 #include "obfuscation.h"
 #include "sync.h"
 #include "util.h"
-#include "spork.h"
 #include <boost/lexical_cast.hpp>
 
 // keep track of the scanning errors I've seen
@@ -58,18 +57,6 @@ bool GetBlockHash(uint256& hash, int nBlockHeight)
     return false;
 }
 
-bool isVinValidFundamentalNode(CTxIn& vin)
-{
-    if(GetSporkValue(SPORK_23_DISABLE_NEW_FUNDAMENTALNODE) > 0) {
-        int blockHeight = GetInputHeight(vin);
-        if(blockHeight < 0 || blockHeight > GetSporkValue(SPORK_23_DISABLE_NEW_FUNDAMENTALNODE)) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 CFundamentalnode::CFundamentalnode()
 {
     LOCK(cs);
@@ -86,7 +73,7 @@ CFundamentalnode::CFundamentalnode()
     unitTest = false;
     allowFreeTx = true;
     nActiveState = FUNDAMENTALNODE_ENABLED,
-    protocolVersion = PROTOCOL_VERSION;
+            protocolVersion = PROTOCOL_VERSION;
     nLastDsq = 0;
     nScanningErrorCount = 0;
     nLastScanningErrorBlockHeight = 0;
@@ -111,7 +98,7 @@ CFundamentalnode::CFundamentalnode(const CFundamentalnode& other)
     unitTest = other.unitTest;
     allowFreeTx = other.allowFreeTx;
     nActiveState = FUNDAMENTALNODE_ENABLED,
-    protocolVersion = other.protocolVersion;
+            protocolVersion = other.protocolVersion;
     nLastDsq = other.nLastDsq;
     nScanningErrorCount = other.nScanningErrorCount;
     nLastScanningErrorBlockHeight = other.nLastScanningErrorBlockHeight;
@@ -136,7 +123,7 @@ CFundamentalnode::CFundamentalnode(const CFundamentalnodeBroadcast& mnb)
     unitTest = false;
     allowFreeTx = true;
     nActiveState = FUNDAMENTALNODE_ENABLED,
-    protocolVersion = mnb.protocolVersion;
+            protocolVersion = mnb.protocolVersion;
     nLastDsq = mnb.nLastDsq;
     nScanningErrorCount = 0;
     nLastScanningErrorBlockHeight = 0;
@@ -222,8 +209,8 @@ void CFundamentalnode::Check(bool forceCheck)
     }
 
     if(lastPing.sigTime - sigTime < FUNDAMENTALNODE_MIN_MNP_SECONDS){
-    	activeState = FUNDAMENTALNODE_PRE_ENABLED;
-    	return;
+        activeState = FUNDAMENTALNODE_PRE_ENABLED;
+        return;
     }
 
     if (!unitTest) {
@@ -316,22 +303,22 @@ int64_t CFundamentalnode::GetLastPaid()
 std::string CFundamentalnode::GetStatus()
 {
     switch (nActiveState) {
-    case CFundamentalnode::FUNDAMENTALNODE_PRE_ENABLED:
-        return "PRE_ENABLED";
-    case CFundamentalnode::FUNDAMENTALNODE_ENABLED:
-        return "ENABLED";
-    case CFundamentalnode::FUNDAMENTALNODE_EXPIRED:
-        return "EXPIRED";
-    case CFundamentalnode::FUNDAMENTALNODE_OUTPOINT_SPENT:
-        return "OUTPOINT_SPENT";
-    case CFundamentalnode::FUNDAMENTALNODE_REMOVE:
-        return "REMOVE";
-    case CFundamentalnode::FUNDAMENTALNODE_WATCHDOG_EXPIRED:
-        return "WATCHDOG_EXPIRED";
-    case CFundamentalnode::FUNDAMENTALNODE_POSE_BAN:
-        return "POSE_BAN";
-    default:
-        return "UNKNOWN";
+        case CFundamentalnode::FUNDAMENTALNODE_PRE_ENABLED:
+            return "PRE_ENABLED";
+        case CFundamentalnode::FUNDAMENTALNODE_ENABLED:
+            return "ENABLED";
+        case CFundamentalnode::FUNDAMENTALNODE_EXPIRED:
+            return "EXPIRED";
+        case CFundamentalnode::FUNDAMENTALNODE_OUTPOINT_SPENT:
+            return "OUTPOINT_SPENT";
+        case CFundamentalnode::FUNDAMENTALNODE_REMOVE:
+            return "REMOVE";
+        case CFundamentalnode::FUNDAMENTALNODE_WATCHDOG_EXPIRED:
+            return "WATCHDOG_EXPIRED";
+        case CFundamentalnode::FUNDAMENTALNODE_POSE_BAN:
+            return "POSE_BAN";
+        default:
+            return "UNKNOWN";
     }
 }
 
@@ -444,8 +431,8 @@ bool CFundamentalnodeBroadcast::Create(CTxIn txin, CService service, CKey keyCol
     if (fImporting || fReindex) return false;
 
     LogPrint("fundamentalnode", "CFundamentalnodeBroadcast::Create -- pubKeyCollateralAddressNew = %s, pubKeyFundamentalnodeNew.GetID() = %s\n",
-        CBitcoinAddress(pubKeyCollateralAddressNew.GetID()).ToString(),
-        pubKeyFundamentalnodeNew.GetID().ToString());
+             CBitcoinAddress(pubKeyCollateralAddressNew.GetID()).ToString(),
+             pubKeyFundamentalnodeNew.GetID().ToString());
 
     CFundamentalnodePing mnp(txin);
     if (!mnp.Sign(keyFundamentalnodeNew, pubKeyFundamentalnodeNew)) {
@@ -479,14 +466,14 @@ bool CFundamentalnodeBroadcast::CheckDefaultPort(std::string strService, std::st
 {
     CService service = CService(strService);
     int nDefaultPort = Params().GetDefaultPort();
-    
+
     if (service.GetPort() != nDefaultPort) {
-        strErrorRet = strprintf("Invalid port %u for fundamentalnode %s, only %d is supported on %s-net.", 
-                                        service.GetPort(), strService, nDefaultPort, Params().NetworkIDString());
+        strErrorRet = strprintf("Invalid port %u for fundamentalnode %s, only %d is supported on %s-net.",
+                                service.GetPort(), strService, nDefaultPort, Params().NetworkIDString());
         LogPrint("fundamentalnode", "%s - %s\n", strContext, strErrorRet);
         return false;
     }
- 
+
     return true;
 }
 
@@ -533,15 +520,15 @@ bool CFundamentalnodeBroadcast::CheckAndUpdate(int& nDos)
 
     std::string errorMessage = "";
     if (!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetNewStrMessage(), errorMessage)
-    		&& !obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetOldStrMessage(), errorMessage)) {
+        && !obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetOldStrMessage(), errorMessage)) {
         // don't ban for old fundamentalnodes, their sigs could be broken because of the bug
         nDos = protocolVersion < MIN_PEER_MNANNOUNCE ? 0 : 100;
         return error("CFundamentalnodeBroadcast::CheckAndUpdate - Got bad Fundamentalnode address signature\n");
     }
 
     if (Params().NetworkID() == CBaseChainParams::MAIN) {
-        if (addr.GetPort() != 10135) return false;
-    } else if (addr.GetPort() == 10135)
+        if (addr.GetPort() != 8765) return false;
+    } else if (addr.GetPort() == 8765)
         return false;
 
     //search existing Fundamentalnode list, this is where we update existing Fundamentalnodes with new mnb broadcasts
@@ -551,11 +538,11 @@ bool CFundamentalnodeBroadcast::CheckAndUpdate(int& nDos)
     if (pmn == NULL) return true;
 
     // this broadcast is older or equal than the one that we already have - it's bad and should never happen
-	// unless someone is doing something fishy
-	// (mapSeenMasternodeBroadcast in CMasternodeMan::ProcessMessage should filter legit duplicates)
-	if(pmn->sigTime >= sigTime) {
-		return error("CFundamentalnodeBroadcast::CheckAndUpdate - Bad sigTime %d for Fundamentalnode %20s %105s (existing broadcast is at %d)\n",
-					  sigTime, addr.ToString(), vin.ToString(), pmn->sigTime);
+    // unless someone is doing something fishy
+    // (mapSeenMasternodeBroadcast in CMasternodeMan::ProcessMessage should filter legit duplicates)
+    if(pmn->sigTime >= sigTime) {
+        return error("CFundamentalnodeBroadcast::CheckAndUpdate - Bad sigTime %d for Fundamentalnode %20s %105s (existing broadcast is at %d)\n",
+                     sigTime, addr.ToString(), vin.ToString(), pmn->sigTime);
     }
 
     // fundamentalnode is not enabled yet/already, nothing to update
@@ -586,21 +573,13 @@ bool CFundamentalnodeBroadcast::CheckInputsAndAdd(int& nDoS)
     // incorrect ping or its sigTime
     if(lastPing == CFundamentalnodePing() || !lastPing.CheckAndUpdate(nDoS, false, true)) return false;
 
-    if(sporkManager.GetSporkValue(SPORK_14_DISABLE_NEW_FUNDAMENTALNODE) > 0) {
-        int blockHeight = GetInputHeight(vin);
-        if(blockHeight < 0 || blockHeight > sporkManager.GetSporkValue(SPORK_14_DISABLE_NEW_FUNDAMENTALNODE)) {
-            LogPrintf("CheckInputsAndAdd: New fundamentalnode is disabled \n");
-            return false;
-        }
-    }
-
     // search existing Fundamentalnode list
     CFundamentalnode* pmn = mnodeman.Find(vin);
 
     if (pmn != NULL) {
         // nothing to do here if we already know about this fundamentalnode and it's enabled
         if (pmn->IsEnabled()) return true;
-        // if it's not enabled, remove old MN first and continue
+            // if it's not enabled, remove old MN first and continue
         else
             mnodeman.Remove(pmn->vin);
     }
@@ -630,7 +609,7 @@ bool CFundamentalnodeBroadcast::CheckInputsAndAdd(int& nDoS)
                 continue; // previous transaction not in main chain
             }
 
-           nValueIn += txPrev.vout[txin.prevout.n].nValue;
+            nValueIn += txPrev.vout[txin.prevout.n].nValue;
 
         }
 
@@ -669,7 +648,7 @@ bool CFundamentalnodeBroadcast::CheckInputsAndAdd(int& nDoS)
         CBlockIndex* pConfIndex = chainActive[pMNIndex->nHeight + FUNDAMENTALNODE_MIN_CONFIRMATIONS - 1]; // block where tx got FUNDAMENTALNODE_MIN_CONFIRMATIONS
         if (pConfIndex->GetBlockTime() > sigTime) {
             LogPrint("fundamentalnode","mnb - Bad sigTime %d for Fundamentalnode %s (%i conf block is at %d)\n",
-                sigTime, vin.prevout.hash.ToString(), FUNDAMENTALNODE_MIN_CONFIRMATIONS, pConfIndex->GetBlockTime());
+                     sigTime, vin.prevout.hash.ToString(), FUNDAMENTALNODE_MIN_CONFIRMATIONS, pConfIndex->GetBlockTime());
             return false;
         }
     }
@@ -703,7 +682,7 @@ bool CFundamentalnodeBroadcast::Sign(CKey& keyCollateralAddress)
     sigTime = GetAdjustedTime();
 
     std::string strMessage;
-   	strMessage = GetOldStrMessage();
+    strMessage = GetNewStrMessage();
 
     if (!obfuScationSigner.SignMessage(strMessage, errorMessage, sig, keyCollateralAddress)) {
         return error("CFundamentalnodeBroadcast::Sign() - Error: %s\n", errorMessage);
@@ -721,7 +700,7 @@ bool CFundamentalnodeBroadcast::VerifySignature()
     std::string errorMessage;
 
     if(!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetNewStrMessage(), errorMessage)
-    		&& !obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetOldStrMessage(), errorMessage)) {
+       && !obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetOldStrMessage(), errorMessage)) {
         return error("CFundamentalnodeBroadcast::VerifySignature() - Error: %s\n", errorMessage);
     }
 
@@ -732,20 +711,20 @@ std::string CFundamentalnodeBroadcast::GetOldStrMessage()
 {
     std::string strMessage;
 
-	std::string vchPubKey(pubKeyCollateralAddress.begin(), pubKeyCollateralAddress.end());
-	std::string vchPubKey2(pubKeyFundamentalnode.begin(), pubKeyFundamentalnode.end());
-	strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(protocolVersion);
+    std::string vchPubKey(pubKeyCollateralAddress.begin(), pubKeyCollateralAddress.end());
+    std::string vchPubKey2(pubKeyFundamentalnode.begin(), pubKeyFundamentalnode.end());
+    strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(protocolVersion);
 
     return strMessage;
 }
 
 std:: string CFundamentalnodeBroadcast::GetNewStrMessage()
 {
-	std::string strMessage;
+    std::string strMessage;
 
-	strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + pubKeyCollateralAddress.GetID().ToString() + pubKeyFundamentalnode.GetID().ToString() + boost::lexical_cast<std::string>(protocolVersion);
+    strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + pubKeyCollateralAddress.GetID().ToString() + pubKeyFundamentalnode.GetID().ToString() + boost::lexical_cast<std::string>(protocolVersion);
 
-	return strMessage;
+    return strMessage;
 }
 
 CFundamentalnodePing::CFundamentalnodePing()
@@ -787,14 +766,14 @@ bool CFundamentalnodePing::Sign(CKey& keyFundamentalnode, CPubKey& pubKeyFundame
 }
 
 bool CFundamentalnodePing::VerifySignature(CPubKey& pubKeyFundamentalnode, int &nDos) {
-	std::string strMessage = vin.ToString() + blockHash.ToString() + boost::lexical_cast<std::string>(sigTime);
-	std::string errorMessage = "";
+    std::string strMessage = vin.ToString() + blockHash.ToString() + boost::lexical_cast<std::string>(sigTime);
+    std::string errorMessage = "";
 
-	if(!obfuScationSigner.VerifyMessage(pubKeyFundamentalnode, vchSig, strMessage, errorMessage)){
-		nDos = 33;
-		return error("CFundamentalnodePing::VerifySignature - Got bad Fundamentalnode ping signature %s Error: %s\n", vin.ToString(), errorMessage);
-	}
-	return true;
+    if(!obfuScationSigner.VerifyMessage(pubKeyFundamentalnode, vchSig, strMessage, errorMessage)){
+        nDos = 33;
+        return error("CFundamentalnodePing::VerifySignature - Got bad Fundamentalnode ping signature %s Error: %s\n", vin.ToString(), errorMessage);
+    }
+    return true;
 }
 
 bool CFundamentalnodePing::CheckAndUpdate(int& nDos, bool fRequireEnabled, bool fCheckSigTimeOnly)
@@ -812,9 +791,9 @@ bool CFundamentalnodePing::CheckAndUpdate(int& nDos, bool fRequireEnabled, bool 
     }
 
     if(fCheckSigTimeOnly) {
-    	CFundamentalnode* pmn = mnodeman.Find(vin);
-    	if(pmn) return VerifySignature(pmn->pubKeyFundamentalnode, nDos);
-    	return true;
+        CFundamentalnode* pmn = mnodeman.Find(vin);
+        if(pmn) return VerifySignature(pmn->pubKeyFundamentalnode, nDos);
+        return true;
     }
 
     LogPrint("fundamentalnode", "CFundamentalnodePing::CheckAndUpdate - New Ping - %s - %s - %lli\n", GetHash().ToString(), blockHash.ToString(), sigTime);
@@ -828,7 +807,7 @@ bool CFundamentalnodePing::CheckAndUpdate(int& nDos, bool fRequireEnabled, bool 
         // update only if there is no known ping for this fundamentalnode or
         // last ping was more then FUNDAMENTALNODE_MIN_MNP_SECONDS-60 ago comparing to this one
         if (!pmn->IsPingedWithin(FUNDAMENTALNODE_MIN_MNP_SECONDS - 60, sigTime)) {
-        	if (!VerifySignature(pmn->pubKeyFundamentalnode, nDos))
+            if (!VerifySignature(pmn->pubKeyFundamentalnode, nDos))
                 return false;
 
             BlockMap::iterator mi = mapBlockIndex.find(blockHash);

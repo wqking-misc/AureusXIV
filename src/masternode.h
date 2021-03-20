@@ -17,7 +17,7 @@
 #include "base58.h"
 #include "main.h"
 #include "masternode-pos.h"
-#include "mn-spork.h"
+#include "spork.h"
 //#include "activemasternode.h"
 
 #define MASTERNODE_NOT_PROCESSED               0 // initial state
@@ -36,9 +36,6 @@
 #define MASTERNODE_PING_SECONDS                (5*60)   // bitsenddev 12-05 OLD 1*60
 #define MASTERNODE_EXPIRATION_SECONDS          (65*60)
 #define MASTERNODE_REMOVAL_SECONDS             (70*60)
-
-#define START_MASTERNODE_PAYMENTS_TESTNET 1511347576
-#define START_MASTERNODE_PAYMENTS 1511347576
 
 static const int64_t MASTERNODEAMOUNT = 20000 ;
 extern std::string strMasterNodePrivKey;
@@ -157,30 +154,30 @@ public:
         // * version byte (currently 0)
         // * all fields (?)
         {
-                LOCK(cs);
-                unsigned char nVersion = 0;
-                READWRITE(nVersion);
-                READWRITE(vin);
-                READWRITE(addr);
-                READWRITE(pubkey);
-                READWRITE(pubkey2);
-                READWRITE(sig);
-                READWRITE(activeState);
-                READWRITE(sigTime);
-                READWRITE(lastDseep);
-                READWRITE(lastTimeSeen);
-                READWRITE(cacheInputAge);
-                READWRITE(cacheInputAgeBlock);
-                READWRITE(unitTest);
-                READWRITE(allowFreeTx);
-                READWRITE(protocolVersion);
-                READWRITE(nLastDsq);
-                READWRITE(donationAddress);
-                READWRITE(donationPercentage);
-                READWRITE(nVote);
-                READWRITE(lastVote);
-                READWRITE(nScanningErrorCount);
-                READWRITE(nLastScanningErrorBlockHeight);
+            LOCK(cs);
+            unsigned char nVersion = 0;
+            READWRITE(nVersion);
+            READWRITE(vin);
+            READWRITE(addr);
+            READWRITE(pubkey);
+            READWRITE(pubkey2);
+            READWRITE(sig);
+            READWRITE(activeState);
+            READWRITE(sigTime);
+            READWRITE(lastDseep);
+            READWRITE(lastTimeSeen);
+            READWRITE(cacheInputAge);
+            READWRITE(cacheInputAgeBlock);
+            READWRITE(unitTest);
+            READWRITE(allowFreeTx);
+            READWRITE(protocolVersion);
+            READWRITE(nLastDsq);
+            READWRITE(donationAddress);
+            READWRITE(donationPercentage);
+            READWRITE(nVote);
+            READWRITE(lastVote);
+            READWRITE(nScanningErrorCount);
+            READWRITE(nLastScanningErrorBlockHeight);
         }
     }
 
@@ -236,14 +233,14 @@ public:
             nScanningErrorCount--;
             if(nScanningErrorCount < 0) nScanningErrorCount = 0;
         } else { //all other codes are equally as bad
-                    nScanningErrorCount++;
-           /* Bitsenddev 04/08/2015
-                        if(nScanningErrorCount >= 4)
-                        {
-                        nScanningErrorCount = 0;
-                        LogPrintf("S-Reset Bad Masternodescore \n"); //	Bitsenddev Set this for Debug
-                        }
-                        */
+            nScanningErrorCount++;
+            /* Bitsenddev 04/08/2015
+                         if(nScanningErrorCount >= 4)
+                         {
+                         nScanningErrorCount = 0;
+                         LogPrintf("S-Reset Bad Masternodescore \n"); //	Bitsenddev Set this for Debug
+                         }
+                         */
             if(nScanningErrorCount > MASTERNODE_SCANNING_ERROR_THESHOLD*2) nScanningErrorCount = MASTERNODE_SCANNING_ERROR_THESHOLD*2;
         }
     }
@@ -307,7 +304,7 @@ public:
         READWRITE(vin);
         READWRITE(score);
         READWRITE(vchSig);
-     }
+    }
 };
 
 //

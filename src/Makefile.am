@@ -163,7 +163,6 @@ BITCOIN_CORE_H = \
   script/script_error.h \
   serialize.h \
   spork.h \
-  mn-spork.h \
   sporkdb.h \
   stakeinput.h \
   streams.h \
@@ -345,7 +344,6 @@ libbitcoin_common_a_SOURCES = \
   script/standard.cpp \
   script/script_error.cpp \
   spork.cpp \
-  mn-spork.cpp \
   sporkdb.cpp \
   $(BITCOIN_CORE_H)
 

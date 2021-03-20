@@ -77,11 +77,6 @@ void OptionsModel::Init()
     if (!settings.contains("fCoinControlFeatures"))
         settings.setValue("fCoinControlFeatures", false);
     fCoinControlFeatures = settings.value("fCoinControlFeatures", false).toBool();
-    
-    if (!settings.contains("nAnonymizeVitaeAmount"))
-        settings.setValue("nAnonymizeVitaeAmount", 1000);
-
-    nAnonymizeVitaeAmount = settings.value("nAnonymizeVitaeAmount").toLongLong();
 
     if (!settings.contains("fShowFundamentalnodesTab"))
         settings.setValue("fShowFundamentalnodesTab", fundamentalnodeConfig.getCount());
@@ -232,8 +227,6 @@ QVariant OptionsModel::data(const QModelIndex& index, int role) const
             return settings.value("nThreadsScriptVerif");
         case HideZeroBalances:
             return settings.value("fHideZeroBalances");
-        case AnonymizeVitaeAmount:
-            return QVariant(nAnonymizeVitaeAmount);
         case Listen:
             return settings.value("fListen");
         default:
@@ -351,12 +344,6 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
             fHideZeroBalances = value.toBool();
             settings.setValue("fHideZeroBalances", fHideZeroBalances);
             emit hideZeroBalancesChanged(fHideZeroBalances);
-            break;
-
-        case AnonymizeVitaeAmount:
-            nAnonymizeVitaeAmount = value.toInt();
-            settings.setValue("nAnonymizeVitaeAmount", nAnonymizeVitaeAmount);
-            emit anonymizeVitaeAmountChanged(nAnonymizeVitaeAmount);
             break;
         case CoinControlFeatures:
             fCoinControlFeatures = value.toBool();

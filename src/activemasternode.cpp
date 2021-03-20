@@ -8,7 +8,7 @@
 #include "masternodeman.h"
 #include "addrman.h"
 #include "main.h"
-#include "mn-spork.h"
+#include "spork.h"
 #include <boost/lexical_cast.hpp>
 
 //
@@ -78,7 +78,7 @@ void CActiveMasternode::ManageStatus()
 
             if(GetInputAge(vin) < MASTERNODE_MIN_CONFIRMATIONS){
                 notCapableReason = "Input must have least " + boost::lexical_cast<string>(MASTERNODE_MIN_CONFIRMATIONS) +
-                        " confirmations - " + boost::lexical_cast<string>(GetInputAge(vin)) + " confirmations";
+                                   " confirmations - " + boost::lexical_cast<string>(GetInputAge(vin)) + " confirmations";
                 LogPrintf("CActiveMasternode::ManageStatus() - %s\n", notCapableReason.c_str());
                 status = MASTERNODE_INPUT_TOO_NEW;
                 return;
@@ -125,18 +125,18 @@ void CActiveMasternode::ManageStatus()
 std::string CActiveMasternode::GetStatus()
 {
     switch (status) {
-    case ACTIVE_MASTERNODE_INITIAL:
-        return "Node just started, not yet activated";
-    case ACTIVE_MASTERNODE_SYNC_IN_PROCESS:
-        return "Sync in progress. Must wait until sync is complete to start Masternode";
-    case ACTIVE_MASTERNODE_INPUT_TOO_NEW:
-        return strprintf("Masternode input must have at least %d confirmations", MASTERNODE_MIN_CONFIRMATIONS);
-    case ACTIVE_MASTERNODE_NOT_CAPABLE:
-        return "Not capable masternode: " + notCapableReason;
-    case ACTIVE_MASTERNODE_STARTED:
-        return "Masternode successfully started";
-    default:
-        return "unknown";
+        case ACTIVE_MASTERNODE_INITIAL:
+            return "Node just started, not yet activated";
+        case ACTIVE_MASTERNODE_SYNC_IN_PROCESS:
+            return "Sync in progress. Must wait until sync is complete to start Masternode";
+        case ACTIVE_MASTERNODE_INPUT_TOO_NEW:
+            return strprintf("Masternode input must have at least %d confirmations", MASTERNODE_MIN_CONFIRMATIONS);
+        case ACTIVE_MASTERNODE_NOT_CAPABLE:
+            return "Not capable masternode: " + notCapableReason;
+        case ACTIVE_MASTERNODE_STARTED:
+            return "Masternode successfully started";
+        default:
+            return "unknown";
     }
 }
 
@@ -226,9 +226,9 @@ bool CActiveMasternode::Dseep(CTxIn vin, CService service, CKey keyMasternode, C
     if(pmn != NULL)
     {
         if(stop)
-        m_nodeman.Remove(pmn->vin);
+            m_nodeman.Remove(pmn->vin);
         else
-        pmn->UpdateLastSeen();
+            pmn->UpdateLastSeen();
     }
     else
     {
@@ -431,10 +431,10 @@ vector<COutput> CActiveMasternode::SelectCoinsMasternode()
     // Retrieve all possible outputs
     pwalletMain->AvailableCoins(vCoins);
 
-	// Lock MN coins from masternode.conf back if they where temporary unlocked
+    // Lock MN coins from masternode.conf back if they where temporary unlocked
     if (!confLockedCoins.empty()) {
         BOOST_FOREACH (COutPoint outpoint, confLockedCoins)
-            pwalletMain->LockCoin(outpoint);
+        pwalletMain->LockCoin(outpoint);
     }
 
     // Filter

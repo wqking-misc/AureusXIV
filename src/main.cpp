@@ -1811,7 +1811,7 @@ CAmount GetSeeSaw(int nHeight, int64_t blockValue){
 
 
         // Use this log to compare the masternode count for different clients
-        LogPrintf("Adjusting seesaw at height %d with %d masternodes (without drift: %d) at %ld\n", nHeight, nMasternodeCount, nMasternodeCount - Params().MasternodeCountDrift(), GetTime());
+        LogPrintf("Adjusting seesaw at height %d with %d masternodes at %ld\n", nHeight, nMasternodeCount, GetTime());
 
         LogPrintf("GetMasternodePayment(): moneysupply=%s, nodecoins=%s \n", FormatMoney(nMoneySupply).c_str(),FormatMoney(mNodeCoins).c_str());
 
@@ -4905,8 +4905,6 @@ bool static AlreadyHave(const CInv& inv)
     case MSG_FUNDAMENTALNODE_PING:
         return mnodeman.mapSeenFundamentalnodePing.count(inv.hash);
 
-    case MSG_MN_SPORK:
-            return mapMNSporks.count(inv.hash);
     case MSG_MASTERNODE_WINNER:
             return mapSeenMasternodeVotes.count(inv.hash);
     case MSG_MASTERNODE_SCANNING_ERROR:
@@ -5117,16 +5115,6 @@ void static ProcessGetData(CNode* pfrom)
                         ss << mapObfuscationBroadcastTxes[inv.hash].tx << mapObfuscationBroadcastTxes[inv.hash].vin << mapObfuscationBroadcastTxes[inv.hash].vchSig << mapObfuscationBroadcastTxes[inv.hash].sigTime;
 
                         pfrom->PushMessage("dstx", ss);
-                        pushed = true;
-                    }
-                }
-
-                if (!pushed && inv.type == MSG_MN_SPORK) {
-                    if(mapSporks.count(inv.hash)){
-                        CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
-                        ss.reserve(1000);
-                        ss << mapSporks[inv.hash];
-                        pfrom->PushMessage("mn_spork", ss);
                         pushed = true;
                     }
                 }
@@ -6014,7 +6002,6 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         m_nodeman.ProcessMessage(pfrom, strCommand, vRecv);
         ProcessMessageMasternodePayments(pfrom, strCommand, vRecv);
 
-        ProcessMNSpork(pfrom, strCommand, vRecv);
         ProcessMessageMasternodePOS(pfrom, strCommand, vRecv);
         ///TODO: ends
 

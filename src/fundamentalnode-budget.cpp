@@ -161,7 +161,7 @@ void CBudgetManager::SubmitFinalBudget()
         return;
     }
 
-     // Submit final budget during the last 2 days (2880 blocks) before payment for Mainnet, about 9 minutes (9 blocks) for Testnet
+    // Submit final budget during the last 2 days (2880 blocks) before payment for Mainnet, about 9 minutes (9 blocks) for Testnet
     int finalizationWindow = ((GetBudgetPaymentCycleBlocks() / 30) * 2);
 
     if (Params().NetworkID() == CBaseChainParams::TESTNET) {
@@ -172,7 +172,7 @@ void CBudgetManager::SubmitFinalBudget()
     }
 
     int nFinalizationStart = nBlockStart - finalizationWindow;
- 
+
     int nOffsetToStart = nFinalizationStart - nCurrentHeight;
 
     if (nBlockStart - nCurrentHeight > finalizationWindow) {
@@ -492,7 +492,7 @@ void CBudgetManager::CheckAndRemove()
         }
         else {
             LogPrint("fnbudget","CBudgetManager::CheckAndRemove - Found valid finalized budget: %s %s\n",
-                      pfinalizedBudget->strBudgetName.c_str(), pfinalizedBudget->nFeeTXHash.ToString().c_str());
+                     pfinalizedBudget->strBudgetName.c_str(), pfinalizedBudget->nFeeTXHash.ToString().c_str());
         }
 
         if (pfinalizedBudget->fValid) {
@@ -513,8 +513,8 @@ void CBudgetManager::CheckAndRemove()
             strError = "";
         }
         else {
-             LogPrint("fnbudget","CBudgetManager::CheckAndRemove - Found valid budget proposal: %s %s\n",
-                      pbudgetProposal->strProposalName.c_str(), pbudgetProposal->nFeeTXHash.ToString().c_str());
+            LogPrint("fnbudget","CBudgetManager::CheckAndRemove - Found valid budget proposal: %s %s\n",
+                     pbudgetProposal->strProposalName.c_str(), pbudgetProposal->nFeeTXHash.ToString().c_str());
         }
         if (pbudgetProposal->fValid) {
             // tmpMapProposals.insert(make_pair(pbudgetProposal->GetHash(), *pbudgetProposal));
@@ -656,7 +656,7 @@ bool CBudgetManager::IsBudgetPaymentBlock(int nBlockHeight)
     }
 
     LogPrint("fnbudget","CBudgetManager::IsBudgetPaymentBlock() - nHighestCount: %lli, 5%% of Fundamentalnodes: %lli. Number of budgets: %lli\n",
-              nHighestCount, nFivePercent, mapFinalizedBudgets.size());
+             nHighestCount, nFivePercent, mapFinalizedBudgets.size());
 
     // If budget doesn't have 5% of the network votes, then we should pay a fundamentalnode instead
     if (nHighestCount > nFivePercent) return true;
@@ -680,7 +680,7 @@ TrxValidationStatus CBudgetManager::IsTransactionValid(const CTransaction& txNew
     std::map<uint256, CFinalizedBudget>::iterator it = mapFinalizedBudgets.begin();
     while (it != mapFinalizedBudgets.end()) {
         CFinalizedBudget* pfinalizedBudget = &((*it).second);
-        
+
         if (pfinalizedBudget->GetVoteCount() > nHighestCount &&
             nBlockHeight >= pfinalizedBudget->GetBlockStart() &&
             nBlockHeight <= pfinalizedBudget->GetBlockEnd()) {
@@ -691,7 +691,7 @@ TrxValidationStatus CBudgetManager::IsTransactionValid(const CTransaction& txNew
     }
 
     LogPrint("fnbudget","CBudgetManager::IsTransactionValid() - nHighestCount: %lli, 5%% of Fundamentalnodes: %lli mapFinalizedBudgets.size(): %ld\n",
-              nHighestCount, nFivePercent, mapFinalizedBudgets.size());
+             nHighestCount, nFivePercent, mapFinalizedBudgets.size());
     /*
         If budget doesn't have 5% of the network votes, then we should pay a fundamentalnode instead
     */
@@ -708,7 +708,7 @@ TrxValidationStatus CBudgetManager::IsTransactionValid(const CTransaction& txNew
         strProposals = pfinalizedBudget->GetProposals();
 
         LogPrint("fnbudget","CBudgetManager::IsTransactionValid - checking budget (%s) with blockstart %lli, blockend %lli, nBlockHeight %lli, votes %lli, nCountThreshold %lli\n",
-                 strProposals.c_str(), pfinalizedBudget->GetBlockStart(), pfinalizedBudget->GetBlockEnd(), 
+                 strProposals.c_str(), pfinalizedBudget->GetBlockStart(), pfinalizedBudget->GetBlockEnd(),
                  nBlockHeight, pfinalizedBudget->GetVoteCount(), nCountThreshold);
 
         if (pfinalizedBudget->GetVoteCount() > nCountThreshold) {
@@ -737,7 +737,7 @@ TrxValidationStatus CBudgetManager::IsTransactionValid(const CTransaction& txNew
     if(!fThreshold) {
         transactionStatus = TrxValidationStatus::VoteThreshold;
     }
-    
+
     // we looked through all of the known budgets
     return transactionStatus;
 }
@@ -816,9 +816,9 @@ std::vector<CBudgetProposal*> CBudgetManager::GetBudget()
             pbudgetProposal->IsEstablished()) {
 
             LogPrint("fnbudget","CBudgetManager::GetBudget() -   Check 1 passed: valid=%d | %ld <= %ld | %ld >= %ld | Yeas=%d Nays=%d Count=%d | established=%d\n",
-                      pbudgetProposal->fValid, pbudgetProposal->nBlockStart, nBlockStart, pbudgetProposal->nBlockEnd,
-                      nBlockEnd, pbudgetProposal->GetYeas(), pbudgetProposal->GetNays(), mnodeman.CountEnabled(ActiveProtocol()) / 10,
-                      pbudgetProposal->IsEstablished());
+                     pbudgetProposal->fValid, pbudgetProposal->nBlockStart, nBlockStart, pbudgetProposal->nBlockEnd,
+                     nBlockEnd, pbudgetProposal->GetYeas(), pbudgetProposal->GetNays(), mnodeman.CountEnabled(ActiveProtocol()) / 10,
+                     pbudgetProposal->IsEstablished());
 
             if (pbudgetProposal->GetAmount() + nBudgetAllocated <= nTotalBudget) {
                 pbudgetProposal->SetAllotted(pbudgetProposal->GetAmount());
@@ -832,9 +832,9 @@ std::vector<CBudgetProposal*> CBudgetManager::GetBudget()
         }
         else {
             LogPrint("fnbudget","CBudgetManager::GetBudget() -   Check 1 failed: valid=%d | %ld <= %ld | %ld >= %ld | Yeas=%d Nays=%d Count=%d | established=%d\n",
-                      pbudgetProposal->fValid, pbudgetProposal->nBlockStart, nBlockStart, pbudgetProposal->nBlockEnd,
-                      nBlockEnd, pbudgetProposal->GetYeas(), pbudgetProposal->GetNays(), mnodeman.CountEnabled(ActiveProtocol()) / 10,
-                      pbudgetProposal->IsEstablished());
+                     pbudgetProposal->fValid, pbudgetProposal->nBlockStart, nBlockStart, pbudgetProposal->nBlockEnd,
+                     nBlockEnd, pbudgetProposal->GetYeas(), pbudgetProposal->GetNays(), mnodeman.CountEnabled(ActiveProtocol()) / 10,
+                     pbudgetProposal->IsEstablished());
         }
 
         ++it2;
@@ -915,12 +915,12 @@ CAmount CBudgetManager::GetTotalBudget(int nHeight)
 
     if (Params().NetworkID() == CBaseChainParams::TESTNET) {
         CAmount nSubsidy = 500 * COIN;
-        return ((nSubsidy / 100) * 10) * 146; 
+        return ((nSubsidy / 100) * 10) * 146;
     }
 
-	//get block value and calculate from that
+    //get block value and calculate from that
     CAmount nSubsidy = GetBlockValue(chainActive.Tip()->nHeight);
-	return ((nSubsidy / 100) * 10) * 1920 * 30;   //10% of one month reward
+    return ((nSubsidy / 100) * 10) * 1920 * 30;   //10% of one month reward
 
 }
 
@@ -948,8 +948,8 @@ void CBudgetManager::NewBlock()
 
         LOCK(cs_vNodes);
         BOOST_FOREACH (CNode* pnode, vNodes)
-            if (pnode->nVersion >= ActiveProtocol())
-                Sync(pnode, 0, true);
+        if (pnode->nVersion >= ActiveProtocol())
+            Sync(pnode, 0, true);
 
         MarkSynced();
     }
@@ -1873,7 +1873,7 @@ void CFinalizedBudget::AutoCheck()
 
         if (vBudgetProposals.size() != vecBudgetPayments.size()) {
             LogPrint("fnbudget","CFinalizedBudget::AutoCheck - Budget-Proposal length (%ld) doesn't match Budget-Payment length (%ld).\n",
-                      vBudgetProposals.size(), vecBudgetPayments.size());
+                     vBudgetProposals.size(), vecBudgetPayments.size());
             return;
         }
 
@@ -2064,8 +2064,8 @@ bool CFinalizedBudget::IsPaidAlready(uint256 nProposalHash, int nBlockHeight)
         nPaidBlockHeight = (*it).second;
         if((nPaidBlockHeight < GetBlockStart()) || (nPaidBlockHeight > GetBlockEnd())) {
             nOldProposalHash = (*it).first;
-            LogPrint("mnbudget", "CFinalizedBudget::IsPaidAlready - Budget Proposal %s, Block %d from old cycle deleted\n", 
-                      nOldProposalHash.ToString().c_str(), nPaidBlockHeight);
+            LogPrint("mnbudget", "CFinalizedBudget::IsPaidAlready - Budget Proposal %s, Block %d from old cycle deleted\n",
+                     nOldProposalHash.ToString().c_str(), nPaidBlockHeight);
             mapPayment_History.erase(it++);
         }
         else {
@@ -2077,8 +2077,8 @@ bool CFinalizedBudget::IsPaidAlready(uint256 nProposalHash, int nBlockHeight)
     if(mapPayment_History.count(nProposalHash) == 0) {
         // New proposal payment, insert into map for checks with later blocks from this cycle
         mapPayment_History.insert(std::pair<uint256, int>(nProposalHash, nBlockHeight));
-        LogPrint("mnbudget", "CFinalizedBudget::IsPaidAlready - Budget Proposal %s, Block %d added to payment history\n", 
-                  nProposalHash.ToString().c_str(), nBlockHeight);
+        LogPrint("mnbudget", "CFinalizedBudget::IsPaidAlready - Budget Proposal %s, Block %d added to payment history\n",
+                 nProposalHash.ToString().c_str(), nBlockHeight);
         return false;
     }
     // This budget was paid already -> reject transaction so it gets paid to a masternode instead
@@ -2102,7 +2102,7 @@ TrxValidationStatus CFinalizedBudget::IsTransactionValid(const CTransaction& txN
     bool paid = false;
 
     BOOST_FOREACH (CTxOut out, txNew.vout) {
-        LogPrint("fnbudget","CFinalizedBudget::IsTransactionValid - nCurrentBudgetPayment=%d, payee=%s == out.scriptPubKey=%s, amount=%ld == out.nValue=%ld\n", 
+        LogPrint("fnbudget","CFinalizedBudget::IsTransactionValid - nCurrentBudgetPayment=%d, payee=%s == out.scriptPubKey=%s, amount=%ld == out.nValue=%ld\n",
                  nCurrentBudgetPayment, vecBudgetPayments[nCurrentBudgetPayment].payee.ToString().c_str(), out.scriptPubKey.ToString().c_str(),
                  vecBudgetPayments[nCurrentBudgetPayment].nAmount, out.nValue);
 
@@ -2111,7 +2111,7 @@ TrxValidationStatus CFinalizedBudget::IsTransactionValid(const CTransaction& txN
             paid = IsPaidAlready(vecBudgetPayments[nCurrentBudgetPayment].nProposalHash, nBlockHeight);
             if(paid) {
                 LogPrint("fnbudget","CFinalizedBudget::IsTransactionValid - Double Budget Payment of %d for proposal %d detected. Paying a masternode instead.\n",
-                          vecBudgetPayments[nCurrentBudgetPayment].nAmount, vecBudgetPayments[nCurrentBudgetPayment].nProposalHash.Get32());
+                         vecBudgetPayments[nCurrentBudgetPayment].nAmount, vecBudgetPayments[nCurrentBudgetPayment].nProposalHash.Get32());
                 // No matter what we've found before, stop all checks here. In future releases there might be more than one budget payment
                 // per block, so even if the first one was not paid yet this one disables all budget payments for this block.
                 transactionStatus = TrxValidationStatus::DoublePayment;
@@ -2120,7 +2120,7 @@ TrxValidationStatus CFinalizedBudget::IsTransactionValid(const CTransaction& txN
             else {
                 transactionStatus = TrxValidationStatus::Valid;
                 LogPrint("fnbudget","CFinalizedBudget::IsTransactionValid - Found valid Budget Payment of %d for proposal %d\n",
-                          vecBudgetPayments[nCurrentBudgetPayment].nAmount, vecBudgetPayments[nCurrentBudgetPayment].nProposalHash.Get32());
+                         vecBudgetPayments[nCurrentBudgetPayment].nAmount, vecBudgetPayments[nCurrentBudgetPayment].nProposalHash.Get32());
             }
         }
     }
@@ -2131,7 +2131,7 @@ TrxValidationStatus CFinalizedBudget::IsTransactionValid(const CTransaction& txN
         CBitcoinAddress address2(address1);
 
         LogPrint("fnbudget","CFinalizedBudget::IsTransactionValid - Missing required payment - %s: %d c: %d\n",
-                  address2.ToString(), vecBudgetPayments[nCurrentBudgetPayment].nAmount, nCurrentBudgetPayment);
+                 address2.ToString(), vecBudgetPayments[nCurrentBudgetPayment].nAmount, nCurrentBudgetPayment);
     }
 
     return transactionStatus;
@@ -2180,7 +2180,7 @@ CFinalizedBudgetBroadcast::CFinalizedBudgetBroadcast(const CFinalizedBudget& oth
     strBudgetName = other.strBudgetName;
     nBlockStart = other.nBlockStart;
     BOOST_FOREACH (CTxBudgetPayment out, other.vecBudgetPayments)
-        vecBudgetPayments.push_back(out);
+    vecBudgetPayments.push_back(out);
     mapVotes = other.mapVotes;
     nFeeTXHash = other.nFeeTXHash;
 }
@@ -2190,7 +2190,7 @@ CFinalizedBudgetBroadcast::CFinalizedBudgetBroadcast(std::string strBudgetNameIn
     strBudgetName = strBudgetNameIn;
     nBlockStart = nBlockStartIn;
     BOOST_FOREACH (CTxBudgetPayment out, vecBudgetPaymentsIn)
-        vecBudgetPayments.push_back(out);
+    vecBudgetPayments.push_back(out);
     mapVotes.clear();
     nFeeTXHash = nFeeTXHashIn;
 }

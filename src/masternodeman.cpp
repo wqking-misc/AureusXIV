@@ -224,7 +224,7 @@ void CMasternodeMan::Check()
     LOCK(cs);
 
     BOOST_FOREACH(CMasternode& mn, vMasternodes)
-        mn.Check();
+    mn.Check();
 }
 
 void CMasternodeMan::CheckAndRemove()
@@ -393,14 +393,14 @@ CMasternode *CMasternodeMan::Find(const CTxIn &vin)
 
 CMasternode *CMasternodeMan::Find(const CPubKey &pubKeyMasternode)
 {
-LOCK(cs);
+    LOCK(cs);
 
-BOOST_FOREACH(CMasternode& mn, vMasternodes)
-{
-if(mn.pubkey2 == pubKeyMasternode)
-return &mn;
-}
-return NULL;
+    BOOST_FOREACH(CMasternode& mn, vMasternodes)
+    {
+        if(mn.pubkey2 == pubKeyMasternode)
+            return &mn;
+    }
+    return NULL;
 }
 
 CMasternode* CMasternodeMan::FindOldestNotInVec(const std::vector<CTxIn> &vVins, int nMinimumAge, int nMinimumActiveSeconds)
@@ -415,16 +415,16 @@ CMasternode* CMasternodeMan::FindOldestNotInVec(const std::vector<CTxIn> &vVins,
         if(!mn.IsEnabled()) continue;
 
         //if(!RegTest()){
-            if(mn.GetMasternodeInputAge() < nMinimumAge || mn.lastTimeSeen - mn.sigTime < nMinimumActiveSeconds) continue;
+        if(mn.GetMasternodeInputAge() < nMinimumAge || mn.lastTimeSeen - mn.sigTime < nMinimumActiveSeconds) continue;
         //}
 
         bool found = false;
         BOOST_FOREACH(const CTxIn& vin, vVins)
-            if(mn.vin.prevout == vin.prevout)
-            {
-                found = true;
-                break;
-            }
+        if(mn.vin.prevout == vin.prevout)
+        {
+            found = true;
+            break;
+        }
 
         if(found) continue;
 
@@ -762,11 +762,11 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             // use this as a peer
             addrman.Add(CAddress(addr), pfrom->addr, 2*60*60);
 
-             //doesn't support multisig addresses
+            //doesn't support multisig addresses
             if(donationAddress.IsPayToScriptHash()){
-              donationAddress = CScript();
-               donationPercentage = 0;
-             }
+                donationAddress = CScript();
+                donationPercentage = 0;
+            }
 
             // add our Masternode
             CMasternode mn(addr, vin, pubkey, vchSig, sigTime, pubkey2, protocolVersion, donationAddress, donationPercentage);
@@ -788,7 +788,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             if (state.IsInvalid(nDoS))
             {
                 LogPrintf("dsee - %s from %s %s was not accepted into the memory pool\n", tx2.GetHash().ToString().c_str(),
-                    pfrom->addr.ToString().c_str(), pfrom->cleanSubVer.c_str());
+                          pfrom->addr.ToString().c_str(), pfrom->cleanSubVer.c_str());
                 if (nDoS > 0)
                     Misbehaving(pfrom->GetId(), nDoS);
             }
@@ -894,7 +894,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
                 //send to all peers
                 LOCK(cs_vNodes);
                 BOOST_FOREACH(CNode* pnode, vNodes)
-                    pnode->PushMessage("mvote", vin, vchSig, nVote);
+                pnode->PushMessage("mvote", vin, vchSig, nVote);
             }
 
             return;
@@ -951,16 +951,16 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 }
 void CMasternodeMan::RelayMasternodeEntry(const CTxIn vin, const CService addr, const std::vector<unsigned char> vchSig, const int64_t nNow, const CPubKey pubkey, const CPubKey pubkey2, const int count, const int current, const int64_t lastUpdated, const int protocolVersion, CScript donationAddress, int donationPercentage)
 {
-     LOCK(cs_vNodes);
-     BOOST_FOREACH(CNode* pnode, vNodes)
-     pnode->PushMessage("dsee", vin, addr, vchSig, nNow, pubkey, pubkey2, count, current, lastUpdated, protocolVersion, donationAddress, donationPercentage);
+    LOCK(cs_vNodes);
+    BOOST_FOREACH(CNode* pnode, vNodes)
+    pnode->PushMessage("dsee", vin, addr, vchSig, nNow, pubkey, pubkey2, count, current, lastUpdated, protocolVersion, donationAddress, donationPercentage);
 }
 
 void CMasternodeMan::RelayMasternodeEntryPing(const CTxIn vin, const std::vector<unsigned char> vchSig, const int64_t nNow, const bool stop)
 {
     LOCK(cs_vNodes);
     BOOST_FOREACH(CNode* pnode, vNodes)
-        pnode->PushMessage("dseep", vin, vchSig, nNow, stop);
+    pnode->PushMessage("dseep", vin, vchSig, nNow, stop);
 }
 
 void CMasternodeMan::Remove(CTxIn vin)
@@ -982,10 +982,10 @@ std::string CMasternodeMan::ToString() const
     std::ostringstream info;
 
     info << "Masternodes: " << (int)vMasternodes.size() <<
-            ", peers who asked us for Masternode list: " << (int)mAskedUsForMasternodeList.size() <<
-            ", peers we asked for Masternode list: " << (int)mWeAskedForMasternodeList.size() <<
-            ", entries in Masternode list we asked for: " << (int)mWeAskedForMasternodeListEntry.size() <<
-            ", nDsqCount: " << (int)nDsqCount;
+         ", peers who asked us for Masternode list: " << (int)mAskedUsForMasternodeList.size() <<
+         ", peers we asked for Masternode list: " << (int)mWeAskedForMasternodeList.size() <<
+         ", entries in Masternode list we asked for: " << (int)mWeAskedForMasternodeListEntry.size() <<
+         ", nDsqCount: " << (int)nDsqCount;
 
     return info.str();
 }

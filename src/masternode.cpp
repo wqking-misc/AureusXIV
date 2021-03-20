@@ -444,7 +444,7 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
     BOOST_REVERSE_FOREACH(CMasternodePaymentWinner& winner, vWinning)
     {
         //if we already have the same vin - we have one full payment cycle, break
-       if(vecLastPayments.size() > nMinimumAge) break;
+        if(vecLastPayments.size() > nMinimumAge) break;
         vecLastPayments.push_back(winner.vin);
     }
 
@@ -501,11 +501,11 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
     ExtractDestination(newWinner.payee, address1);
     CBitcoinAddress address2(address1);
 
-CTxDestination address3;
+    CTxDestination address3;
 
-ExtractDestination(payeeSource, address3);
-CBitcoinAddress address4(address3);
-LogPrintf("Winner payee %s nHeight %d vin source %s. \n", address2.ToString().c_str(), newWinner.nBlockHeight, address4.ToString().c_str());
+    ExtractDestination(payeeSource, address3);
+    CBitcoinAddress address4(address3);
+    LogPrintf("Winner payee %s nHeight %d vin source %s. \n", address2.ToString().c_str(), newWinner.nBlockHeight, address4.ToString().c_str());
 
     if(Sign(newWinner))
     {
@@ -523,7 +523,7 @@ LogPrintf("Winner payee %s nHeight %d vin source %s. \n", address2.ToString().c_
 
 void CMasternodePayments::Relay(CMasternodePaymentWinner& winner)
 {
-        CInv inv(MSG_MASTERNODE_WINNER, winner.GetHash());
+    CInv inv(MSG_MASTERNODE_WINNER, winner.GetHash());
 
     vector<CInv> vInv;
     vInv.push_back(inv);
@@ -538,8 +538,8 @@ void CMasternodePayments::Sync(CNode* node)
     LOCK(cs_masternodepayments);
 
     BOOST_FOREACH(CMasternodePaymentWinner& winner, vWinning)
-        if(winner.nBlockHeight >= chainActive.Tip()->nHeight-10 && winner.nBlockHeight <= chainActive.Tip()->nHeight + 20)
-            node->PushMessage("mnw", winner);
+    if(winner.nBlockHeight >= chainActive.Tip()->nHeight-10 && winner.nBlockHeight <= chainActive.Tip()->nHeight + 20)
+        node->PushMessage("mnw", winner);
 }
 
 
@@ -565,14 +565,13 @@ bool CMasternodeBroadcast::CheckDefaultPort(std::string strService, std::string&
 {
     CService service = CService(strService);
     int nDefaultPort = Params().GetDefaultPort();
-    
+
     if (service.GetPort() != nDefaultPort) {
-        strErrorRet = strprintf("Invalid port %u for masternode %s, only %d is supported on %s-net.", 
-                                        service.GetPort(), strService, nDefaultPort, Params().NetworkIDString());
+        strErrorRet = strprintf("Invalid port %u for masternode %s, only %d is supported on %s-net.",
+                                service.GetPort(), strService, nDefaultPort, Params().NetworkIDString());
         LogPrint("masternode", "%s - %s\n", strContext, strErrorRet);
         return false;
     }
- 
+
     return true;
 }
-

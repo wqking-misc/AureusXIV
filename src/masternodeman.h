@@ -80,14 +80,14 @@ public:
         // * version byte (currently 0)
         // * masternodes vector
         {
-                LOCK(cs);
-                unsigned char nVersion = 0;
-                READWRITE(nVersion);
-                READWRITE(vMasternodes);
-                READWRITE(mAskedUsForMasternodeList);
-                READWRITE(mWeAskedForMasternodeList);
-                READWRITE(mWeAskedForMasternodeListEntry);
-                READWRITE(nDsqCount);
+            LOCK(cs);
+            unsigned char nVersion = 0;
+            READWRITE(nVersion);
+            READWRITE(vMasternodes);
+            READWRITE(mAskedUsForMasternodeList);
+            READWRITE(mWeAskedForMasternodeList);
+            READWRITE(mWeAskedForMasternodeListEntry);
+            READWRITE(nDsqCount);
         }
     }
 
@@ -154,8 +154,8 @@ public:
 
     void Remove(CTxIn vin);
 
-	// Get Masternode Protocol Version
-	int GetMinMasternodePaymentsProto();
+    // Get Masternode Protocol Version
+    int GetMinMasternodePaymentsProto();
 };
 
 #endif

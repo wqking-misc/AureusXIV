@@ -115,7 +115,6 @@ bool fLiteMode = false;
 bool fEnableSwiftTX = true;
 int nSwiftTXDepth = 5;
 
-int nAnonymizeVitaeAmount = 1000;
 int nLiquidityProvider = 0;
 /** Spork enforcement enabled time */
 int64_t enforceFundamentalnodePaymentsTime = 4085657524;

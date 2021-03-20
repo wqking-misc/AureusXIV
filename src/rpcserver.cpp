@@ -382,7 +382,6 @@ static const CRPCCommand vRPCCommands[] =
         {"axiv", "spork", &spork, true, true, false},
         {"axiv", "getpoolinfo", &getpoolinfo, true, true, false},
         {"axiv", "makekeypair", &makekeypair, true, true, false},
-        {"axiv", "mnspork", &mnspork, true, true, false},
         {"axiv", "masternode", &masternode, true, true, false},
         {"axiv", "masternodelist", &masternodelist, true, true, false},
         {"axiv", "getmasternodestatus", &getmasternodestatus, true, true, false},
