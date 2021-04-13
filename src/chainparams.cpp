@@ -107,10 +107,10 @@ public:
         nRejectBlockOutdatedMajority = 13680;  // 95%
         nToCheckBlockUpgradeMajority = 14400;  // Approximate expected amount of blocks in 7 days (1920*7.5)
         nMinerThreads = 0;
-        nTargetTimespan = 1 * 45; // AXIV: 1 day
-        nTargetSpacing = 1 * 45;  // AXIV: 1 minute
-        nMaturity = 8;
-        nMaxMoneyOut = 21000000 * COIN;
+        nTargetTimespan = 1 * 60 * 45; // AXIV: 45 minutes
+        nTargetSpacing = 1 * 60;  // AXIV: 1 minute
+        nMaturity = 6;
+        nMaxMoneyOut = 150000000 * COIN;
 
         /** Height or Time Based Activations **/
         nLastPOWBlock = 200;
