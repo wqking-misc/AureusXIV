@@ -1766,27 +1766,64 @@ int64_t GetBlockValue(int nHeight)
 {
     int64_t nSubsidy = 30 *COIN;
 
-    if(nHeight ==1){
-        return 1100000 * COIN;
+    if (Params().NetworkID() == CBaseChainParams::TESTNET) {
+
+        if(nHeight ==1){
+            return 1100000 * COIN;
+        }
+        if(nHeight >=2 && nHeight<200){
+            return 20 * COIN;
+        }
+        if(nHeight >=259200 && nHeight<518400){
+            return 20 * COIN;
+        }
+        if(nHeight >=518400 && nHeight<777600){
+            return 15 * COIN;
+        }
+        if(nHeight >=777600 && nHeight<1036800){
+            return 10 * COIN;
+        }
+        if(nHeight >=1036800){
+            return 5 * COIN;
+        }
     }
-    if(nHeight >=259200 && nHeight<518400){
+
+    if(nHeight ==1){
+        return 520900 * COIN;
+    }
+    if(nHeight >=2 && nHeight<250){
+        return 500 * COIN;
+    }
+    if(nHeight >=250 && nHeight<43250){
+        return 85 * COIN;
+    }
+    if(nHeight >=43250 && nHeight<84650){
+        return 60 * COIN;
+    }
+    if(nHeight >=84650 && nHeight<129650){
+        return 50 * COIN;
+    }
+    if(nHeight >=129650 && nHeight<259250){
+        return 40 * COIN;
+    }
+    if(nHeight >=259250 && nHeight<388850){
+        return 30 * COIN;
+    }
+    if(nHeight >=388850 && nHeight<518450){
+        return 25 * COIN;
+    }
+    if(nHeight >=518450 && nHeight<777650){
         return 20 * COIN;
     }
-    if(nHeight >=518400 && nHeight<777600){
+    if(nHeight >=777650 && nHeight<1036850){
         return 15 * COIN;
     }
-    if(nHeight >=777600 && nHeight<1036800){
+    if(nHeight >=1036850 && nHeight<12995060){
         return 10 * COIN;
     }
-    if(nHeight >=1036800){
-        return 5 * COIN;
+    if(nHeight >=12995060){
+        return 0 * COIN;
     }
-
-    if (Params().NetworkID() == CBaseChainParams::TESTNET) {
-        if (nHeight < 200 && nHeight > 0)
-            return 250000 * COIN;
-    }
-
 
     return nSubsidy;
 }
