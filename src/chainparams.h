@@ -163,7 +163,6 @@ protected:
     int64_t nBudget_Fee_Confirmations;
 
     int nBlockEnforceSerialRange;
-    int nBlockRecalculateAccumulators;
     int nBlockFirstFraudulent;
     int nBlockLastGoodCheckpoint;
     int nBlockEnforceInvalidUTXO;
