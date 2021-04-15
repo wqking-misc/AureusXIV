@@ -1850,7 +1850,7 @@ CAmount GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
     int64_t ret = 0;
 
     if (Params().NetworkID() == CBaseChainParams::TESTNET) {
-        if (nHeight < 400)
+        if (nHeight < 200)
             return 0;
         if(nHeight < 24000){
             return (blockValue * .25);
