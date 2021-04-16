@@ -54,12 +54,12 @@ static void convertSeed6(std::vector<CAddress>& vSeedsOut, const SeedSpec6* data
 // + Contains no strange transactions
 static Checkpoints::MapCheckpoints mapCheckpoints =
     boost::assign::map_list_of
-    (0, uint256("41e482b9b9691d98eefb48473405c0b8ec31b76df3797c74a78680ef818"));
+    (0, uint256("0x000002a99dbe97c85cf2c59e6d39ae66732ba367b54f52a6f1115ef7515c9688"));
     
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
-    1598896246, // * UNIX timestamp of last checkpoint block
-    5165280,     // * total number of transactions between genesis and last checkpoint
+    1618597216, // * UNIX timestamp of last checkpoint block
+    0,     // * total number of transactions between genesis and last checkpoint
                 //   (the tx=... number in the SetBestChain debug.log lines)
     2000        // * estimated number of transactions per day after checkpoint
 };
@@ -133,6 +133,7 @@ public:
          *     CTxOut(nValue=50.00000000, scriptPubKey=0xA9037BAC7050C479B121CF)
          *   vMerkleTree: e0028e
          */
+        // Mainnet --- nonce: 750685 time: 1618597216 hash: 0x000002a99dbe97c85cf2c59e6d39ae66732ba367b54f52a6f1115ef7515c9688 merklehash: 0x4041d5926aa610efd34c141246870353586d4e4c2aaa57511997823003e99fab
         const char* pszTimestamp = "The Brussels Times Oct 19 2020 Hard Brexit would cost Belgium €3.2 billion in exports";
         CMutableTransaction txNew;
         txNew.vin.resize(1);
@@ -146,7 +147,7 @@ public:
         genesis.nVersion = 1;
         genesis.nTime = 1618597216;
         genesis.nBits = 0x1e0ffff0;
-        genesis.nNonce = 973214;
+        genesis.nNonce = 750685;
 
         hashGenesisBlock = genesis.GetHash();
         if (regenerate) {
@@ -174,13 +175,14 @@ public:
             LogPrintf(" time: %u\n", genesis.nTime);
             LogPrintf(" hash: 0x%s\n", genesis.GetHash().ToString().c_str());
             LogPrintf(" merklehash: 0x%s\n", genesis.hashMerkleRoot.ToString().c_str());
-            assert(hashGenesisBlock == uint256("0x00000748c41291fbc42a0fcffbcb1ec9a559d74e091f40524adffd8f2dcba7f4"));
+            assert(hashGenesisBlock == uint256("0x000002a99dbe97c85cf2c59e6d39ae66732ba367b54f52a6f1115ef7515c9688"));
             assert(genesis.hashMerkleRoot == uint256("0x4041d5926aa610efd34c141246870353586d4e4c2aaa57511997823003e99fab"));
         }
 
 
         vFixedSeeds.clear();
         vSeeds.clear();
+        /*
         vSeeds.push_back(CDNSSeedData("dns0", "dns0.AXIV.phore.io")); // Primary DNS seeder
         vSeeds.push_back(CDNSSeedData("dns1", "dns1.AXIV.phore.io")); // Secondary DNS seeder
         vSeeds.push_back(CDNSSeedData("seednode1.AXIV.co", "seednode1.AXIV.co"));
@@ -189,6 +191,7 @@ public:
         vSeeds.push_back(CDNSSeedData("seednode2.AXIVtoken.io", "seednode2.AXIVtoken.io"));
         vSeeds.push_back(CDNSSeedData("seednode1.AXIVinfo.co", "seednode1.AXIVinfo.co"));
         vSeeds.push_back(CDNSSeedData("seednode2.AXIVinfo.co", "seednode2.AXIVinfo.co"));
+        */
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 23);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 18);
