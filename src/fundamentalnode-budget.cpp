@@ -920,7 +920,7 @@ CAmount CBudgetManager::GetTotalBudget(int nHeight)
 
     //get block value and calculate from that
     CAmount nSubsidy = GetBlockValue(chainActive.Tip()->nHeight);
-    return ((nSubsidy / 100) * 10) * 1920 * 30;   //10% of one month reward
+    return ((nSubsidy / 100) * 10) * 1440 * 30;   //10% of one month reward
 
 }
 
